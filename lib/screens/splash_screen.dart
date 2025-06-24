@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import '../utils/app_colors.dart';
+import '../widgets/app_text.dart';
 
 class SplashScreen extends StatelessWidget {
-const SplashScreen({super.key});
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFECE0D1),
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
           // Coffee cup image
@@ -23,6 +25,7 @@ const SplashScreen({super.key});
               ),
             ),
           ),
+
           // Title and description
           Positioned(
             top: 480,
@@ -30,33 +33,28 @@ const SplashScreen({super.key});
             right: 0,
             child: Column(
               children: [
-                const Text(
-                  'Stay Focused',
-                  style: TextStyle(
-                    fontFamily: 'SF Pro Text',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 24,
-                    color: Color(0xFF38220F),
-                  ),
+                const AppText(
+                  text: 'Stay Focused',
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'SF Pro Text',
+                  color: AppColors.primaryText,
                 ),
                 const SizedBox(height: 20),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 37),
-                  child: Text(
-                    'Get the cup filled of your choice to stay focused and awake. Diffrent type of coffee menu, hot lottee cappucino',
+                  child: AppText(
+                    text:
+                        'Get the cup filled of your choice to stay focused and awake. Different types of coffee menu — hot latte, cappuccino, and more.',
+                    fontSize: 14,
+                    color: AppColors.secondaryText,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      height: 22 / 14,
-                      color: Color(0x99444444),
-                    ),
                   ),
                 ),
               ],
             ),
           ),
+
           // Dive In button
           Positioned(
             left: 0,
@@ -71,13 +69,14 @@ const SplashScreen({super.key});
                     width: 120,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF967259).withAlpha((0.7 * 255).round()),
+                      color: AppColors.button.withAlpha((0.7 * 255).round()),
                       borderRadius: BorderRadius.circular(100),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF967259).withAlpha((0.5 * 255).round()),
+                          color: AppColors.button.withAlpha(
+                            (0.5 * 255).round(),
+                          ),
                           blurRadius: 20,
-                          spreadRadius: 0,
                           offset: const Offset(0, 8),
                         ),
                       ],
@@ -86,27 +85,26 @@ const SplashScreen({super.key});
                   // Button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF967259),
+                      backgroundColor: AppColors.button,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 16,
+                      ),
                       elevation: 0,
                     ),
                     onPressed: () {
-                      /// TODO: Add navigation or next action
+                      // TODO: Add navigation or next screen
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: const [
-                        Text(
-                          'Dive In',
-                          style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
+                        AppText(
+                          text: 'Dive In',
+                          fontSize: 16,
+                          color: Colors.white,
                         ),
                         SizedBox(width: 10),
                         Icon(
