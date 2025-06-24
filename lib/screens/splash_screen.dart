@@ -32,6 +32,7 @@ class SplashScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: Column(
+              spacing: 20,
               children: [
                 const AppText(
                   text: 'Stay Focused',
@@ -40,7 +41,6 @@ class SplashScreen extends StatelessWidget {
                   fontFamily: 'SF Pro Text',
                   color: AppColors.primaryText,
                 ),
-                const SizedBox(height: 20),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 37),
                   child: AppText(
@@ -100,13 +100,13 @@ class SplashScreen extends StatelessWidget {
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        AppText(
+                      spacing: 10,
+                      children: [
+                        const AppText(
                           text: 'Dive In',
                           fontSize: 16,
                           color: Colors.white,
                         ),
-                        SizedBox(width: 10),
                         Icon(
                           Icons.arrow_forward,
                           color: Colors.white,
