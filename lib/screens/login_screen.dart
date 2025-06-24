@@ -4,7 +4,7 @@ import '../widgets/input_field.dart';
 import '../widgets/custom_button.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -77,15 +77,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: screenHeight * 0.25),
-                  const Align(
+                  Align(
                     alignment: Alignment.center,
                     child: Text(
                       'Login',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w400,
-                        color: AppTheme.textColor,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.copyWith(fontSize: 24),
                     ),
                   ),
                   const SizedBox(height: 75),

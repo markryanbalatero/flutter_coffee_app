@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -12,7 +13,7 @@ class CustomButton extends StatelessWidget {
   final Color textColor;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     this.isLoading = false,
     this.text = 'Dive In',
@@ -20,8 +21,8 @@ class CustomButton extends StatelessWidget {
     this.width = 158,
     this.height = 60,
     this.backgroundColor = AppTheme.buttonColor,
-    this.textColor = Colors.white,
-  }) : super(key: key);
+    this.textColor = AppColors.buttonTextColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class CustomButton extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: backgroundColor.withOpacity(0.5),
+            color: AppColors.buttonShadowColor,
             blurRadius: 20,
             offset: const Offset(0, 6),
             spreadRadius: 0.5,
@@ -66,10 +67,7 @@ class CustomButton extends StatelessWidget {
             else
               Text(
                 text,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0.2,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: textColor,
                 ),
               ),
