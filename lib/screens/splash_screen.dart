@@ -99,7 +99,12 @@ class SplashScreen extends StatelessWidget {
                       elevation: 0,
                     ),
                     onPressed: () {
-                      // TODO: Add navigation or next screen
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
