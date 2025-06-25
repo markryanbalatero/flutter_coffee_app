@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
-import 'theme/app_theme.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Coffee App',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.theme,
-      home: const LoginScreen(),
-    );
+    return const MaterialApp(debugShowCheckedModeBanner: false,
+     home: SplashScreen());
   }
 }
