@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 import '../widgets/app_text.dart';
+import 'login_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -8,7 +9,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.backgroundColor,
       body: Stack(
         children: [
           // Coffee cup image
@@ -55,7 +56,7 @@ class SplashScreen extends StatelessWidget {
             ),
           ),
 
-          // Dive In button
+          // Dive In buttonColor
           Positioned(
             left: 0,
             right: 0,
@@ -69,11 +70,13 @@ class SplashScreen extends StatelessWidget {
                     width: 120,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColors.button.withAlpha((0.7 * 255).round()),
+                      color: AppColors.buttonColor.withAlpha(
+                        (0.7 * 255).round(),
+                      ),
                       borderRadius: BorderRadius.circular(100),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.button.withAlpha(
+                          color: AppColors.buttonColor.withAlpha(
                             (0.5 * 255).round(),
                           ),
                           blurRadius: 20,
@@ -82,10 +85,10 @@ class SplashScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Button
+                  // buttonColor
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.button,
+                      backgroundColor: AppColors.buttonColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100),
                       ),
