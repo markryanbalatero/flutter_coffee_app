@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   CustomButton(
                     onPressed: _onLoginPressed,
                     isLoading: _isLoading,
-                    text: 'Dive In',
+                    text: 'Login',
                     icon: Icons.arrow_forward,
                   ),
                   const Spacer(),
