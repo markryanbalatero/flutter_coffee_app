@@ -12,7 +12,6 @@ class SplashScreen extends StatelessWidget {
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
         children: [
-          // Coffee cup image
           Positioned(
             top: 60,
             left: 0,
@@ -27,7 +26,6 @@ class SplashScreen extends StatelessWidget {
             ),
           ),
 
-          // Title and description
           Positioned(
             top: 480,
             left: 0,
@@ -55,8 +53,6 @@ class SplashScreen extends StatelessWidget {
               ],
             ),
           ),
-
-          // Dive In buttonColor
           Positioned(
             left: 0,
             right: 0,
@@ -65,7 +61,6 @@ class SplashScreen extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Blurred shadow
                   Container(
                     width: 120,
                     height: 48,
@@ -85,7 +80,6 @@ class SplashScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // buttonColor
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.buttonColor,
