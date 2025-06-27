@@ -3,6 +3,7 @@ import 'dart:ui';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../widgets/buttons/circular_icon_button.dart';
+import '../../widgets/buttons/heart_button.dart';
 import 'product_overlay_content.dart';
 
 /// Header widget containing product image and overlay
@@ -11,10 +12,12 @@ class ProductHeader extends StatelessWidget {
     Key? key,
     required this.onBackPressed,
     required this.onFavoritePressed,
+    required this.isFavorite,
   }) : super(key: key);
 
   final VoidCallback onBackPressed;
   final VoidCallback onFavoritePressed;
+  final bool isFavorite;
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +61,10 @@ class ProductHeader extends StatelessWidget {
           CircularIconButton(
             iconPath: AppConstants.backArrowIcon,
             onTap: onBackPressed,
+            showVisualFeedbackOnly: true, // Only show visual feedback, don't navigate
           ),
-          CircularIconButton(
-            iconPath: AppConstants.heartIcon,
+          HeartButton(
+            isFavorite: isFavorite,
             onTap: onFavoritePressed,
           ),
         ],

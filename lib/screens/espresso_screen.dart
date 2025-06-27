@@ -19,6 +19,21 @@ class _EspressoScreenState extends State<EspressoScreen> {
   String selectedChocolate = 'White Chocolate';
   String selectedSize = 'S';
   int quantity = 1;
+  bool isFavorite = false;
+
+  // Base price and size multipliers
+  static const double basePrice = 4.20;
+  static const Map<String, double> sizeMultipliers = {
+    'S': 1.0,   // Small: base price
+    'M': 1.2,   // Medium: 20% more
+    'L': 1.5,   // Large: 50% more
+  };
+
+  /// Calculates the total price based on size and quantity
+  double get totalPrice {
+    final sizeMultiplier = sizeMultipliers[selectedSize] ?? 1.0;
+    return basePrice * sizeMultiplier * quantity;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +44,11 @@ class _EspressoScreenState extends State<EspressoScreen> {
           children: [
             ProductHeader(
               onBackPressed: () => Navigator.pop(context),
+              isFavorite: isFavorite,
               onFavoritePressed: () {
-                // TODO: Implement favorite functionality
+                setState(() {
+                  isFavorite = !isFavorite;
+                });
               },
             ),
             _buildContentSection(context),
@@ -77,7 +95,7 @@ class _EspressoScreenState extends State<EspressoScreen> {
           ),
           const SizedBox(height: AppConstants.largeSpacing),
           PriceAndBuySection(
-            price: double.parse(AppConstants.productPrice),
+            price: totalPrice,
             onBuyNow: () {
               // TODO: Implement buy now functionality
             },
