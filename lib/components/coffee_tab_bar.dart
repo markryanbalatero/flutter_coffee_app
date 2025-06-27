@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../utils/app_colors.dart';
+import '../theme/app_theme.dart';
+
 class CircleTabIndicator extends Decoration {
   final Color color;
   final double radius;
@@ -51,20 +54,12 @@ class CoffeeTabBar extends StatelessWidget {
             child: TabBar(
               controller: tabController,
               isScrollable: false,
-              labelColor: const Color(0xFF967259),
-              unselectedLabelColor: const Color(0xFF444444),
-              labelStyle: const TextStyle(
-                fontFamily: 'SF Pro Text',
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-              unselectedLabelStyle: const TextStyle(
-                fontFamily: 'SF Pro Text',
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              labelColor: AppColors.categoryTabSelectedColor,
+              unselectedLabelColor: AppColors.categoryTabUnselectedColor,
+              labelStyle: AppTheme.coffeeTabBarSelectedStyle,
+              unselectedLabelStyle: AppTheme.coffeeTabBarUnselectedStyle,
               indicator: CircleTabIndicator(
-                color: const Color(0xFF967259),
+                color: AppColors.categoryTabSelectedColor,
                 radius: 5,
               ),
               tabs: tabs
@@ -77,11 +72,9 @@ class CoffeeTabBar extends StatelessWidget {
                         child: Text(
                           tab,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
+                          style: AppTheme.coffeeTabBarCustomTextStyle.copyWith(
                             height: 1.0,
-                            letterSpacing: tab.length > 8 ? -0.6 : -0.2,      
-                            fontWeight: FontWeight.w500,
+                            letterSpacing: tab.length > 8 ? -0.6 : -0.2,
                           ),
                           overflow: TextOverflow.visible,
                           softWrap: false,
@@ -101,10 +94,8 @@ class CoffeeTabBar extends StatelessWidget {
           alignment: Alignment.center,
           child: TabBarView(
             controller: tabController,
-            physics:
-                const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: [
-              // Espresso Tab Content
               _buildTabContent('Espresso', 'with Oat Milk', 'with Milk'),
 
               // Latte Tab Content
@@ -181,11 +172,11 @@ class CoffeeTabBar extends StatelessWidget {
       width: 170,
       height: 235,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.coffeeTabBarCardBackground,
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.07),
+            color: AppColors.coffeeTabBarCardShadow,
             blurRadius: 15,
             spreadRadius: 1,
             offset: const Offset(0, 3),
@@ -201,18 +192,17 @@ class CoffeeTabBar extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(10, 11, 10, 0),
                 height: 140,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
+                  color: AppColors.coffeeTabBarImageBackground,
                   borderRadius: BorderRadius.circular(25),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
+                      color: AppColors.coffeeTabBarImageShadow,
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                clipBehavior:
-                    Clip.antiAlias,
+                clipBehavior: Clip.antiAlias,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -222,7 +212,10 @@ class CoffeeTabBar extends StatelessWidget {
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Colors.white, const Color(0xFFF3EDE8)],
+                            colors: [
+                              AppColors.coffeeTabBarGradientStart,
+                              AppColors.coffeeTabBarGradientEnd,
+                            ],
                           ),
                         ),
                       ),
@@ -258,7 +251,7 @@ class CoffeeTabBar extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.4),
+                    color: AppColors.coffeeTabBarRatingOverlay,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -266,19 +259,11 @@ class CoffeeTabBar extends StatelessWidget {
                     children: [
                       const Icon(
                         Icons.star,
-                        color: Color(0xFFFFD700),
+                        color: AppColors.coffeeTabBarPromotionBackground,
                         size: 14,
                       ),
                       const SizedBox(width: 3),
-                      const Text(
-                        '4.5',
-                        style: TextStyle(
-                          fontFamily: 'SF Pro Text',
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
+                      Text('4.5', style: AppTheme.coffeeTabBarPromotionStyle),
                     ],
                   ),
                 ),
@@ -291,49 +276,23 @@ class CoffeeTabBar extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontFamily: 'SF Pro Text',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF444444),
-                  ),
-                ),
+                Text(title, style: AppTheme.coffeeTabBarProductTitleStyle),
 
                 Text(
                   subtitle,
-                  style: TextStyle(
-                    fontFamily: 'SF Pro Text',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black.withOpacity(0.6),
-                  ),
+                  style: AppTheme.coffeeTabBarProductSubtitleStyle,
                 ),
 
                 const SizedBox(height: 10),
 
                 Row(
                   children: [
-                    const Text(
+                    Text(
                       '\$',
-                      style: TextStyle(
-                        fontFamily: 'SF Pro Text',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF967259),
-                      ),
+                      style: AppTheme.coffeeTabBarProductPriceCurrencyStyle,
                     ),
 
-                    Text(
-                      price,
-                      style: const TextStyle(
-                        fontFamily: 'SF Pro Text',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF444444),
-                      ),
-                    ),
+                    Text(price, style: AppTheme.coffeeTabBarProductPriceStyle),
 
                     Padding(
                       padding: const EdgeInsets.only(left: 45),
@@ -341,7 +300,7 @@ class CoffeeTabBar extends StatelessWidget {
                         width: 30,
                         height: 30,
                         decoration: const BoxDecoration(
-                          color: Color(0xFF967259),
+                          color: AppColors.coffeeAccent,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(25),
                             bottomRight: Radius.circular(25),

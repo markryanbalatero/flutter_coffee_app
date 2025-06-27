@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../utils/app_colors.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
   final int selectedIndex;
@@ -15,14 +16,14 @@ class CustomBottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: AppColors.bottomNavigationBackground,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
         boxShadow: [
           BoxShadow(
-            color: Color(0x33000000),
+            color: AppColors.bottomNavigationShadow,
             blurRadius: 24,
             offset: Offset(0, 5),
           ),
@@ -47,20 +48,30 @@ class CustomBottomNavigation extends StatelessWidget {
   }
 
   Widget _buildNavItem(String iconPath, int index) {
-    final isSelected = index == selectedIndex;
+    bool isSelected = selectedIndex == index;
 
     return GestureDetector(
       onTap: () => onItemTapped(index),
       child: Container(
-        width: 24,
-        height: 24,
-        child: SvgPicture.asset(
-          iconPath,
-          width: 24,
-          height: 24,
-          colorFilter: ColorFilter.mode(
-            isSelected ? const Color(0xFF967259) : const Color(0xFF8D8D8D),
-            BlendMode.srcIn,
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.bottomNavigationSelectedBackground
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            iconPath,
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+              isSelected
+                  ? AppColors.bottomNavigationSelectedIcon
+                  : AppColors.bottomNavigationUnselectedIcon,
+              BlendMode.srcIn,
+            ),
           ),
         ),
       ),

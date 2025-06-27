@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../utils/app_colors.dart';
+import '../theme/app_theme.dart';
 
 class CustomSearchBar extends StatelessWidget {
   final String hintText;
@@ -33,21 +34,10 @@ class CustomSearchBar extends StatelessWidget {
       child: TextField(
         controller: controller,
         onChanged: onChanged,
-        style: const TextStyle(
-          fontFamily: 'SF Pro Text',
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-          color: AppColors.searchTextColor,
-        ),
+        style: AppTheme.searchBarTextStyle,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: const TextStyle(
-            fontFamily: 'SF Pro Text',
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-            color: AppColors.searchHintColor,
-            height: 18 / 12,
-          ),
+          hintStyle: AppTheme.searchBarHintStyle,
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 18, right: 10),
             child: SvgPicture.asset(

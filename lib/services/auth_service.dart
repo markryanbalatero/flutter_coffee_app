@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-/// AuthService handles user authentication and navigation
+/// AuthService handles user authentication and navigation for testing purposes
 class AuthService {
   static final AuthService _instance = AuthService._internal();
   factory AuthService() => _instance;
@@ -10,8 +10,8 @@ class AuthService {
   // Hardcoded credentials for testing
   final Map<String, String> _credentials = {
     'admin': 'password',
-    'user': '123456',
     'kopiko': 'brown',
+    'mark': 'gwapo',
   };
   bool _isAuthenticated = false;
   String? _currentUser;

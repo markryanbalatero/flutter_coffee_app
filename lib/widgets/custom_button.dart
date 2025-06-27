@@ -67,7 +67,7 @@ class CustomButton extends StatelessWidget {
             else
               Text(
                 text,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                style: AppTheme.customButtonTextStyle.copyWith(
                   color: textColor,
                 ),
               ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
+import '../utils/app_colors.dart';
 
 class CoffeeCard extends StatelessWidget {
   final String name;
@@ -28,11 +30,11 @@ class CoffeeCard extends StatelessWidget {
         width: 180,
         height: 250,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.coffeeCardBackground,
           borderRadius: BorderRadius.circular(25),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x1A000000),
+              color: AppColors.coffeeCardShadow,
               blurRadius: 24,
               offset: Offset(0, 5),
             ),
@@ -41,7 +43,6 @@ class CoffeeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image section with rating overlay
             Container(
               height: 123,
               margin: const EdgeInsets.fromLTRB(10, 11, 10, 0),
@@ -62,11 +63,20 @@ class CoffeeCard extends StatelessWidget {
                         horizontal: 15,
                         vertical: 4,
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(25),
-                          topRight: Radius.circular(25),
+                      decoration: ShapeDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment(0.00, -1.00),
+                          end: Alignment(0, 1),
+                          colors: [
+                            AppColors.coffeeRatingBackground,
+                            AppColors.coffeeRatingBackground,
+                          ],
+                        ),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(25),
+                            topRight: Radius.circular(25),
+                          ),
                         ),
                       ),
                       child: Row(
@@ -74,18 +84,13 @@ class CoffeeCard extends StatelessWidget {
                         children: [
                           const Icon(
                             Icons.star,
-                            color: Color(0xFFD17842),
+                            color: AppColors.coffeeRating,
                             size: 18,
                           ),
                           const SizedBox(width: 5),
                           Text(
                             rating.toString(),
-                            style: const TextStyle(
-                              fontFamily: 'SF Pro Text',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
+                            style: AppTheme.coffeeCardRatingStyle,
                           ),
                         ],
                       ),
@@ -101,58 +106,37 @@ class CoffeeCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontFamily: 'SF Pro Text',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF444444),
-                      ),
-                    ),
+                    Text(name, style: AppTheme.coffeeCardNameStyle),
                     const SizedBox(height: 4),
                     Text(
                       description,
-                      style: const TextStyle(
-                        fontFamily: 'SF Pro Text',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0x99000000),
-                      ),
+                      style: AppTheme.coffeeCardDescriptionStyle,
                     ),
                     const Spacer(),
                   ],
                 ),
               ),
             ),
-            // Price section at bottom
             Padding(
-              padding: const EdgeInsets.fromLTRB(19, 0, 10, 8),
+              padding: const EdgeInsets.fromLTRB(19, 0, 0, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: '\$ ',
-                          style: TextStyle(
-                            fontFamily: 'SF Pro Text',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF967259),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '\$ ',
+                            style: AppTheme.coffeeCardPriceCurrencyStyle,
                           ),
-                        ),
-                        TextSpan(
-                          text: price.toStringAsFixed(2),
-                          style: const TextStyle(
-                            fontFamily: 'SF Pro Text',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF444444),
+                          TextSpan(
+                            text: price.toStringAsFixed(2),
+                            style: AppTheme.coffeeCardPriceAmountStyle,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   GestureDetector(
@@ -161,7 +145,7 @@ class CoffeeCard extends StatelessWidget {
                       width: 52,
                       height: 53,
                       decoration: const BoxDecoration(
-                        color: Color(0xFF967259),
+                        color: AppColors.coffeeAccent,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(25),
                           bottomRight: Radius.circular(25),

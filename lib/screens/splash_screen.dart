@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
-import '../widgets/app_text.dart';
+import '../theme/app_theme.dart';
 import 'login_screen.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -33,21 +33,13 @@ class SplashScreen extends StatelessWidget {
             child: Column(
               spacing: 20,
               children: [
-                const AppText(
-                  text: 'Stay Focused',
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'SF Pro Text',
-                  color: AppColors.primaryText,
-                ),
-                const Padding(
+                Text('Stay Focused', style: AppTheme.splashTitleStyle),
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 37),
-                  child: AppText(
-                    text:
-                        'Get the cup filled of your choice to stay focused and awake. Different types of coffee menu — hot latte, cappuccino, and more.',
-                    fontSize: 14,
-                    color: AppColors.secondaryText,
+                  child: Text(
+                    'Get the cup filled of your choice to stay focused and awake. Different types of coffee menu — hot latte, cappuccino, and more.',
                     textAlign: TextAlign.center,
+                    style: AppTheme.splashDescriptionStyle,
                   ),
                 ),
               ],
@@ -104,11 +96,7 @@ class SplashScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 10,
                       children: [
-                        const AppText(
-                          text: 'Dive In',
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                        Text('Dive In', style: AppTheme.splashButtonTextStyle),
                         Icon(
                           Icons.arrow_forward,
                           color: Colors.white,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
+import '../theme/app_theme.dart';
 
 class AppText extends StatelessWidget {
   final String text;
@@ -24,12 +25,11 @@ class AppText extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: TextStyle(
+      style: AppTheme.appTextStyle.copyWith(
         fontFamily: fontFamily,
         fontWeight: fontWeight,
         fontSize: fontSize,
         color: color,
-        height: 1.57,
       ),
     );
   }

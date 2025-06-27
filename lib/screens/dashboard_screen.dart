@@ -7,6 +7,7 @@ import '../widgets/custom_bottom_navigation.dart';
 import '../widgets/category_tab.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_colors.dart';
+import '../widgets/search_results_view.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -18,7 +19,9 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int selectedBottomNavIndex = 0;
   int selectedCategoryIndex = 0;
-  late PageController _pageController;
+  String searchQuery = '';
+  List<CoffeeItem> filteredItems = [];
+  bool isSearchActive = false;
 
   final List<String> categories = [
     'Espresso',
@@ -94,16 +97,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ],
   };
 
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
+  void _handleSearch(String query) {
+    setState(() {
+      searchQuery = query.toLowerCase();
+      isSearchActive = query.isNotEmpty;
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
+      if (isSearchActive) {
+        // Search across all categories
+        filteredItems = [];
+        coffeeItemsByCategory.forEach((category, items) {
+          for (var item in items) {
+            if (item.name.toLowerCase().contains(searchQuery) ||
+                item.description.toLowerCase().contains(searchQuery) ||
+                category.toLowerCase().contains(searchQuery)) {
+              filteredItems.add(item);
+            }
+          }
+        });
+        for (int i = 0; i < categories.length; i++) {
+          if (categories[i].toLowerCase().contains(searchQuery)) {
+            selectedCategoryIndex = i;
+            break;
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -151,12 +169,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             onTap: () {
               setState(() {
                 selectedCategoryIndex = index;
+                searchQuery = '';
+                isSearchActive = false;
+                filteredItems = [];
               });
-              _pageController.animateToPage(
-                index,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
             },
           );
         },
@@ -165,65 +181,78 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildCoffeePageView() {
-    return PageView.builder(
-      controller: _pageController,
-      onPageChanged: (index) {
-        setState(() {
-          selectedCategoryIndex = index;
-        });
-      },
-      itemCount: categories.length,
-      itemBuilder: (context, index) {
-        final category = categories[index];
-        final items = coffeeItemsByCategory[category] ?? [];
-
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 23),
-            child: Column(
-              children: [
-                _buildCoffeeGrid(items),
-                const SizedBox(height: 25),
-                _buildSpecialOffer(),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        );
-      },
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 23),
+        child: Column(
+          children: [
+            if (isSearchActive)
+              SearchResultsView(
+                searchQuery: searchQuery,
+                filteredItems: filteredItems,
+                onCoffeeCardTap: (item) {
+                  // TODO: Add navigation to product details screen in future
+                  print('Coffee card tapped: ${item.name}');
+                },
+                onAddToCart: (item) {
+                  // Add to cart functionality
+                  print('Add to cart: ${item.name}');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${item.name} added to cart'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+              )
+            else
+              _buildCategoryView(),
+            const SizedBox(height: 25),
+            if (!isSearchActive) _buildSpecialOffer(),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildCoffeeGrid(List<CoffeeItem> items) {
-    return Row(
-      children: items.map((item) {
-        return Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 9),
-            child: CoffeeCard(
-              name: item.name,
-              description: item.description,
-              price: item.price,
-              rating: item.rating,
-              imageAsset: item.image,
-              onTap: () {
-                // TODO: Add navigation to product details screen in future
-                print('Coffee card tapped: ${item.name}');
-              },
-              onAddTap: () {
-                // Add to cart functionality
-                print('Add to cart: ${item.name}');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+  Widget _buildCategoryView() {
+    final items =
+        coffeeItemsByCategory[categories[selectedCategoryIndex]] ?? [];
+
+    return Column(
+      children: [
+        Row(
+          children: items.map((item) {
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 9),
+                child: CoffeeCard(
+                  name: item.name,
+                  description: item.description,
+                  price: item.price,
+                  rating: item.rating,
+                  imageAsset: item.image,
+                  onTap: () {
+                  // TODO: Add navigation to product details screen in future
+                  print('Coffee card tapped: ${item.name}');
+                  },
+                  onAddTap: () {
+                  // TODO: Add to cart functionality here
+                  print('Add to cart: ${item.name}');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
                     content: Text('${item.name} added to cart'),
                     duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-          ),
-        );
-      }).toList(),
+                    ),
+                  );
+                  },
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
@@ -281,16 +310,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Expanded(
           child: CustomSearchBar(
             hintText: 'Find your coffee...',
-            onChanged: (value) {
-              // Handle search text change
-              print('Search: $value');
-            },
+            onChanged: _handleSearch,
           ),
         ),
         const SizedBox(width: 11),
         GestureDetector(
           onTap: () {
-            // Handle filter tap
             print('Filter tapped');
           },
           child: Container(

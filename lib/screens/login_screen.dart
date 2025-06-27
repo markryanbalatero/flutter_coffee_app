@@ -111,12 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: screenHeight * 0.25),
                   Align(
                     alignment: Alignment.center,
-                    child: Text(
-                      'Login',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.copyWith(fontSize: 24),
-                    ),
+                    child: Text('Login', style: AppTheme.loginTitleStyle),
                   ),
                   const SizedBox(height: 75),
                   InputField(
@@ -134,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(
                         _errorMessage!,
-                        style: const TextStyle(color: Colors.red, fontSize: 14),
+                        style: AppTheme.loginErrorStyle,
                       ),
                     ),
 
