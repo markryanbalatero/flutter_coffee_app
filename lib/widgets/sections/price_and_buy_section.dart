@@ -8,11 +8,7 @@ class PriceAndBuySection extends StatefulWidget {
   final double price;
   final VoidCallback? onBuyNow;
 
-  const PriceAndBuySection({
-    super.key,
-    required this.price,
-    this.onBuyNow,
-  });
+  const PriceAndBuySection({super.key, required this.price, this.onBuyNow});
 
   @override
   State<PriceAndBuySection> createState() => _PriceAndBuySectionState();
@@ -30,13 +26,9 @@ class _PriceAndBuySectionState extends State<PriceAndBuySection>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.1,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
   }
 
   @override
@@ -60,10 +52,10 @@ class _PriceAndBuySectionState extends State<PriceAndBuySection>
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double gap = constraints.maxWidth < 350 
-            ? AppConstants.narrowScreenGap 
+        final double gap = constraints.maxWidth < 350
+            ? AppConstants.narrowScreenGap
             : AppConstants.standardGapPriceBuy;
-        
+
         return Row(
           children: [
             _buildPriceSection(),
@@ -90,10 +82,7 @@ class _PriceAndBuySectionState extends State<PriceAndBuySection>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '\$',
-                    style: AppTextStyles.priceCurrency,
-                  ),
+                  Text('\$', style: AppTextStyles.priceCurrency),
                   Text(
                     widget.price.toStringAsFixed(2),
                     style: AppTextStyles.priceAmount,

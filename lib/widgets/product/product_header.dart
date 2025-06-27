@@ -61,12 +61,10 @@ class ProductHeader extends StatelessWidget {
           CircularIconButton(
             iconPath: AppConstants.backArrowIcon,
             onTap: onBackPressed,
-            showVisualFeedbackOnly: true, // Only show visual feedback, don't navigate
+            showVisualFeedbackOnly:
+                true, // Only show visual feedback, don't navigate
           ),
-          HeartButton(
-            isFavorite: isFavorite,
-            onTap: onFavoritePressed,
-          ),
+          HeartButton(isFavorite: isFavorite, onTap: onFavoritePressed),
         ],
       ),
     );

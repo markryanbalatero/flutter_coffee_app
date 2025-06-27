@@ -24,9 +24,9 @@ class _EspressoScreenState extends State<EspressoScreen> {
   // Base price and size multipliers
   static const double basePrice = 4.20;
   static const Map<String, double> sizeMultipliers = {
-    'S': 1.0,   // Small: base price
-    'M': 1.2,   // Medium: 20% more
-    'L': 1.5,   // Large: 50% more
+    'S': 1.0, // Small: base price
+    'M': 1.2, // Medium: 20% more
+    'L': 1.5, // Large: 50% more
   };
 
   /// Calculates the total price based on size and quantity
