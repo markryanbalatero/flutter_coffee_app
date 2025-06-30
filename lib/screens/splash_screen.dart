@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
-import '../widgets/app_text.dart';
+import '../theme/app_theme.dart';
 import 'login_screen.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -12,7 +12,6 @@ class SplashScreen extends StatelessWidget {
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
         children: [
-          // Coffee cup image
           Positioned(
             top: 60,
             left: 0,
@@ -27,7 +26,6 @@ class SplashScreen extends StatelessWidget {
             ),
           ),
 
-          // Title and description
           Positioned(
             top: 480,
             left: 0,
@@ -35,28 +33,18 @@ class SplashScreen extends StatelessWidget {
             child: Column(
               spacing: 20,
               children: [
-                const AppText(
-                  text: 'Stay Focused',
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'SF Pro Text',
-                  color: AppColors.primaryText,
-                ),
-                const Padding(
+                Text('Stay Focused', style: AppTheme.splashTitleStyle),
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 37),
-                  child: AppText(
-                    text:
-                        'Get the cup filled of your choice to stay focused and awake. Different types of coffee menu — hot latte, cappuccino, and more.',
-                    fontSize: 14,
-                    color: AppColors.secondaryText,
+                  child: Text(
+                    'Get the cup filled of your choice to stay focused and awake. Different types of coffee menu — hot latte, cappuccino, and more.',
                     textAlign: TextAlign.center,
+                    style: AppTheme.splashDescriptionStyle,
                   ),
                 ),
               ],
             ),
           ),
-
-          // Dive In buttonColor
           Positioned(
             left: 0,
             right: 0,
@@ -65,7 +53,6 @@ class SplashScreen extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Blurred shadow
                   Container(
                     width: 120,
                     height: 48,
@@ -85,7 +72,6 @@ class SplashScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // buttonColor
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.buttonColor,
@@ -110,11 +96,7 @@ class SplashScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 10,
                       children: [
-                        const AppText(
-                          text: 'Dive In',
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                        Text('Dive In', style: AppTheme.splashButtonTextStyle),
                         Icon(
                           Icons.arrow_forward,
                           color: Colors.white,
