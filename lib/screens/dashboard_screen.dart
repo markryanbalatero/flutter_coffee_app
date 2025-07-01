@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_coffee_app/screens/espresso_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../core/models/coffee_item.dart';
 import '../widgets/coffee_card.dart';
 import '../widgets/custom_search_bar.dart';
 import '../widgets/special_offer_card.dart';
@@ -33,15 +35,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final Map<String, List<CoffeeItem>> coffeeItemsByCategory = {
     'Espresso': [
       CoffeeItem(
-        name: 'Espresso',
-        description: 'with Oat Milk',
+        name: '1 Espresso',
+        description: '1 with Oat Milk',
         price: 4.20,
         rating: 4.5,
         image: 'assets/images/espresso_beans.png',
       ),
       CoffeeItem(
-        name: 'Espresso',
-        description: 'with Milk',
+        name: '2 Espresso',
+        description: '2 with Milk',
         price: 4.20,
         rating: 4.5,
         image: 'assets/images/espresso_cup.png',
@@ -49,8 +51,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ],
     'Latte': [
       CoffeeItem(
-        name: 'Caffe Latte',
-        description: 'with Steamed Milk',
+        name: '3 Caffe Latte',
+        description: '3 with Steamed Milk',
         price: 5.50,
         rating: 4.7,
         image: 'assets/images/latte_1.png',
@@ -234,18 +236,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   rating: item.rating,
                   imageAsset: item.image,
                   onTap: () {
-                  // TODO: Add navigation to product details screen in future
-                  print('Coffee card tapped: ${item.name}');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                EspressoScreen(product: item)));
                   },
                   onAddTap: () {
-                  // TODO: Add to cart functionality here
-                  print('Add to cart: ${item.name}');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                    content: Text('${item.name} added to cart'),
-                    duration: const Duration(seconds: 2),
-                    ),
-                  );
+                    // TODO: Add to cart functionality here
+                    print('Add to cart: ${item.name}');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${item.name} added to cart'),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -372,20 +377,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
       },
     );
   }
-}
-
-class CoffeeItem {
-  final String name;
-  final String description;
-  final double price;
-  final double rating;
-  final String image;
-
-  CoffeeItem({
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.rating,
-    required this.image,
-  });
 }

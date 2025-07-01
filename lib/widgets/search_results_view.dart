@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/models/coffee_item.dart';
 import '../widgets/coffee_card.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_colors.dart';
@@ -79,7 +80,7 @@ class SearchResultsView extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         double screenWidth = constraints.maxWidth;
-        double cardWidth = 160; 
+        double cardWidth = 160;
         double spacing = (screenWidth - (cardWidth * 2)) / 3;
         spacing = spacing.clamp(8.0, 20.0);
 
@@ -91,8 +92,7 @@ class SearchResultsView extends StatelessWidget {
             crossAxisCount: 2,
             crossAxisSpacing: spacing,
             mainAxisSpacing: 16,
-            childAspectRatio:
-                cardWidth / 240,
+            childAspectRatio: cardWidth / 240,
           ),
           itemCount: filteredItems.length,
           itemBuilder: (context, index) {

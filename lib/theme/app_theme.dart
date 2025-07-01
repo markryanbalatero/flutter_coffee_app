@@ -246,7 +246,7 @@ class AppTheme {
     fontWeight: FontWeight.w500,
   );
 
-  // Coffee tab bar product card styles
+  // Coffee tab bar product_details card styles
   static const TextStyle coffeeTabBarProductTitleStyle = TextStyle(
     fontFamily: 'SF Pro Text',
     fontSize: 16,
