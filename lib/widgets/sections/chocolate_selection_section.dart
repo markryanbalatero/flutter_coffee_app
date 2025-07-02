@@ -6,12 +6,12 @@ import '../chips/custom_chip.dart';
 /// Widget for chocolate selection
 class ChocolateSelectionSection extends StatelessWidget {
   const ChocolateSelectionSection({
-    Key? key,
+    super.key,
     required this.selectedChocolate,
     required this.onChocolateSelected,
     this.title = 'Choice of Chocolate',
     this.options = AppConstants.chocolateOptions,
-  }) : super(key: key);
+  });
 
   final String selectedChocolate;
   final ValueChanged<String> onChocolateSelected;

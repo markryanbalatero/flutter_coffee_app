@@ -35,7 +35,7 @@ class CategoryTab extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppColors.categoryTabSelectedColor
-                    : Colors.transparent,
+                    : AppColors.transparent,
                 shape: BoxShape.circle,
               ),
             ),

@@ -80,4 +80,7 @@ class AppColors {
   static const Color coffeeTabBarRatingOverlay = Color(
     0x66000000,
   ); // Colors.black.withOpacity(0.4)
+
+  // Transparent color
+  static const Color transparent = Colors.transparent;
 }

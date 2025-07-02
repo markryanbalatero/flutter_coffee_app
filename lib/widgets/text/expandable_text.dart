@@ -4,7 +4,7 @@ import '../../core/theme/app_text_styles.dart';
 /// A responsive text widget that shows "Read More" for long text
 class ExpandableText extends StatefulWidget {
   const ExpandableText({
-    Key? key,
+    super.key,
     required this.text,
     this.initialText,
     this.maxLines = 3,
@@ -13,7 +13,7 @@ class ExpandableText extends StatefulWidget {
     this.textStyle,
     this.linkStyle,
     this.animation = true,
-  }) : super(key: key);
+  });
 
   final String text;
   final String? initialText; // Optional initial text to show when collapsed

@@ -5,14 +5,14 @@ import '../../core/theme/app_colors.dart';
 /// A responsive heart button that toggles between filled and unfilled states
 class HeartButton extends StatefulWidget {
   const HeartButton({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.isFavorite,
     this.size = AppConstants.circularButtonSize,
     this.backgroundColor = AppColors.textWhite,
     this.iconSize = 22.4,
     this.padding = AppConstants.smallPadding,
-  }) : super(key: key);
+  });
 
   final VoidCallback onTap;
   final bool isFavorite;

@@ -9,11 +9,11 @@ import 'product_overlay_content.dart';
 /// Header widget containing product_details image and overlay
 class ProductHeader extends StatelessWidget {
   const ProductHeader({
-    Key? key,
+    super.key,
     required this.onBackPressed,
     required this.onFavoritePressed,
     required this.isFavorite,
-  }) : super(key: key);
+  });
 
   final VoidCallback onBackPressed;
   final VoidCallback onFavoritePressed;

@@ -3,7 +3,6 @@ import '../core/models/coffee_item.dart';
 import '../widgets/coffee_card.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_colors.dart';
-import '../screens/dashboard_screen.dart';
 
 class SearchResultsView extends StatelessWidget {
   final String searchQuery;
@@ -62,7 +61,7 @@ class SearchResultsView extends StatelessWidget {
             child: Text(
               '${filteredItems.length}',
               style: AppTheme.dashboardSearchCountStyle.copyWith(
-                color: Colors.white,
+                color: AppColors.buttonTextColor,
                 fontWeight: FontWeight.w600,
               ),
             ),

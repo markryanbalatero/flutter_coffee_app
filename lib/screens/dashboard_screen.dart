@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/screens/espresso_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../core/models/coffee_item.dart';
+import '../cubit/dashboard/dashboard_cubit.dart';
 import '../widgets/coffee_card.dart';
 import '../widgets/custom_search_bar.dart';
 import '../widgets/special_offer_card.dart';
@@ -11,194 +12,83 @@ import '../theme/app_theme.dart';
 import '../utils/app_colors.dart';
 import '../widgets/search_results_view.dart';
 
-class DashboardScreen extends StatefulWidget {
+class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => DashboardCubit(),
+      child: const _DashboardView(),
+    );
+  }
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  int selectedBottomNavIndex = 0;
-  int selectedCategoryIndex = 0;
-  String searchQuery = '';
-  List<CoffeeItem> filteredItems = [];
-  bool isSearchActive = false;
-
-  final List<String> categories = [
-    'Espresso',
-    'Latte',
-    'Cappuccino',
-    'Cafetière',
-  ];
-
-  final Map<String, List<CoffeeItem>> coffeeItemsByCategory = {
-    'Espresso': [
-      CoffeeItem(
-        id: 'espresso_1',
-        name: '1 Espresso',
-        description: '1 with Oat Milk',
-        price: 4.20,
-        rating: 4.5,
-        image: 'assets/images/espresso_beans.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.20, 'M': 5.20, 'L': 6.20},
-      ),
-      CoffeeItem(
-        id: 'espresso_2',
-        name: '2 Espresso',
-        description: '2 with Milk',
-        price: 4.20,
-        rating: 4.5,
-        image: 'assets/images/espresso_cup.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.20, 'M': 5.20, 'L': 6.20},
-      ),
-    ],
-    'Latte': [
-      CoffeeItem(
-        id: 'latte_1',
-        name: '3 Caffe Latte',
-        description: '3 with Steamed Milk',
-        price: 5.50,
-        rating: 4.7,
-        image: 'assets/images/latte_1.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 5.50, 'M': 6.50, 'L': 7.50},
-      ),
-      CoffeeItem(
-        id: 'latte_2',
-        name: 'Iced Latte',
-        description: 'with Cold Milk',
-        price: 5.20,
-        rating: 4.3,
-        image: 'assets/images/latte_2.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 5.20, 'M': 6.20, 'L': 7.20},
-      ),
-    ],
-    'Cappuccino': [
-      CoffeeItem(
-        id: 'cappuccino_1',
-        name: 'Cappuccino',
-        description: 'with Foam Art',
-        price: 4.80,
-        rating: 4.6,
-        image: 'assets/images/cappuccino_1.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.80, 'M': 5.80, 'L': 6.80},
-      ),
-      CoffeeItem(
-        id: 'cappuccino_2',
-        name: 'Dry Cappuccino',
-        description: 'Extra Foam',
-        price: 4.90,
-        rating: 4.4,
-        image: 'assets/images/cappuccino_2.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.90, 'M': 5.90, 'L': 6.90},
-      ),
-    ],
-    'Cafetière': [
-      CoffeeItem(
-        id: 'cafetiere_1',
-        name: 'French Press',
-        description: 'Bold & Rich',
-        price: 3.80,
-        rating: 4.2,
-        image: 'assets/images/cafetiere_1.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 3.80, 'M': 4.80, 'L': 5.80},
-      ),
-      CoffeeItem(
-        id: 'cafetiere_2',
-        name: 'Cold Brew',
-        description: 'Smooth & Strong',
-        price: 4.00,
-        rating: 4.5,
-        image: 'assets/images/cafetiere_2.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.00, 'M': 5.00, 'L': 6.00},
-      ),
-    ],
-  };
-
-  void _handleSearch(String query) {
-    setState(() {
-      searchQuery = query.toLowerCase();
-      isSearchActive = query.isNotEmpty;
-
-      if (isSearchActive) {
-        // Search across all categories
-        filteredItems = [];
-        coffeeItemsByCategory.forEach((category, items) {
-          for (var item in items) {
-            if (item.name.toLowerCase().contains(searchQuery) ||
-                item.description.toLowerCase().contains(searchQuery) ||
-                category.toLowerCase().contains(searchQuery)) {
-              filteredItems.add(item);
-            }
-          }
-        });
-        for (int i = 0; i < categories.length; i++) {
-          if (categories[i].toLowerCase().contains(searchQuery)) {
-            selectedCategoryIndex = i;
-            break;
-          }
-        }
-      }
-    });
-  }
+class _DashboardView extends StatelessWidget {
+  const _DashboardView();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.dashboardBackground,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 23),
+    return BlocBuilder<DashboardCubit, DashboardState>(
+      builder: (context, state) {
+        if (state is DashboardInitial || state is DashboardLoading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (state is DashboardError) {
+          return Scaffold(body: Center(child: Text('Error: ${state.message}')));
+        }
+
+        if (state is DashboardLoaded) {
+          return Scaffold(
+            backgroundColor: AppColors.dashboardBackground,
+            body: SafeArea(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 65),
-                  _buildHeader(),
-                  const SizedBox(height: 35),
-                  _buildGreeting(),
-                  const SizedBox(height: 35),
-                  _buildSearchBar(),
-                  const SizedBox(height: 25),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 23),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 65),
+                        _buildHeader(),
+                        const SizedBox(height: 35),
+                        _buildGreeting(),
+                        const SizedBox(height: 35),
+                        _buildSearchBar(context),
+                        const SizedBox(height: 25),
+                      ],
+                    ),
+                  ),
+                  _buildCategoryTabs(context, state),
+                  Expanded(child: _buildCoffeePageView(context, state)),
                 ],
               ),
             ),
-            _buildCategoryTabs(),
-            Expanded(child: _buildCoffeePageView()),
-          ],
-        ),
-      ),
-      bottomNavigationBar: _buildBottomNavigation(),
+            bottomNavigationBar: _buildBottomNavigation(context, state),
+          );
+        }
+
+        return const Scaffold(body: Center(child: Text('Unknown state')));
+      },
     );
   }
 
-  Widget _buildCategoryTabs() {
+  Widget _buildCategoryTabs(BuildContext context, DashboardLoaded state) {
     return Container(
       height: 45,
       margin: const EdgeInsets.only(left: 23, bottom: 20),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
+        itemCount: state.categories.length,
         itemBuilder: (context, index) {
           return CategoryTab(
-            title: categories[index],
-            isSelected: selectedCategoryIndex == index,
+            title: state.categories[index],
+            isSelected: state.selectedCategoryIndex == index,
             onTap: () {
-              setState(() {
-                selectedCategoryIndex = index;
-                searchQuery = '';
-                isSearchActive = false;
-                filteredItems = [];
-              });
+              context.read<DashboardCubit>().selectCategory(index);
             },
           );
         },
@@ -206,23 +96,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildCoffeePageView() {
+  Widget _buildCoffeePageView(BuildContext context, DashboardLoaded state) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 23),
         child: Column(
           children: [
-            if (isSearchActive)
+            if (state.isSearchActive)
               SearchResultsView(
-                searchQuery: searchQuery,
-                filteredItems: filteredItems,
+                searchQuery: state.searchQuery,
+                filteredItems: state.filteredItems,
                 onCoffeeCardTap: (item) {
-                  // TODO: Add navigation to product details screen in future
-                  print('Coffee card tapped: ${item.name}');
+                  context.read<DashboardCubit>().navigateToProduct(item);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EspressoScreen(product: item),
+                    ),
+                  );
                 },
                 onAddToCart: (item) {
-                  // Add to cart functionality
-                  print('Add to cart: ${item.name}');
+                  context.read<DashboardCubit>().addToCart(item);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${item.name} added to cart'),
@@ -232,9 +126,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               )
             else
-              _buildCategoryView(),
+              _buildCategoryView(context, state),
             const SizedBox(height: 25),
-            if (!isSearchActive) _buildSpecialOffer(),
+            if (!state.isSearchActive) _buildSpecialOffer(),
             const SizedBox(height: 20),
           ],
         ),
@@ -242,9 +136,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildCategoryView() {
+  Widget _buildCategoryView(BuildContext context, DashboardLoaded state) {
     final items =
-        coffeeItemsByCategory[categories[selectedCategoryIndex]] ?? [];
+        state.coffeeItemsByCategory[state.categories[state
+            .selectedCategoryIndex]] ??
+        [];
 
     return Column(
       children: [
@@ -255,20 +151,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 padding: const EdgeInsets.only(right: 9),
                 child: CoffeeCard(
                   name: item.name,
-                  description: item.description,
+                  description:
+                  item.description, 
                   price: item.price,
                   rating: item.rating,
                   imageAsset: item.image,
                   onTap: () {
+                    context.read<DashboardCubit>().navigateToProduct(item);
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                EspressoScreen(product: item)));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EspressoScreen(product: item),
+                      ),
+                    );
                   },
                   onAddTap: () {
-                    // TODO: Add to cart functionality here
-                    print('Add to cart: ${item.name}');
+                    context.read<DashboardCubit>().addToCart(item);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('${item.name} added to cart'),
@@ -293,7 +192,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: Colors.transparent,
+            color: AppColors.transparent,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
@@ -333,13 +232,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: CustomSearchBar(
             hintText: 'Find your coffee...',
-            onChanged: _handleSearch,
+            onChanged: (query) {
+              context.read<DashboardCubit>().handleSearch(query);
+            },
           ),
         ),
         const SizedBox(width: 11),
@@ -391,13 +292,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildBottomNavigation() {
+  Widget _buildBottomNavigation(BuildContext context, DashboardLoaded state) {
     return CustomBottomNavigation(
-      selectedIndex: selectedBottomNavIndex,
+      selectedIndex: state.selectedBottomNavIndex,
       onItemTapped: (index) {
-        setState(() {
-          selectedBottomNavIndex = index;
-        });
+        context.read<DashboardCubit>().selectBottomNavItem(index);
       },
     );
   }

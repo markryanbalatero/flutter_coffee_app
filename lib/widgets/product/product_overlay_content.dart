@@ -5,7 +5,7 @@ import '../../core/theme/app_text_styles.dart';
 
 /// Content for the product_details info overlay
 class ProductOverlayContent extends StatelessWidget {
-  const ProductOverlayContent({Key? key}) : super(key: key);
+  const ProductOverlayContent({super.key});
 
   @override
   Widget build(BuildContext context) {

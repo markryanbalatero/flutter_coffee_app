@@ -6,12 +6,12 @@ import '../../core/theme/app_text_styles.dart';
 /// A widget for controlling quantity with increase/decrease buttons
 class QuantityControl extends StatelessWidget {
   const QuantityControl({
-    Key? key,
+    super.key,
     required this.quantity,
     required this.onIncrease,
     required this.onDecrease,
     this.minQuantity = 1,
-  }) : super(key: key);
+  });
 
   final int quantity;
   final VoidCallback onIncrease;
@@ -40,10 +40,9 @@ class QuantityControl extends StatelessWidget {
 
 class _QuantityButton extends StatelessWidget {
   const _QuantityButton({
-    Key? key,
     required this.icon,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final IconData icon;
   final VoidCallback? onTap;

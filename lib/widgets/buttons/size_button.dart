@@ -6,11 +6,11 @@ import '../../core/theme/app_text_styles.dart';
 /// A circular button for size selection
 class SizeButton extends StatelessWidget {
   const SizeButton({
-    Key? key,
+    super.key,
     required this.size,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final String size;
   final bool isSelected;
