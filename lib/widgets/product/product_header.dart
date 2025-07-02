@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/models/coffee_item.dart';
 import '../../widgets/buttons/circular_icon_button.dart';
 import '../../widgets/buttons/heart_button.dart';
 import 'product_overlay_content.dart';
@@ -13,11 +14,15 @@ class ProductHeader extends StatelessWidget {
     required this.onBackPressed,
     required this.onFavoritePressed,
     required this.isFavorite,
+    required this.coffee,
+    this.onImageTap,
   }) : super(key: key);
 
   final VoidCallback onBackPressed;
   final VoidCallback onFavoritePressed;
   final bool isFavorite;
+  final CoffeeItem coffee;
+  final VoidCallback? onImageTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +41,17 @@ class ProductHeader extends StatelessWidget {
 
   /// Builds the product_details background image
   Widget _buildProductImage() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(13, 13, 13, 0),
-      height: AppConstants.imageHeight,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
-        image: const DecorationImage(
-          image: AssetImage(AppConstants.productImagePath),
-          fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: onImageTap,
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(13, 13, 13, 0),
+        height: AppConstants.imageHeight,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+          image: DecorationImage(
+            image: AssetImage(coffee.image),
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
@@ -61,8 +69,7 @@ class ProductHeader extends StatelessWidget {
           CircularIconButton(
             iconPath: AppConstants.backArrowIcon,
             onTap: onBackPressed,
-            showVisualFeedbackOnly:
-                true, // Only show visual feedback, don't navigate
+            showVisualFeedbackOnly: false, // Enable back navigation
           ),
           HeartButton(isFavorite: isFavorite, onTap: onFavoritePressed),
         ],
@@ -88,9 +95,9 @@ class ProductHeader extends StatelessWidget {
             filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
             child: Container(
               padding: const EdgeInsets.fromLTRB(27, 25, 26, 25),
-              child: const SizedBox(
+              child: SizedBox(
                 height: AppConstants.overlayContentHeight,
-                child: ProductOverlayContent(),
+                child: ProductOverlayContent(coffee: coffee),
               ),
             ),
           ),

@@ -90,7 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       CoffeeItem(
         id: 'cappuccino_2',
-        name: 'Dry Cappuccino',
+        name: 'Cappuccino',
         description: 'Extra Foam',
         price: 4.90,
         rating: 4.4,

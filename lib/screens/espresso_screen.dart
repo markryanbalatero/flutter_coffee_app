@@ -10,6 +10,7 @@ import '../widgets/sections/description_section.dart';
 import '../widgets/sections/chocolate_selection_section.dart';
 import '../widgets/sections/size_and_quantity_section.dart';
 import '../widgets/sections/price_and_buy_section.dart';
+import '../widgets/dialogs/image_viewer_dialog.dart';
 
 class EspressoScreen extends StatefulWidget {
   final CoffeeItem? product;
@@ -49,6 +50,11 @@ class _EspressoScreenState extends State<EspressoScreen> {
     return basePrice * sizeMultiplier * 1;
   }
 
+  /// Shows the image viewer dialog when the coffee image is tapped
+  void _showImageViewer(BuildContext context, CoffeeItem coffee) {
+    ImageViewerDialog.show(context, coffee, coffee.image);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,9 +67,15 @@ class _EspressoScreenState extends State<EspressoScreen> {
               BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
                 builder: (context, state) {
                   return ProductHeader(
-                      onBackPressed: () => Navigator.pop(context),
-                      isFavorite: state.coffee?.isFavorite ?? false,
-                      onFavoritePressed: () => cubit.toggleFavorite());
+                    onBackPressed: () => Navigator.pop(context),
+                    isFavorite: state.coffee?.isFavorite ?? false,
+                    onFavoritePressed: () => cubit.toggleFavorite(),
+                    coffee: state.coffee ?? widget.product!,
+                    onImageTap: () => _showImageViewer(
+                      context,
+                      state.coffee ?? widget.product!,
+                    ),
+                  );
                 },
               ),
               _buildContentSection(context),
@@ -91,9 +103,10 @@ class _EspressoScreenState extends State<EspressoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-              builder: (context, state) {
-            return DescriptionSection(state.coffee!);
-          }),
+            builder: (context, state) {
+              return DescriptionSection(state.coffee!);
+            },
+          ),
           const SizedBox(height: AppConstants.largeSpacing),
           ChocolateSelectionSection(
             selectedChocolate: selectedChocolate,
