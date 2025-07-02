@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/core/models/coffee_item.dart';
 import '../core/constants/app_constants.dart';
 import '../core/theme/app_colors.dart';
-import '../cubit/product_details/product_details_cubit.dart';
-import '../cubit/product_details/product_details_state_state.dart';
+import '../cubit/espresso/espresso_cubit.dart';
+import '../cubit/espresso/espresso_state.dart';
 import '../widgets/product/product_header.dart';
 import '../widgets/sections/description_section.dart';
 import '../widgets/sections/chocolate_selection_section.dart';
@@ -22,32 +22,21 @@ class EspressoScreen extends StatefulWidget {
 }
 
 class _EspressoScreenState extends State<EspressoScreen> {
-  late ProductDetailsCubit cubit;
+  late EspressoCubit _espressoCubit;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
-    cubit = ProductDetailsCubit();
-    cubit.initProductDetails(widget.product!);
+    _espressoCubit = EspressoCubit();
+    if (widget.product != null) {
+      _espressoCubit.initializeEspresso(widget.product!);
+    }
   }
 
-  // State variables
-  String selectedChocolate = 'White Chocolate';
-  String selectedSize = 'S';
-  bool isFavorite = false;
-
-  // Base price and size multipliers
-  static const double basePrice = 4.20;
-  static const Map<String, double> sizeMultipliers = {
-    'S': 1.0, // Small: base price
-    'M': 1.2, // Medium: 20% more
-    'L': 1.5, // Large: 50% more
-  };
-
-  /// Calculates the total price based on size and quantity
-  double get totalPrice {
-    final sizeMultiplier = sizeMultipliers[selectedSize] ?? 1.0;
-    return basePrice * sizeMultiplier * 1;
+  @override
+  void dispose() {
+    _espressoCubit.close();
+    super.dispose();
   }
 
   /// Shows the image viewer dialog when the coffee image is tapped
@@ -59,35 +48,40 @@ class _EspressoScreenState extends State<EspressoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: BlocProvider(
-        create: (context) => cubit,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-                builder: (context, state) {
-                  return ProductHeader(
+      body: BlocProvider<EspressoCubit>(
+        create: (context) => _espressoCubit,
+        child: BlocBuilder<EspressoCubit, EspressoState>(
+          builder: (context, state) {
+            if (state.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state.coffee == null) {
+              return const Center(child: Text('No coffee data available'));
+            }
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  ProductHeader(
                     onBackPressed: () => Navigator.pop(context),
-                    isFavorite: state.coffee?.isFavorite ?? false,
-                    onFavoritePressed: () => cubit.toggleFavorite(),
-                    coffee: state.coffee ?? widget.product!,
-                    onImageTap: () => _showImageViewer(
-                      context,
-                      state.coffee ?? widget.product!,
-                    ),
-                  );
-                },
+                    isFavorite: state.coffee!.isFavorite,
+                    onFavoritePressed: () => _espressoCubit.toggleFavorite(),
+                    coffee: state.coffee!,
+                    onImageTap: () => _showImageViewer(context, state.coffee!),
+                  ),
+                  _buildContentSection(context, state),
+                ],
               ),
-              _buildContentSection(context),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
   }
 
   /// Builds the main content section
-  Widget _buildContentSection(BuildContext context) {
+  Widget _buildContentSection(BuildContext context, EspressoState state) {
     return Container(
       constraints: BoxConstraints(
         minHeight: 200,
@@ -102,36 +96,29 @@ class _EspressoScreenState extends State<EspressoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-            builder: (context, state) {
-              return DescriptionSection(state.coffee!);
-            },
-          ),
+          DescriptionSection(state.coffee!),
           const SizedBox(height: AppConstants.largeSpacing),
           ChocolateSelectionSection(
-            selectedChocolate: selectedChocolate,
+            selectedChocolate: state.selectedChocolate,
             onChocolateSelected: (chocolate) {
-              setState(() => selectedChocolate = chocolate);
+              _espressoCubit.selectChocolate(chocolate);
             },
           ),
           const SizedBox(height: AppConstants.largeSpacing),
-          BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-            builder: (context, state) {
-              return SizeAndQuantitySection(
-                selectedSize: selectedSize,
-                quantity: state.quantity,
-                onSizeSelected: (size) {
-                  setState(() => selectedSize = size);
-                },
-                onQuantityChanged: (newQuantity) => cubit.setQty(newQuantity),
-              );
+          SizeAndQuantitySection(
+            selectedSize: state.selectedSize,
+            quantity: state.quantity,
+            onSizeSelected: (size) {
+              _espressoCubit.selectSize(size);
             },
+            onQuantityChanged: (newQuantity) =>
+                _espressoCubit.updateQuantity(newQuantity),
           ),
           const SizedBox(height: AppConstants.largeSpacing),
           PriceAndBuySection(
-            price: totalPrice,
+            price: state.totalPrice,
             onBuyNow: () {
-              // TODO: Implement buy now functionality
+              _espressoCubit.buyNow();
             },
           ),
         ],
