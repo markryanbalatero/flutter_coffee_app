@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/screens/espresso_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../core/models/coffee_item.dart';
+import '../cubit/dashboard/dashboard_cubit.dart';
+import '../cubit/dashboard/dashboard_state.dart';
 import '../widgets/coffee_card.dart';
 import '../widgets/custom_search_bar.dart';
 import '../widgets/special_offer_card.dart';
@@ -20,134 +22,12 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int selectedBottomNavIndex = 0;
-  int selectedCategoryIndex = 0;
-  String searchQuery = '';
-  List<CoffeeItem> filteredItems = [];
-  bool isSearchActive = false;
 
-  final List<String> categories = [
-    'Espresso',
-    'Latte',
-    'Cappuccino',
-    'Cafetière',
-  ];
-
-  final Map<String, List<CoffeeItem>> coffeeItemsByCategory = {
-    'Espresso': [
-      CoffeeItem(
-        id: 'espresso_1',
-        name: '1 Espresso',
-        description: '1 with Oat Milk',
-        price: 4.20,
-        rating: 4.5,
-        image: 'assets/images/espresso_beans.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.20, 'M': 5.20, 'L': 6.20},
-      ),
-      CoffeeItem(
-        id: 'espresso_2',
-        name: '2 Espresso',
-        description: '2 with Milk',
-        price: 4.20,
-        rating: 4.5,
-        image: 'assets/images/espresso_cup.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.20, 'M': 5.20, 'L': 6.20},
-      ),
-    ],
-    'Latte': [
-      CoffeeItem(
-        id: 'latte_1',
-        name: '3 Caffe Latte',
-        description: '3 with Steamed Milk',
-        price: 5.50,
-        rating: 4.7,
-        image: 'assets/images/latte_1.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 5.50, 'M': 6.50, 'L': 7.50},
-      ),
-      CoffeeItem(
-        id: 'latte_2',
-        name: 'Iced Latte',
-        description: 'with Cold Milk',
-        price: 5.20,
-        rating: 4.3,
-        image: 'assets/images/latte_2.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 5.20, 'M': 6.20, 'L': 7.20},
-      ),
-    ],
-    'Cappuccino': [
-      CoffeeItem(
-        id: 'cappuccino_1',
-        name: 'Cappuccino',
-        description: 'with Foam Art',
-        price: 4.80,
-        rating: 4.6,
-        image: 'assets/images/cappuccino_1.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.80, 'M': 5.80, 'L': 6.80},
-      ),
-      CoffeeItem(
-        id: 'cappuccino_2',
-        name: 'Cappuccino',
-        description: 'Extra Foam',
-        price: 4.90,
-        rating: 4.4,
-        image: 'assets/images/cappuccino_2.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.90, 'M': 5.90, 'L': 6.90},
-      ),
-    ],
-    'Cafetière': [
-      CoffeeItem(
-        id: 'cafetiere_1',
-        name: 'French Press',
-        description: 'Bold & Rich',
-        price: 3.80,
-        rating: 4.2,
-        image: 'assets/images/cafetiere_1.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 3.80, 'M': 4.80, 'L': 5.80},
-      ),
-      CoffeeItem(
-        id: 'cafetiere_2',
-        name: 'Cold Brew',
-        description: 'Smooth & Strong',
-        price: 4.00,
-        rating: 4.5,
-        image: 'assets/images/cafetiere_2.png',
-        sizes: ['S', 'M', 'L'],
-        sizePrices: {'S': 4.00, 'M': 5.00, 'L': 6.00},
-      ),
-    ],
-  };
-
-  void _handleSearch(String query) {
-    setState(() {
-      searchQuery = query.toLowerCase();
-      isSearchActive = query.isNotEmpty;
-
-      if (isSearchActive) {
-        // Search across all categories
-        filteredItems = [];
-        coffeeItemsByCategory.forEach((category, items) {
-          for (var item in items) {
-            if (item.name.toLowerCase().contains(searchQuery) ||
-                item.description.toLowerCase().contains(searchQuery) ||
-                category.toLowerCase().contains(searchQuery)) {
-              filteredItems.add(item);
-            }
-          }
-        });
-        for (int i = 0; i < categories.length; i++) {
-          if (categories[i].toLowerCase().contains(searchQuery)) {
-            selectedCategoryIndex = i;
-            break;
-          }
-        }
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the dashboard cubit
+    context.read<DashboardCubit>().initializeDashboard();
   }
 
   @override
@@ -182,69 +62,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildCategoryTabs() {
-    return Container(
-      height: 45,
-      margin: const EdgeInsets.only(left: 23, bottom: 20),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          return CategoryTab(
-            title: categories[index],
-            isSelected: selectedCategoryIndex == index,
-            onTap: () {
-              setState(() {
-                selectedCategoryIndex = index;
-                searchQuery = '';
-                isSearchActive = false;
-                filteredItems = [];
-              });
+    return BlocBuilder<DashboardCubit, DashboardState>(
+      builder: (context, state) {
+        return Container(
+          height: 45,
+          margin: const EdgeInsets.only(left: 23, bottom: 20),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: state.categories.length,
+            itemBuilder: (context, index) {
+              return CategoryTab(
+                title: state.categories[index],
+                isSelected: state.selectedCategoryIndex == index,
+                onTap: () {
+                  context.read<DashboardCubit>().selectCategory(index);
+                },
+              );
             },
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildCoffeePageView() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 23),
-        child: Column(
-          children: [
-            if (isSearchActive)
-              SearchResultsView(
-                searchQuery: searchQuery,
-                filteredItems: filteredItems,
-                onCoffeeCardTap: (item) {
-                  // TODO: Add navigation to product details screen in future
-                  print('Coffee card tapped: ${item.name}');
-                },
-                onAddToCart: (item) {
-                  // Add to cart functionality
-                  print('Add to cart: ${item.name}');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${item.name} added to cart'),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                },
-              )
-            else
-              _buildCategoryView(),
-            const SizedBox(height: 25),
-            if (!isSearchActive) _buildSpecialOffer(),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
+    return BlocBuilder<DashboardCubit, DashboardState>(
+      builder: (context, state) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 23),
+            child: Column(
+              children: [
+                if (state.isSearchActive)
+                  SearchResultsView(
+                    searchQuery: state.searchQuery,
+                    filteredItems: state.filteredItems,
+                    onCoffeeCardTap: (item) {
+                      // TODO: Add navigation to product details screen in future
+                      print('Coffee card tapped: ${item.name}');
+                    },
+                    onAddToCart: (item) {
+                      // Add to cart functionality
+                      print('Add to cart: ${item.name}');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${item.name} added to cart'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  )
+                else
+                  _buildCategoryView(state),
+                const SizedBox(height: 25),
+                if (!state.isSearchActive) _buildSpecialOffer(),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildCategoryView() {
-    final items =
-        coffeeItemsByCategory[categories[selectedCategoryIndex]] ?? [];
+  Widget _buildCategoryView(DashboardState state) {
+    final items = state.coffeeItemsByCategory[state.categories[state.selectedCategoryIndex]] ?? [];
 
     return Column(
       children: [
@@ -339,7 +221,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Expanded(
           child: CustomSearchBar(
             hintText: 'Find your coffee...',
-            onChanged: _handleSearch,
+            onChanged: (query) {
+              context.read<DashboardCubit>().handleSearch(query);
+            },
           ),
         ),
         const SizedBox(width: 11),
