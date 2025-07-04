@@ -99,7 +99,7 @@ class SplashScreen extends StatelessWidget {
                         Text('Dive In', style: AppTheme.splashButtonTextStyle),
                         Icon(
                           Icons.arrow_forward,
-                          color: Colors.white,
+                          color: AppColors.buttonTextColor,
                           size: 18,
                         ),
                       ],

@@ -7,7 +7,7 @@ import '../../core/theme/app_colors.dart';
 /// A reusable circular button widget with an SVG icon
 class CircularIconButton extends StatefulWidget {
   const CircularIconButton({
-    Key? key,
+    super.key,
     required this.iconPath,
     required this.onTap,
     this.size = AppConstants.circularButtonSize,
@@ -15,7 +15,7 @@ class CircularIconButton extends StatefulWidget {
     this.iconSize = 22.4,
     this.padding = AppConstants.smallPadding,
     this.showVisualFeedbackOnly = false,
-  }) : super(key: key);
+  });
 
   final String iconPath;
   final VoidCallback onTap;

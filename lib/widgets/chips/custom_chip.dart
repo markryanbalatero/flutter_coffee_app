@@ -5,14 +5,14 @@ import '../../core/theme/app_text_styles.dart';
 /// A custom chip widget for selection items like chocolate types
 class CustomChip extends StatelessWidget {
   const CustomChip({
-    Key? key,
+    super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
     this.selectedColor = AppColors.primary,
     this.unselectedColor = Colors.transparent,
     this.borderColor = AppColors.primary,
-  }) : super(key: key);
+  });
 
   final String label;
   final bool isSelected;

@@ -7,13 +7,13 @@ import '../controls/quantity_control.dart';
 /// Widget for size and quantity selection
 class SizeAndQuantitySection extends StatelessWidget {
   const SizeAndQuantitySection({
-    Key? key,
+    super.key,
     required this.selectedSize,
     required this.quantity,
     required this.onSizeSelected,
     required this.onQuantityChanged,
     this.sizeOptions = AppConstants.sizeOptions,
-  }) : super(key: key);
+  });
 
   final String selectedSize;
   final int quantity;

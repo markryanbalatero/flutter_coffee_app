@@ -153,7 +153,7 @@ class CoffeeCard extends StatelessWidget {
                       ),
                       child: const Icon(
                         Icons.add,
-                        color: Colors.white,
+                        color: AppColors.buttonTextColor,
                         size: 22,
                       ),
                     ),

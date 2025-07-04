@@ -6,7 +6,7 @@ import '../../core/theme/app_text_styles.dart';
 /// A custom primary button with rounded corners
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.height = AppConstants.buyButtonHeight,
@@ -15,7 +15,7 @@ class PrimaryButton extends StatelessWidget {
     this.borderRadius = AppConstants.smallBorderRadius,
     this.isLoading = false,
     this.isEnabled = true,
-  }) : super(key: key);
+  });
 
   final String text;
   final VoidCallback? onPressed;

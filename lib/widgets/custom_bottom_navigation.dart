@@ -58,7 +58,7 @@ class CustomBottomNavigation extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.bottomNavigationSelectedBackground
-              : Colors.transparent,
+              : AppColors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Center(

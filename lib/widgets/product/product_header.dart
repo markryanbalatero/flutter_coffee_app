@@ -6,14 +6,14 @@ import '../../widgets/buttons/circular_icon_button.dart';
 import '../../widgets/buttons/heart_button.dart';
 import 'product_overlay_content.dart';
 
-/// Header widget containing product image and overlay
+/// Header widget containing product_details image and overlay
 class ProductHeader extends StatelessWidget {
   const ProductHeader({
-    Key? key,
+    super.key,
     required this.onBackPressed,
     required this.onFavoritePressed,
     required this.isFavorite,
-  }) : super(key: key);
+  });
 
   final VoidCallback onBackPressed;
   final VoidCallback onFavoritePressed;
@@ -34,7 +34,7 @@ class ProductHeader extends StatelessWidget {
     );
   }
 
-  /// Builds the product background image
+  /// Builds the product_details background image
   Widget _buildProductImage() {
     return Container(
       margin: const EdgeInsets.fromLTRB(13, 13, 13, 0),
@@ -70,7 +70,7 @@ class ProductHeader extends StatelessWidget {
     );
   }
 
-  /// Builds the product info overlay with blur effect
+  /// Builds the product_details info overlay with blur effect
   Widget _buildProductInfoOverlay() {
     return Positioned(
       left: 13,
