@@ -29,22 +29,20 @@ class _DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DashboardCubit, DashboardState>(
-      builder: (context, state) {
-        if (state is DashboardInitial || state is DashboardLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
+    return Scaffold(
+      backgroundColor: AppColors.dashboardBackground,
+      body: BlocBuilder<DashboardCubit, DashboardState>(
+        builder: (context, state) {
+          if (state is DashboardInitial || state is DashboardLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        if (state is DashboardError) {
-          return Scaffold(body: Center(child: Text('Error: ${state.message}')));
-        }
+          if (state is DashboardError) {
+            return Center(child: Text('Error: ${state.message}'));
+          }
 
-        if (state is DashboardLoaded) {
-          return Scaffold(
-            backgroundColor: AppColors.dashboardBackground,
-            body: SafeArea(
+          if (state is DashboardLoaded) {
+            return SafeArea(
               child: Column(
                 children: [
                   Padding(
@@ -66,13 +64,20 @@ class _DashboardView extends StatelessWidget {
                   Expanded(child: _buildCoffeePageView(context, state)),
                 ],
               ),
-            ),
-            bottomNavigationBar: _buildBottomNavigation(context, state),
-          );
-        }
+            );
+          }
 
-        return const Scaffold(body: Center(child: Text('Unknown state')));
-      },
+          return const Center(child: Text('Unknown state'));
+        },
+      ),
+      bottomNavigationBar: BlocBuilder<DashboardCubit, DashboardState>(
+        builder: (context, state) {
+          if (state is DashboardLoaded) {
+            return _buildBottomNavigation(context, state);
+          }
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 
@@ -151,8 +156,7 @@ class _DashboardView extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 9),
                 child: CoffeeCard(
                   name: item.name,
-                  description:
-                  item.description, 
+                  description: item.description,
                   price: item.price,
                   rating: item.rating,
                   imageAsset: item.image,
@@ -161,8 +165,7 @@ class _DashboardView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            EspressoScreen(product: item),
+                        builder: (context) => EspressoScreen(product: item),
                       ),
                     );
                   },
