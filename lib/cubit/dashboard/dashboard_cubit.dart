@@ -8,12 +8,7 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   /// Initial state with coffee data
   static final DashboardState _initialState = DashboardState(
-    categories: const [
-      'Espresso',
-      'Latte',
-      'Cappuccino',
-      'Cafetière',
-    ],
+    categories: const ['Espresso', 'Latte', 'Cappuccino', 'Cafetière'],
     coffeeItemsByCategory: {
       'Espresso': [
         CoffeeItem(
@@ -114,22 +109,23 @@ class DashboardCubit extends Cubit<DashboardState> {
   /// Selects a category by index
   void selectCategory(int categoryIndex) {
     if (categoryIndex >= 0 && categoryIndex < state.categories.length) {
-      emit(state.copyWith(
-        selectedCategoryIndex: categoryIndex,
-        searchQuery: '',
-        isSearchActive: false,
-        filteredItems: [],
-      ));
+      emit(
+        state.copyWith(
+          selectedCategoryIndex: categoryIndex,
+          searchQuery: '',
+          isSearchActive: false,
+          filteredItems: [],
+        ),
+      );
     }
   }
 
   /// Handles search functionality
   void handleSearch(String query) {
     final lowerQuery = query.toLowerCase();
-    emit(state.copyWith(
-      searchQuery: lowerQuery,
-      isSearchActive: query.isNotEmpty,
-    ));
+    emit(
+      state.copyWith(searchQuery: lowerQuery, isSearchActive: query.isNotEmpty),
+    );
 
     if (query.isNotEmpty) {
       _performSearch(lowerQuery);
@@ -159,19 +155,19 @@ class DashboardCubit extends Cubit<DashboardState> {
       }
     });
 
-    emit(state.copyWith(
-      filteredItems: filteredItems,
-      selectedCategoryIndex: categoryIndex ?? state.selectedCategoryIndex,
-    ));
+    emit(
+      state.copyWith(
+        filteredItems: filteredItems,
+        selectedCategoryIndex: categoryIndex ?? state.selectedCategoryIndex,
+      ),
+    );
   }
 
   /// Clears search and returns to normal view
   void clearSearch() {
-    emit(state.copyWith(
-      searchQuery: '',
-      isSearchActive: false,
-      filteredItems: [],
-    ));
+    emit(
+      state.copyWith(searchQuery: '', isSearchActive: false, filteredItems: []),
+    );
   }
 
   /// Sets loading state
@@ -206,15 +202,20 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   /// Gets coffee items in a specific price range
-  List<CoffeeItem> getCoffeeItemsByPriceRange(double minPrice, double maxPrice) {
+  List<CoffeeItem> getCoffeeItemsByPriceRange(
+    double minPrice,
+    double maxPrice,
+  ) {
     final allItems = getAllCoffeeItems();
-    return allItems.where((item) => item.price >= minPrice && item.price <= maxPrice).toList();
+    return allItems
+        .where((item) => item.price >= minPrice && item.price <= maxPrice)
+        .toList();
   }
 
   /// Toggles favorite status for a coffee item
   void toggleFavorite(String coffeeId) {
     final updatedCategories = <String, List<CoffeeItem>>{};
-    
+
     state.coffeeItemsByCategory.forEach((category, items) {
       final updatedItems = items.map((item) {
         if (item.id == coffeeId) {

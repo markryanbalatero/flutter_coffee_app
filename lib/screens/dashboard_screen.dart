@@ -126,7 +126,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildCategoryView(DashboardState state) {
-    final items = state.coffeeItemsByCategory[state.categories[state.selectedCategoryIndex]] ?? [];
+    final items =
+        state.coffeeItemsByCategory[state.categories[state
+            .selectedCategoryIndex]] ??
+        [];
 
     return Column(
       children: [
@@ -143,10 +146,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   imageAsset: item.image,
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                EspressoScreen(product: item)));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EspressoScreen(product: item),
+                      ),
+                    );
                   },
                   onAddTap: () {
                     // TODO: Add to cart functionality here

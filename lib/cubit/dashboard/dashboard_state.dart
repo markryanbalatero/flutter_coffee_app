@@ -34,9 +34,11 @@ class DashboardState {
     String? errorMessage,
   }) {
     return DashboardState(
-      coffeeItemsByCategory: coffeeItemsByCategory ?? this.coffeeItemsByCategory,
+      coffeeItemsByCategory:
+          coffeeItemsByCategory ?? this.coffeeItemsByCategory,
       categories: categories ?? this.categories,
-      selectedCategoryIndex: selectedCategoryIndex ?? this.selectedCategoryIndex,
+      selectedCategoryIndex:
+          selectedCategoryIndex ?? this.selectedCategoryIndex,
       searchQuery: searchQuery ?? this.searchQuery,
       filteredItems: filteredItems ?? this.filteredItems,
       isSearchActive: isSearchActive ?? this.isSearchActive,
@@ -47,7 +49,8 @@ class DashboardState {
 
   /// Gets coffee items for the currently selected category
   List<CoffeeItem> get currentCategoryItems {
-    if (selectedCategoryIndex >= 0 && selectedCategoryIndex < categories.length) {
+    if (selectedCategoryIndex >= 0 &&
+        selectedCategoryIndex < categories.length) {
       final categoryName = categories[selectedCategoryIndex];
       return coffeeItemsByCategory[categoryName] ?? [];
     }
@@ -56,7 +59,8 @@ class DashboardState {
 
   /// Gets the currently selected category name
   String get currentCategoryName {
-    if (selectedCategoryIndex >= 0 && selectedCategoryIndex < categories.length) {
+    if (selectedCategoryIndex >= 0 &&
+        selectedCategoryIndex < categories.length) {
       return categories[selectedCategoryIndex];
     }
     return '';

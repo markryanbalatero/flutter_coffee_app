@@ -17,9 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => DashboardCubit()),
-      ],
+      providers: [BlocProvider(create: (context) => DashboardCubit())],
       child: MaterialApp(
         title: 'Coffee App',
         theme: AppTheme.theme,
@@ -34,4 +32,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-} 
+}
