@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/models/coffee_item.dart';
 
 /// Content for the product_details info overlay
 class ProductOverlayContent extends StatelessWidget {
-  const ProductOverlayContent({super.key});
+  final CoffeeItem coffee;
+
+  const ProductOverlayContent({Key? key, required this.coffee})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,33 +34,55 @@ class ProductOverlayContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(AppConstants.productName, style: AppTextStyles.titleLarge),
+              Text(coffee.name, style: AppTextStyles.titleLarge),
               const SizedBox(height: 2),
-              Text(AppConstants.productSubtitle, style: AppTextStyles.subtitle),
+              Text(coffee.description, style: AppTextStyles.subtitle),
             ],
           ),
-          _buildRatingSection(),
+          _buildRatingAndPriceSection(),
         ],
       ),
     );
   }
 
-  /// Builds the rating section with star and reviews
-  Widget _buildRatingSection() {
+  /// Builds the combined rating and price section
+  Widget _buildRatingAndPriceSection() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SvgPicture.asset(AppConstants.starIcon, width: 19, height: 19),
-        const SizedBox(width: 6),
-        Text(AppConstants.productRating, style: AppTextStyles.rating),
-        const SizedBox(width: 6),
-        Text(AppConstants.productReviews, style: AppTextStyles.ratingCount),
+        // Rating section
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(AppConstants.starIcon, width: 19, height: 19),
+            const SizedBox(width: 6),
+            Text(coffee.rating.toString(), style: AppTextStyles.rating),
+            const SizedBox(width: 6),
+            Text(
+              '(${(coffee.rating * 1000).toInt()})',
+              style: AppTextStyles.ratingCount,
+            ),
+          ],
+        ),
+        // Price section
+        Text(
+          '\$${coffee.price.toStringAsFixed(2)}',
+          style: AppTextStyles.rating.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
       ],
     );
   }
 
   /// Builds the right section with coffee and chocolate icons
   Widget _buildProductIconsSection() {
+    // Determine if coffee has chocolate based on name or description
+    bool hasChocolate = _hasChocolate();
+    String roastLevel = _getRoastLevel();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,12 +92,43 @@ class ProductOverlayContent extends StatelessWidget {
           children: [
             _buildIconColumn(AppConstants.coffeeIcon, 'Coffee'),
             const SizedBox(width: 30),
-            _buildIconColumn(AppConstants.dropIcon, 'Chocolate'),
+            _buildIconColumn(
+              AppConstants.dropIcon,
+              hasChocolate ? 'Chocolate' : 'Milk',
+            ),
           ],
         ),
-        Text(AppConstants.productRoastLevel, style: AppTextStyles.mediumRoasted),
+        Text(roastLevel, style: AppTextStyles.mediumRoasted),
       ],
     );
+  }
+
+  /// Determines if the coffee contains chocolate based on name/description
+  bool _hasChocolate() {
+    final lowerName = coffee.name.toLowerCase();
+    final lowerDesc = coffee.description.toLowerCase();
+
+    return lowerName.contains('chocolate') ||
+        lowerDesc.contains('chocolate') ||
+        lowerName.contains('mocha') ||
+        lowerDesc.contains('mocha');
+  }
+
+  /// Determines roast level based on coffee type
+  String _getRoastLevel() {
+    final lowerName = coffee.name.toLowerCase();
+
+    if (lowerName.contains('espresso')) {
+      return 'Dark Roasted';
+    } else if (lowerName.contains('latte') ||
+        lowerName.contains('cappuccino')) {
+      return 'Medium Roasted';
+    } else if (lowerName.contains('americano') ||
+        lowerName.contains('french')) {
+      return 'Medium Roasted';
+    } else {
+      return 'Medium Roasted'; // Default
+    }
   }
 
   /// Builds an icon column with label
