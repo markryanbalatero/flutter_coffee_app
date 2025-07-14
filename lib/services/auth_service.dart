@@ -1,49 +1,117 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-/// AuthService handles user authentication and navigation for testing purposes
+/// AuthService handles user authentication using Firebase Auth
 class AuthService {
   static final AuthService _instance = AuthService._internal();
   factory AuthService() => _instance;
   AuthService._internal();
 
-  // Hardcoded credentials for testing
-  final Map<String, String> _credentials = {
-    'admin': 'password',
-    'kopiko': 'brown',
-    'mark': 'gwapo',
-  };
-  bool _isAuthenticated = false;
-  String? _currentUser;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<bool> loginAndNavigate(
-    String username,
+    String email,
     String password,
     BuildContext context,
   ) async {
-    await Future.delayed(const Duration(milliseconds: 800));
+    try {
+      UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    if (_credentials.containsKey(username) && _credentials[username] == password) {
-      _isAuthenticated = true;
-      _currentUser = username;
-
-      if (context.mounted) {
-        Navigator.pushReplacementNamed(context, '/dashboard');
+      if (userCredential.user != null) {
+        if (context.mounted) {
+          Navigator.pushReplacementNamed(context, '/dashboard');
+        }
+        return true;
       }
-      return true;
+      return false;
+    } on FirebaseAuthException catch (e) {
+      // Re-throw FirebaseAuthException so it can be handled by the caller
+      throw FirebaseAuthException(
+        code: e.code,
+        message: e.message,
+      );
+    } catch (e) {
+      throw Exception('An unexpected error occurred: $e');
     }
-
-    return false;
   }
+
+  Future<bool> signInWithGoogle(BuildContext context) async {
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      
+      if (googleUser == null) {
+        // User cancelled the sign-in
+        return false;
+      }
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the Google credential
+      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        if (context.mounted) {
+          Navigator.pushReplacementNamed(context, '/dashboard');
+        }
+        return true;
+      }
+      return false;
+    } on FirebaseAuthException catch (e) {
+      throw FirebaseAuthException(
+        code: e.code,
+        message: e.message,
+      );
+    } catch (e) {
+      throw Exception('Google sign-in failed: $e');
+    }
+  }
+
+  Future<bool> register(String email, String password) async {
+    try {
+      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return userCredential.user != null;
+    } on FirebaseAuthException catch (e) {
+      throw FirebaseAuthException(
+        code: e.code,
+        message: e.message,
+      );
+    } catch (e) {
+      throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
   Future<void> logout(BuildContext context) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    _isAuthenticated = false;
-    _currentUser = null;
-
-    if (context.mounted) {
-      Navigator.pushReplacementNamed(context, '/login');
+    try {
+      await _firebaseAuth.signOut();
+      await _googleSignIn.signOut();
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    } catch (e) {
+      throw Exception('Error signing out: $e');
     }
   }
-  bool get isAuthenticated => _isAuthenticated;
-  String? get currentUser => _currentUser;
+
+  bool get isAuthenticated => _firebaseAuth.currentUser != null;
+  
+  String? get currentUser => _firebaseAuth.currentUser?.email;
+  
+  User? get currentUserObject => _firebaseAuth.currentUser;
 }

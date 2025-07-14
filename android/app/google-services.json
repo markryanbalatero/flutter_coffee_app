@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "440992636865",
+    "project_id": "coffee-app-ef262",
+    "storage_bucket": "coffee-app-ef262.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440992636865:android:d806a295b2135d18de1940",
+        "android_client_info": {
+          "package_name": "com.example.flutter_coffee_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440992636865-5fido9r8ho7a92dh5dvseg4e5u6ebt7k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_coffee_app",
+            "certificate_hash": "6aa4325c4277e471e7afcbf382347bcf48b15636"
+          }
+        },
+        {
+          "client_id": "440992636865-fsvlimaaq9mlkqrps4nn4noq8lf9mp5d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_coffee_app",
+            "certificate_hash": "6d698ee0ad414e994d8fc23de1013dd3ac2161cc"
+          }
+        },
+        {
+          "client_id": "440992636865-c6s54mbtp293rt652serhlqqfqdrirms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQY_PswVviwvoOEhnOKaSu73UIiX3IJQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440992636865-c6s54mbtp293rt652serhlqqfqdrirms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
