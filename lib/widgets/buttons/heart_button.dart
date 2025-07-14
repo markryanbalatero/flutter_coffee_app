@@ -82,7 +82,7 @@ class _HeartButtonState extends State<HeartButton>
           boxShadow: widget.isFavorite
               ? [
                   BoxShadow(
-                    color: Colors.red.withOpacity(0.3),
+                    color: AppColors.heartButtonShadow,
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -99,7 +99,9 @@ class _HeartButtonState extends State<HeartButton>
                 child: Icon(
                   widget.isFavorite ? Icons.favorite : Icons.favorite_border,
                   size: widget.iconSize,
-                  color: widget.isFavorite ? Colors.red : Colors.grey[600],
+                  color: widget.isFavorite
+                      ? AppColors.heartIconActive
+                      : AppColors.heartIconInactive,
                 ),
               );
             },

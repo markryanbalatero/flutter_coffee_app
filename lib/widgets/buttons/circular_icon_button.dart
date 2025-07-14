@@ -11,7 +11,7 @@ class CircularIconButton extends StatefulWidget {
     required this.iconPath,
     required this.onTap,
     this.size = AppConstants.circularButtonSize,
-    this.backgroundColor = AppColors.textWhite,
+    this.backgroundColor = AppColors.buttonBackground,
     this.iconSize = 22.4,
     this.padding = AppConstants.smallPadding,
     this.showVisualFeedbackOnly = false,
@@ -50,7 +50,7 @@ class _CircularIconButtonState extends State<CircularIconButton>
     _colorAnimation =
         ColorTween(
           begin: widget.backgroundColor,
-          end: widget.backgroundColor.withOpacity(0.8),
+          end: AppColors.buttonBackgroundPressed,
         ).animate(
           CurvedAnimation(
             parent: _animationController,
@@ -102,6 +102,10 @@ class _CircularIconButtonState extends State<CircularIconButton>
                   widget.iconPath,
                   width: widget.iconSize,
                   height: widget.iconSize,
+                  colorFilter: ColorFilter.mode(
+                    AppColors.iconColor,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),

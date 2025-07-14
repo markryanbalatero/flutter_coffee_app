@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/models/coffee_item.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/constants/app_constants.dart';
+import '../../theme/app_theme.dart';
 
 class FavoriteCoffeeCard extends StatelessWidget {
   final CoffeeItem coffee;
@@ -9,11 +10,11 @@ class FavoriteCoffeeCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const FavoriteCoffeeCard({
-    Key? key,
+    super.key,
     required this.coffee,
     required this.onRemoveFromFavorites,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +22,11 @@ class FavoriteCoffeeCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.cardBackground,
           borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: AppColors.cardShadow,
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -54,46 +55,27 @@ class FavoriteCoffeeCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      coffee.name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textDark,
-                      ),
-                    ),
+                    Text(coffee.name, style: AppTheme.favoriteCoffeeNameStyle),
                     const SizedBox(height: 4),
                     Text(
                       coffee.description,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
-                        height: 1.3,
-                      ),
+                      style: AppTheme.favoriteCoffeeDescriptionStyle,
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.star, size: 16, color: Colors.amber[600]),
+                        Icon(Icons.star, size: 16, color: AppColors.starIcon),
                         const SizedBox(width: 4),
                         Text(
                           coffee.rating.toString(),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textDark,
-                          ),
+                          style: AppTheme.favoriteCoffeeRatingStyle,
                         ),
                         const Spacer(),
                         Text(
                           '\$${coffee.price.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
+                          style: AppTheme.favoriteCoffeePriceStyle,
                         ),
                       ],
                     ),
@@ -107,10 +89,14 @@ class FavoriteCoffeeCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
+                    color: AppColors.favoriteButtonBackground,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(Icons.favorite, color: Colors.red[600], size: 20),
+                  child: Icon(
+                    Icons.favorite,
+                    color: AppColors.favoriteIcon,
+                    size: 20,
+                  ),
                 ),
               ),
             ],

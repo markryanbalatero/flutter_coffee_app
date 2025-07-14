@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/core/models/coffee_item.dart';
 import '../core/constants/app_constants.dart';
 import '../core/theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../cubit/coffee_screen/coffee_screen_cubit.dart';
 import '../cubit/coffee_screen/coffee_screen_state.dart';
 import '../widgets/product/product_header.dart';
@@ -148,7 +149,7 @@ class _CoffeeScreenState extends State<CoffeeScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.recommendationBackground,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -156,11 +157,7 @@ class _CoffeeScreenState extends State<CoffeeScreen> {
         children: [
           Text(
             'Why choose ${state.coffee?.name}?',
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
-            ),
+            style: AppTheme.recommendationTitleStyle,
           ),
           const SizedBox(height: 8),
           ...recommendations
@@ -178,10 +175,7 @@ class _CoffeeScreenState extends State<CoffeeScreen> {
                       Expanded(
                         child: Text(
                           recommendation,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: AppColors.textSecondary,
-                          ),
+                          style: AppTheme.recommendationTextStyle,
                         ),
                       ),
                     ],
@@ -200,20 +194,15 @@ class _CoffeeScreenState extends State<CoffeeScreen> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.1),
+        color: AppColors.errorBackground,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.red.withOpacity(0.3)),
+        border: Border.all(color: AppColors.errorBorder),
       ),
       child: Row(
         children: [
-          const Icon(Icons.error, color: Colors.red),
+          Icon(Icons.error, color: AppColors.errorIcon),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              errorMessage,
-              style: const TextStyle(color: Colors.red),
-            ),
-          ),
+          Expanded(child: Text(errorMessage, style: AppTheme.errorTextStyle)),
         ],
       ),
     );
