@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "440992636865",
+    "project_id": "coffee-app-ef262",
+    "storage_bucket": "coffee-app-ef262.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440992636865:android:d806a295b2135d18de1940",
+        "android_client_info": {
+          "package_name": "com.example.flutter_coffee_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQY_PswVviwvoOEhnOKaSu73UIiX3IJQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

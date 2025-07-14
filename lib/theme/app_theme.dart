@@ -315,4 +315,74 @@ class AppTheme {
       ),
     );
   }
+
+  // Image viewer text styles
+  static const TextStyle imageViewerTitleStyle = TextStyle(
+    color: Color(0xFFFFFFFF),
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle imageViewerRatingStyle = TextStyle(
+    color: Color(0xFFFFFFFF),
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
+
+  static const TextStyle imageViewerPriceStyle = TextStyle(
+    color: Color(0xFFFFFFFF),
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle imageViewerDescriptionStyle = TextStyle(
+    color: Color(0xB3FFFFFF),
+    fontSize: 14,
+    height: 1.4,
+  );
+
+  static const TextStyle imageViewerHintStyle = TextStyle(
+    color: Color(0x99FFFFFF),
+    fontSize: 12,
+    fontStyle: FontStyle.italic,
+  );
+
+  // Favorite coffee card text styles
+  static const TextStyle favoriteCoffeeNameStyle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: AppColors.coffeeTextDark,
+  );
+
+  static const TextStyle favoriteCoffeeDescriptionStyle = TextStyle(
+    fontSize: 14,
+    color: AppColors.coffeeTextSecondary,
+    height: 1.3,
+  );
+
+  static const TextStyle favoriteCoffeeRatingStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColors.coffeeTextDark,
+  );
+
+  static const TextStyle favoriteCoffeePriceStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: AppColors.coffeePrice,
+  );
+
+  // Coffee screen text styles
+  static const TextStyle recommendationTitleStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: AppColors.coffeeTextDark,
+  );
+
+  static const TextStyle recommendationTextStyle = TextStyle(
+    fontSize: 14,
+    color: AppColors.coffeeTextSecondary,
+  );
+
+  static const TextStyle errorTextStyle = TextStyle(color: Colors.red);
 }

@@ -83,4 +83,21 @@ class AppColors {
 
   // Transparent color
   static const Color transparent = Colors.transparent;
+
+  // Button specific colors
+  static const Color buttonBackground = Colors.white;
+  static const Color buttonBackgroundPressed = Color(0xFFCCCCCC);
+  static const Color iconColor = Color(0xFF000000);
+
+  // Card specific colors
+  static const Color cardShadow = Color(0x0D000000);
+  static const Color favoriteButtonBackground = Color(0x1AF44336);
+  static const Color favoriteIcon = Color(0xFFE53935);
+
+  // Recommendation colors
+  static const Color recommendationBackground = Color(0x1A967259);
+
+  // Error colors
+  static const Color errorBackground = Color(0x1AF44336);
+  static const Color errorBorder = Color(0x4DF44336);
 }

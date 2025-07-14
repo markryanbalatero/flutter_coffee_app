@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/models/coffee_item.dart';
+import '../../core/theme/app_colors.dart';
+import '../../theme/app_theme.dart';
 
 /// A full-screen image viewer dialog that shows the coffee image with details
 class ImageViewerDialog extends StatelessWidget {
@@ -8,15 +10,15 @@ class ImageViewerDialog extends StatelessWidget {
   final String imagePath;
 
   const ImageViewerDialog({
-    Key? key,
+    super.key,
     required this.coffee,
     required this.imagePath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.9),
+      backgroundColor: AppColors.imageViewerBackground,
       body: SafeArea(
         child: Stack(
           children: [
@@ -35,7 +37,7 @@ class ImageViewerDialog extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
+                          color: AppColors.imageViewerShadow,
                           blurRadius: 20,
                           spreadRadius: 5,
                         ),
@@ -61,10 +63,14 @@ class ImageViewerDialog extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: AppColors.closeButtonBackground,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.close, color: Colors.white, size: 24),
+                  child: Icon(
+                    Icons.close,
+                    color: AppColors.closeButtonIcon,
+                    size: 24,
+                  ),
                 ),
               ),
             ),
@@ -80,62 +86,39 @@ class ImageViewerDialog extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                    colors: [AppColors.gradientStart, AppColors.gradientEnd],
                   ),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      coffee.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text(coffee.name, style: AppTheme.imageViewerTitleStyle),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 20),
+                        Icon(Icons.star, color: AppColors.starIcon, size: 20),
                         const SizedBox(width: 4),
                         Text(
                           coffee.rating.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: AppTheme.imageViewerRatingStyle,
                         ),
                         const Spacer(),
                         Text(
                           '\$${coffee.price.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: AppTheme.imageViewerPriceStyle,
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     Text(
                       coffee.description,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                        height: 1.4,
-                      ),
+                      style: AppTheme.imageViewerDescriptionStyle,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Tap anywhere to close',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontSize: 12,
-                        fontStyle: FontStyle.italic,
-                      ),
+                      style: AppTheme.imageViewerHintStyle,
                     ),
                   ],
                 ),

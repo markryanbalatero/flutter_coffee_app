@@ -8,8 +8,7 @@ import '../../core/models/coffee_item.dart';
 class ProductOverlayContent extends StatelessWidget {
   final CoffeeItem coffee;
 
-  const ProductOverlayContent({Key? key, required this.coffee})
-    : super(key: key);
+  const ProductOverlayContent({super.key, required this.coffee});
 
   @override
   Widget build(BuildContext context) {
