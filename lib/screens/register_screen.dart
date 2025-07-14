@@ -213,7 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 });
                 
                 try {
-                  final success = await _authService.signInWithGoogle(context);
+                  final success = await _authService.registerWithGoogle(context);
                   if (success && mounted) {
                     Navigator.pushReplacement(
                       context,
@@ -223,7 +223,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 } catch (e) {
                   if (mounted) {
                     setState(() {
-                      _errorMessage = 'Google sign-in failed. Please try again.';
+                      _errorMessage = 'Google registration failed. Please try again.';
                     });
                   }
                 } finally {

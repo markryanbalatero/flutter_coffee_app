@@ -10,7 +10,10 @@ class AuthService {
   AuthService._internal();
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    // Force account selection every time
+    forceCodeForRefreshToken: true,
+  );
 
   Future<bool> loginAndNavigate(
     String email,
@@ -43,7 +46,10 @@ class AuthService {
 
   Future<bool> signInWithGoogle(BuildContext context) async {
     try {
-      // Trigger the authentication flow
+      // Sign out from Google first to force account selection
+      await _googleSignIn.signOut();
+      
+      // Trigger the authentication flow with account selection
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       
       if (googleUser == null) {
@@ -77,6 +83,48 @@ class AuthService {
       );
     } catch (e) {
       throw Exception('Google sign-in failed: $e');
+    }
+  }
+
+  Future<bool> registerWithGoogle(BuildContext context) async {
+    try {
+      // Sign out from Google first to force account selection
+      await _googleSignIn.signOut();
+      
+      // Trigger the authentication flow with account selection
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      
+      if (googleUser == null) {
+        // User cancelled the sign-in
+        return false;
+      }
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the Google credential
+      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        if (context.mounted) {
+          Navigator.pushReplacementNamed(context, '/dashboard');
+        }
+        return true;
+      }
+      return false;
+    } on FirebaseAuthException catch (e) {
+      throw FirebaseAuthException(
+        code: e.code,
+        message: e.message,
+      );
+    } catch (e) {
+      throw Exception('Google registration failed: $e');
     }
   }
 
