@@ -5,6 +5,7 @@ class DashboardState {
   final Map<String, List<CoffeeItem>> coffeeItemsByCategory;
   final List<String> categories;
   final int selectedCategoryIndex;
+  final int selectedBottomNavIndex;
   final String searchQuery;
   final List<CoffeeItem> filteredItems;
   final bool isSearchActive;
@@ -15,6 +16,7 @@ class DashboardState {
     required this.coffeeItemsByCategory,
     required this.categories,
     this.selectedCategoryIndex = 0,
+    this.selectedBottomNavIndex = 0,
     this.searchQuery = '',
     this.filteredItems = const [],
     this.isSearchActive = false,
@@ -27,6 +29,7 @@ class DashboardState {
     Map<String, List<CoffeeItem>>? coffeeItemsByCategory,
     List<String>? categories,
     int? selectedCategoryIndex,
+    int? selectedBottomNavIndex,
     String? searchQuery,
     List<CoffeeItem>? filteredItems,
     bool? isSearchActive,
@@ -39,6 +42,8 @@ class DashboardState {
       categories: categories ?? this.categories,
       selectedCategoryIndex:
           selectedCategoryIndex ?? this.selectedCategoryIndex,
+      selectedBottomNavIndex:
+          selectedBottomNavIndex ?? this.selectedBottomNavIndex,
       searchQuery: searchQuery ?? this.searchQuery,
       filteredItems: filteredItems ?? this.filteredItems,
       isSearchActive: isSearchActive ?? this.isSearchActive,
@@ -74,6 +79,7 @@ class DashboardState {
         other.coffeeItemsByCategory == coffeeItemsByCategory &&
         other.categories == categories &&
         other.selectedCategoryIndex == selectedCategoryIndex &&
+        other.selectedBottomNavIndex == selectedBottomNavIndex &&
         other.searchQuery == searchQuery &&
         other.filteredItems == filteredItems &&
         other.isSearchActive == isSearchActive &&
@@ -86,6 +92,7 @@ class DashboardState {
     return coffeeItemsByCategory.hashCode ^
         categories.hashCode ^
         selectedCategoryIndex.hashCode ^
+        selectedBottomNavIndex.hashCode ^
         searchQuery.hashCode ^
         filteredItems.hashCode ^
         isSearchActive.hashCode ^
@@ -95,6 +102,6 @@ class DashboardState {
 
   @override
   String toString() {
-    return 'DashboardState(coffeeItemsByCategory: $coffeeItemsByCategory, categories: $categories, selectedCategoryIndex: $selectedCategoryIndex, searchQuery: $searchQuery, filteredItems: $filteredItems, isSearchActive: $isSearchActive, isLoading: $isLoading, errorMessage: $errorMessage)';
+    return 'DashboardState(coffeeItemsByCategory: $coffeeItemsByCategory, categories: $categories, selectedCategoryIndex: $selectedCategoryIndex, selectedBottomNavIndex: $selectedBottomNavIndex, searchQuery: $searchQuery, filteredItems: $filteredItems, isSearchActive: $isSearchActive, isLoading: $isLoading, errorMessage: $errorMessage)';
   }
 }

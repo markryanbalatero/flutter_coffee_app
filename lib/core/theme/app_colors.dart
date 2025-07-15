@@ -66,6 +66,12 @@ class AppColors {
   static const Color heartIconActive = Color(0xFFF44336);
   static const Color heartIconInactive = Color(0xFF757575);
 
+  // Add coffee screen colors
+  static const Color imageUploadBorder = Color(0x32777777);
+  static const Color imageUploadBackground = Color(0xFFE8E8E8);
+  static const Color chocolateWhite = Color(0xFFF5F5F5);
+  static const Color chocolateDark = Color(0xFF2D1810);
+  static const Color quantityButtonBackground = Color(0xFF967259);
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primary, Color(0xFF8B5A42)],

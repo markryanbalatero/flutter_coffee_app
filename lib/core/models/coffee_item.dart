@@ -21,6 +21,40 @@ class CoffeeItem {
     this.isFavorite = false,
   });
 
+  // Convert CoffeeItem to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'rating': rating,
+      'image': image,
+      'sizes': sizes,
+      'sizePrices': sizePrices,
+      'isFavorite': isFavorite,
+    };
+  }
+
+  // Create CoffeeItem from JSON
+  factory CoffeeItem.fromJson(Map<String, dynamic> json) {
+    return CoffeeItem(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      price: (json['price'] ?? 0.0).toDouble(),
+      rating: (json['rating'] ?? 0.0).toDouble(),
+      image: json['image'] ?? '',
+      sizes: List<String>.from(json['sizes'] ?? ['S', 'M', 'L']),
+      sizePrices: Map<String, double>.from(
+        (json['sizePrices'] ?? {}).map(
+          (key, value) => MapEntry(key, value.toDouble()),
+        ),
+      ),
+      isFavorite: json['isFavorite'] ?? false,
+    );
+  }
+
   // Default espresso product
   static final CoffeeItem defaultEspresso = CoffeeItem(
     id: 'espresso_1',

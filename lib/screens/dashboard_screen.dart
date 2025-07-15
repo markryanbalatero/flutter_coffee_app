@@ -21,8 +21,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  int selectedBottomNavIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -280,12 +278,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildBottomNavigation() {
-    return CustomBottomNavigation(
-      selectedIndex: selectedBottomNavIndex,
-      onItemTapped: (index) {
-        setState(() {
-          selectedBottomNavIndex = index;
-        });
+    return BlocBuilder<DashboardCubit, DashboardState>(
+      builder: (context, state) {
+        return CustomBottomNavigation(
+          selectedIndex: state.selectedBottomNavIndex,
+          onItemTapped: (index) {
+            context.read<DashboardCubit>().selectBottomNavIndex(index);
+          },
+          onAddTapped: () {
+            Navigator.pushNamed(context, '/add-coffee');
+          },
+        );
       },
     );
   }

@@ -162,30 +162,29 @@ class DashboardCubit extends Cubit<DashboardState> {
       ),
     );
   }
-
-  /// Clears search and returns to normal view
+  
   void clearSearch() {
     emit(
       state.copyWith(searchQuery: '', isSearchActive: false, filteredItems: []),
     );
   }
 
-  /// Sets loading state
+  void selectBottomNavIndex(int index) {
+    emit(state.copyWith(selectedBottomNavIndex: index));
+  }
+
   void setLoading(bool isLoading) {
     emit(state.copyWith(isLoading: isLoading));
   }
 
-  /// Sets error message
   void setError(String? errorMessage) {
     emit(state.copyWith(errorMessage: errorMessage));
   }
 
-  /// Gets coffee items for a specific category
   List<CoffeeItem> getCoffeeItemsForCategory(String categoryName) {
     return state.coffeeItemsByCategory[categoryName] ?? [];
   }
 
-  /// Gets all coffee items across all categories
   List<CoffeeItem> getAllCoffeeItems() {
     final allItems = <CoffeeItem>[];
     state.coffeeItemsByCategory.values.forEach((items) {
@@ -193,15 +192,11 @@ class DashboardCubit extends Cubit<DashboardState> {
     });
     return allItems;
   }
-
-  /// Gets popular coffee items (high rating)
   List<CoffeeItem> getPopularCoffeeItems() {
     final allItems = getAllCoffeeItems();
     allItems.sort((a, b) => b.rating.compareTo(a.rating));
-    return allItems.take(5).toList(); // Top 5 rated items
+    return allItems.take(5).toList();
   }
-
-  /// Gets coffee items in a specific price range
   List<CoffeeItem> getCoffeeItemsByPriceRange(
     double minPrice,
     double maxPrice,
@@ -212,7 +207,6 @@ class DashboardCubit extends Cubit<DashboardState> {
         .toList();
   }
 
-  /// Toggles favorite status for a coffee item
   void toggleFavorite(String coffeeId) {
     final updatedCategories = <String, List<CoffeeItem>>{};
 

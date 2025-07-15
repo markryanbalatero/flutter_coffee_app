@@ -19,7 +19,7 @@ class AppColors {
   static const secondaryText = Color(0x99444444);
 
   // Coffee app specific colors
-  static const Color coffeeCardBackground = Colors.white;
+  static const Color coffeeCardBackground = Color(0xFFECE9E5);
   static const Color coffeeCardShadow = Color(0x1A000000);
   static const Color coffeeTextDark = Color(0xFF444444);
   static const Color coffeeTextSecondary = Color(0xFF999999);
