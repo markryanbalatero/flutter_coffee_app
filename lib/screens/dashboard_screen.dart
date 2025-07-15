@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/screens/espresso_screen.dart';
+import 'package:flutter_coffee_app/screens/profile_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../cubit/dashboard/dashboard_cubit.dart';
 import '../cubit/dashboard/dashboard_state.dart';
@@ -175,34 +176,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Center(
-            child: SvgPicture.asset(
-              'assets/icons/menu_button.svg',
-              width: 32,
-              height: 32,
-              colorFilter: const ColorFilter.mode(
-                AppColors.menuIconColor,
-                BlendMode.srcIn,
-              ),
+        GestureDetector(
+          onTap: () {
+        // Handle menu button tap
+        print('Menu button tapped');
+          },
+          child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            'assets/icons/menu_button.svg',
+            width: 32,
+            height: 32,
+            colorFilter: const ColorFilter.mode(
+          AppColors.menuIconColor,
+          BlendMode.srcIn,
             ),
           ),
         ),
-        Container(
-          width: 46,
-          height: 46,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(23),
-            image: const DecorationImage(
-              image: AssetImage('assets/images/profile.png'),
-              fit: BoxFit.cover,
-            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+        // Handle profile picture tap
+        Navigator.push(
+         context,
+         MaterialPageRoute(builder: (context) => const ProfileScreen()),
+);
+          },
+          child: Container(
+        width: 46,
+        height: 46,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(23),
+          image: const DecorationImage(
+            image: AssetImage('assets/images/profile.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
           ),
         ),
       ],
@@ -286,6 +302,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         setState(() {
           selectedBottomNavIndex = index;
         });
+        if (index == 4) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileScreen()),
+          );
+        }
       },
     );
   }

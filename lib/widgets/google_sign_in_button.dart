@@ -45,7 +45,9 @@ class GoogleSignInButton extends StatelessWidget {
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4285F4)),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFF4285F4),
+                      ),
                     ),
                   )
                 else

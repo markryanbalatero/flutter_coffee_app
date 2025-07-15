@@ -7,6 +7,7 @@ import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/espresso_screen.dart';
 import 'cubit/dashboard/dashboard_cubit.dart';
+import 'screens/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/dashboard': (context) => const DashboardScreen(),
           '/espresso': (context) => const EspressoScreen(),
+          '/profile': (context) => const ProfileScreen(),
         },
       ),
     );

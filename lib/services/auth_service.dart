@@ -21,10 +21,8 @@ class AuthService {
     BuildContext context,
   ) async {
     try {
-      UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
 
       if (userCredential.user != null) {
         if (context.mounted) {
@@ -35,10 +33,7 @@ class AuthService {
       return false;
     } on FirebaseAuthException catch (e) {
       // Re-throw FirebaseAuthException so it can be handled by the caller
-      throw FirebaseAuthException(
-        code: e.code,
-        message: e.message,
-      );
+      throw FirebaseAuthException(code: e.code, message: e.message);
     } catch (e) {
       throw Exception('An unexpected error occurred: $e');
     }
@@ -48,17 +43,18 @@ class AuthService {
     try {
       // Sign out from Google first to force account selection
       await _googleSignIn.signOut();
-      
+
       // Trigger the authentication flow with account selection
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         // User cancelled the sign-in
         return false;
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -67,7 +63,8 @@ class AuthService {
       );
 
       // Sign in to Firebase with the Google credential
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithCredential(credential);
 
       if (userCredential.user != null) {
         if (context.mounted) {
@@ -77,10 +74,7 @@ class AuthService {
       }
       return false;
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(
-        code: e.code,
-        message: e.message,
-      );
+      throw FirebaseAuthException(code: e.code, message: e.message);
     } catch (e) {
       throw Exception('Google sign-in failed: $e');
     }
@@ -90,17 +84,18 @@ class AuthService {
     try {
       // Sign out from Google first to force account selection
       await _googleSignIn.signOut();
-      
+
       // Trigger the authentication flow with account selection
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         // User cancelled the sign-in
         return false;
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -109,7 +104,8 @@ class AuthService {
       );
 
       // Sign in to Firebase with the Google credential
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithCredential(credential);
 
       if (userCredential.user != null) {
         if (context.mounted) {
@@ -119,10 +115,7 @@ class AuthService {
       }
       return false;
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(
-        code: e.code,
-        message: e.message,
-      );
+      throw FirebaseAuthException(code: e.code, message: e.message);
     } catch (e) {
       throw Exception('Google registration failed: $e');
     }
@@ -130,16 +123,11 @@ class AuthService {
 
   Future<bool> register(String email, String password) async {
     try {
-      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
       return userCredential.user != null;
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(
-        code: e.code,
-        message: e.message,
-      );
+      throw FirebaseAuthException(code: e.code, message: e.message);
     } catch (e) {
       throw Exception('An unexpected error occurred: $e');
     }
@@ -158,8 +146,8 @@ class AuthService {
   }
 
   bool get isAuthenticated => _firebaseAuth.currentUser != null;
-  
+
   String? get currentUser => _firebaseAuth.currentUser?.email;
-  
+
   User? get currentUserObject => _firebaseAuth.currentUser;
 }
