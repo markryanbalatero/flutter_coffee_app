@@ -4,7 +4,6 @@ import '../services/firestore_service.dart';
 
 /// Repository for managing coffee data operations
 class CoffeeRepository {
-  
   /// Adds a new coffee to the database
   static Future<String> addCoffee({
     required CoffeeItem coffee,
@@ -12,8 +11,7 @@ class CoffeeRepository {
   }) async {
     return await FirestoreService.addCoffee(
       coffee: coffee,
-      imageFile: imageFilePath.isNotEmpty ? 
-        File(imageFilePath) : null,
+      imageFile: imageFilePath.isNotEmpty ? File(imageFilePath) : null,
     );
   }
 

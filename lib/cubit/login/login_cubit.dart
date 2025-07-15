@@ -13,20 +13,20 @@ class LoginCubit extends Cubit<LoginState> {
 
   void login(String email, String password, BuildContext context) async {
     emit(LoginInitial());
-    
+
     // Basic validation
     if (email.trim().isEmpty || password.isEmpty) {
       emit(LoginValidationError('Please enter both email and password'));
       return;
     }
-    
+
     // Email format validation
     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
       emit(LoginValidationError('Please enter a valid email address'));
       return;
     }
-    
-    emit(LoginLoading());
+
+    emit(LoginLoading(LoginType.email));
 
     try {
       final success = await _authService.loginAndNavigate(
@@ -77,11 +77,11 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   void signInWithGoogle(BuildContext context) async {
-    emit(LoginLoading());
-    
+    emit(LoginLoading(LoginType.google));
+
     try {
       final success = await _authService.signInWithGoogle(context);
-      
+
       if (success) {
         emit(LoginSuccess());
         if (context.mounted) {
@@ -97,7 +97,8 @@ class LoginCubit extends Cubit<LoginState> {
       String errorMessage;
       switch (e.code) {
         case 'account-exists-with-different-credential':
-          errorMessage = 'An account already exists with the same email address but different sign-in credentials';
+          errorMessage =
+              'An account already exists with the same email address but different sign-in credentials';
           break;
         case 'invalid-credential':
           errorMessage = 'Invalid Google credentials';

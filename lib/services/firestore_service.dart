@@ -11,12 +11,9 @@ class FirestoreService {
   static Future<void> testConnection() async {
     try {
       await _firestore.collection('test').limit(1).get();
-      
-      await _firestore.collection('test').doc('connection').set({
-        'timestamp': FieldValue.serverTimestamp(),
-        'status': 'connected'
-      });
-      
+
+      await _firestore.collection('test').doc('connection').set(
+          {'timestamp': FieldValue.serverTimestamp(), 'status': 'connected'});
     } catch (e) {
       throw Exception('Firestore connection failed: $e');
     }
@@ -29,11 +26,12 @@ class FirestoreService {
       }
 
       final bytes = await imageFile.readAsBytes();
-      
+
       if (bytes.length > 800 * 1024) {
-        throw Exception('Image too large (${bytes.length} bytes). Please use a smaller image (max 800KB).');
+        throw Exception(
+            'Image too large (${bytes.length} bytes). Please use a smaller image (max 800KB).');
       }
-      
+
       final base64String = base64Encode(bytes);
       return base64String;
     } catch (e) {
@@ -47,7 +45,7 @@ class FirestoreService {
   }) async {
     try {
       String imageBase64 = '';
-      
+
       if (imageFile != null) {
         imageBase64 = await _convertImageToBase64(imageFile);
       }
@@ -113,7 +111,7 @@ class FirestoreService {
   }) async {
     try {
       updates['updatedAt'] = FieldValue.serverTimestamp();
-      
+
       await _firestore
           .collection(_coffeeCollection)
           .doc(coffeeId)
@@ -125,10 +123,7 @@ class FirestoreService {
 
   static Future<void> deleteCoffee(String coffeeId) async {
     try {
-      await _firestore
-          .collection(_coffeeCollection)
-          .doc(coffeeId)
-          .delete();
+      await _firestore.collection(_coffeeCollection).doc(coffeeId).delete();
     } catch (e) {
       throw Exception('Failed to delete coffee: $e');
     }
@@ -159,23 +154,5 @@ class FirestoreService {
         );
       }).toList();
     });
-  }
-
-  static Future<void> runTest() async {
-    try {
-      await testConnection();
-      
-      await _firestore.collection('test').doc('sample').set({
-        'name': 'Test Coffee',
-        'price': 5.99,
-        'imageBase64': 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-      
-      await _firestore.collection('test').doc('sample').get();
-      await _firestore.collection('test').doc('sample').delete();
-    } catch (e) {
-      throw Exception('Firestore test failed: $e');
-    }
   }
 }

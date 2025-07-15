@@ -125,24 +125,6 @@ class CoffeeCubit extends Cubit<CoffeeState> {
     }
   }
 
-  Future<void> testFirestore() async {
-    try {
-      emit(state.copyWith(isLoading: true, errorMessage: null));
-      
-      await FirestoreService.runTest();
-      
-      emit(state.copyWith(
-        isLoading: false,
-        isSuccess: true,
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        isLoading: false,
-        errorMessage: 'Firestore test failed: ${e.toString()}',
-      ));
-    }
-  }
-
   void clearError() {
     emit(state.copyWith(errorMessage: null));
   }

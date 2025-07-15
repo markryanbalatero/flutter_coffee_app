@@ -37,33 +37,49 @@ class InputField extends StatelessWidget {
           ),
         ],
       ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        onChanged: onChanged,
-        style: AppTheme.inputTextStyle,
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: AppTheme.hintTextStyle,
-          contentPadding: const EdgeInsets.only(
-            left: 27,
-            right: 20,
-            top: 13,
-            bottom: 13,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          textSelectionTheme: TextSelectionThemeData(
+            selectionColor: Colors.blue.withValues(alpha: 0.3),
+            selectionHandleColor: Colors.blue,
           ),
-          filled: true,
-          fillColor: AppColors.inputFieldBackground,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
+        ),
+        child: TextField(
+          controller: controller,
+          obscureText: obscureText,
+          onChanged: onChanged,
+          style: AppTheme.inputTextStyle,
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: AppTheme.hintTextStyle,
+            contentPadding: const EdgeInsets.only(
+              left: 27,
+              right: 20,
+              top: 13,
+              bottom: 13,
+            ),
+            filled: true,
+            fillColor: AppColors.inputFieldBackground,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none,
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none,
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none,
+            ),
           ),
         ),
       ),
