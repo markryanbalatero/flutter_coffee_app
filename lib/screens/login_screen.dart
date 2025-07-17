@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_colors.dart';
 import '../widgets/input_field.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/google_sign_in_button.dart';
@@ -152,18 +153,20 @@ class _LoginViewState extends State<_LoginView> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        const Expanded(child: Divider(color: Colors.grey)),
+                        const Expanded(
+                            child: Divider(color: AppColors.dividerColor)),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
                             'or',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: AppColors.dividerTextColor,
                               fontSize: 14,
                             ),
                           ),
                         ),
-                        const Expanded(child: Divider(color: Colors.grey)),
+                        const Expanded(
+                            child: Divider(color: AppColors.dividerColor)),
                       ],
                     ),
                     const SizedBox(height: 16),

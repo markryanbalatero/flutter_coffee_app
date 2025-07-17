@@ -40,8 +40,8 @@ class InputField extends StatelessWidget {
       child: Theme(
         data: Theme.of(context).copyWith(
           textSelectionTheme: TextSelectionThemeData(
-            selectionColor: Colors.blue.withValues(alpha: 0.3),
-            selectionHandleColor: Colors.blue,
+            selectionColor: AppColors.selectionColor,
+            selectionHandleColor: AppColors.selectionHandleColor,
           ),
         ),
         child: TextField(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_colors.dart';
+import '../utils/image_utils.dart';
 
 class CoffeeCard extends StatelessWidget {
   final String name;
@@ -22,13 +23,25 @@ class CoffeeCard extends StatelessWidget {
     this.onAddTap,
   });
 
+  double _getCardNameFontSize(String name) {
+    if (name.length <= 8) {
+      return 18.0; 
+    } else if (name.length <= 12) {
+      return 16.0;
+    } else if (name.length <= 16) {
+      return 14.0;
+    } else if (name.length <= 20) {
+      return 12.0;
+    } else {
+      return 10.0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 180,
-        height: 250,
         decoration: BoxDecoration(
           color: AppColors.coffeeCardBackground,
           borderRadius: BorderRadius.circular(25),
@@ -43,74 +56,87 @@ class CoffeeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: 123,
-              margin: const EdgeInsets.fromLTRB(10, 11, 10, 0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                image: DecorationImage(
-                  image: AssetImage(imageAsset),
-                  fit: BoxFit.cover,
+            Expanded(
+              flex: 3,
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(10, 11, 10, 0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  image: DecorationImage(
+                    image: ImageUtils.getImageProvider(imageAsset),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 5,
-                    right: 5,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 4,
-                      ),
-                      decoration: ShapeDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment(0.00, -1.00),
-                          end: Alignment(0, 1),
-                          colors: [
-                            AppColors.coffeeRatingBackground,
-                            AppColors.coffeeRatingBackground,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 5,
+                      right: 5,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 4,
+                        ),
+                        decoration: ShapeDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment(0.00, -1.00),
+                            end: Alignment(0, 1),
+                            colors: [
+                              AppColors.coffeeRatingBackground,
+                              AppColors.coffeeRatingBackground,
+                            ],
+                          ),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(25),
+                              topRight: Radius.circular(25),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              color: AppColors.coffeeRating,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              rating.toString(),
+                              style: AppTheme.coffeeCardRatingStyle,
+                            ),
                           ],
                         ),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(25),
-                            topRight: Radius.circular(25),
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: AppColors.coffeeRating,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            rating.toString(),
-                            style: AppTheme.coffeeCardRatingStyle,
-                          ),
-                        ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            // Content section
             Expanded(
+              flex: 2,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(19, 13, 10, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name, style: AppTheme.coffeeCardNameStyle),
+                    Text(
+                      name,
+                      style: AppTheme.coffeeCardNameStyle.copyWith(
+                        fontSize: _getCardNameFontSize(name),
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                    ),
                     const SizedBox(height: 4),
                     Text(
                       description,
                       style: AppTheme.coffeeCardDescriptionStyle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
                     ),
                     const Spacer(),
                   ],

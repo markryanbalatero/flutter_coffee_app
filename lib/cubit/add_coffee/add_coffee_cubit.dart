@@ -9,6 +9,7 @@ class AddCoffeeState {
   final bool isSuccess;
   final String selectedChocolate;
   final String selectedSize;
+  final String selectedCategory;
   final int quantity;
   final File? selectedImage;
 
@@ -18,6 +19,7 @@ class AddCoffeeState {
     this.isSuccess = false,
     this.selectedChocolate = 'Milk',
     this.selectedSize = 'S',
+    this.selectedCategory = 'espresso',
     this.quantity = 1,
     this.selectedImage,
   });
@@ -28,6 +30,7 @@ class AddCoffeeState {
     bool? isSuccess,
     String? selectedChocolate,
     String? selectedSize,
+    String? selectedCategory,
     int? quantity,
     File? selectedImage,
   }) {
@@ -37,6 +40,7 @@ class AddCoffeeState {
       isSuccess: isSuccess ?? this.isSuccess,
       selectedChocolate: selectedChocolate ?? this.selectedChocolate,
       selectedSize: selectedSize ?? this.selectedSize,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
       quantity: quantity ?? this.quantity,
       selectedImage: selectedImage ?? this.selectedImage,
     );
@@ -51,14 +55,12 @@ class AddCoffeeCubit extends Cubit<AddCoffeeState> {
     required String description,
     required double price,
   }) async {
-    print('🚀 Starting addCoffee process...');
+    print('Starting addCoffee process...');
     print(
-      '📝 Coffee details: $name, $description, \$${price.toStringAsFixed(2)}',
+      'Coffee details: $name, $description, \$${price.toStringAsFixed(2)}',
     );
-
-    // Validate that an image is selected
     if (state.selectedImage == null) {
-      print('❌ No image selected');
+      print('No image selected');
       emit(
         state.copyWith(
           isLoading: false,
@@ -71,42 +73,41 @@ class AddCoffeeCubit extends Cubit<AddCoffeeState> {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
     try {
-      print('📁 Selected image: ${state.selectedImage?.path}');
+      print('Selected image: ${state.selectedImage?.path}');
 
-      // Verify image file still exists
+    
       if (state.selectedImage != null && !await state.selectedImage!.exists()) {
         throw Exception('Selected image file no longer exists');
       }
 
-      // Create coffee item using state values
       final coffeeId = DateTime.now().millisecondsSinceEpoch.toString();
-      print('🆔 Generated coffee ID: $coffeeId');
+      print('Generated coffee ID: $coffeeId');
 
       final newCoffee = CoffeeItem(
         id: coffeeId,
         name: name,
         description: description,
         price: price,
-        image: '', // Will be updated with Firebase Storage URL
+        image: '', 
         rating: 0.0,
         isFavorite: false,
         sizes: ['S', 'M', 'L'],
         sizePrices: {'S': price, 'M': price + 1.0, 'L': price + 2.0},
+        category: state.selectedCategory,
       );
 
-      print('☕ Created coffee item: ${newCoffee.toJson()}');
+      print('Created coffee item: ${newCoffee.toJson()}');
 
-      // Add to Firestore with image upload
       final addedCoffeeId = await FirestoreService.addCoffee(
         coffee: newCoffee,
         imageFile: state.selectedImage,
       );
 
-      print('✅ Coffee successfully added to Firestore with ID: $addedCoffeeId');
+      print('Coffee successfully added to Firestore with ID: $addedCoffeeId');
 
       emit(state.copyWith(isLoading: false, isSuccess: true));
     } catch (e) {
-      print('❌ Error adding coffee: $e');
+      print('Error adding coffee: $e');
       emit(
         state.copyWith(
           isLoading: false,
@@ -130,6 +131,10 @@ class AddCoffeeCubit extends Cubit<AddCoffeeState> {
 
   void selectSize(String size) {
     emit(state.copyWith(selectedSize: size));
+  }
+
+  void selectCategory(String category) {
+    emit(state.copyWith(selectedCategory: category));
   }
 
   void incrementQuantity() {

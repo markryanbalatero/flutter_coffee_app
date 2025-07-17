@@ -54,9 +54,10 @@ class AppTextStyles {
 
   static const TextStyle description = TextStyle(
     fontFamily: inter,
-    fontSize: 12,
+    fontSize: 14,
     color: AppColors.textDark,
-    height: 22 / 12,
+    height: 1.6,
+    letterSpacing: 0.2,
   );
 
   // Price styles
@@ -136,7 +137,10 @@ class AppTextStyles {
 
   // Read more style
   static const TextStyle readMore = TextStyle(
-    fontWeight: FontWeight.bold,
+    fontFamily: inter,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
     color: AppColors.primary,
+    decoration: TextDecoration.underline,
   );
 }

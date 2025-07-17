@@ -4,11 +4,22 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/models/coffee_item.dart';
 
-/// Content for the product_details info overlay
 class ProductOverlayContent extends StatelessWidget {
   final CoffeeItem coffee;
 
   const ProductOverlayContent({super.key, required this.coffee});
+
+  double _getResponsiveFontSize(String text) {
+    if (text.length <= 12) {
+      return 24.0;
+    } else if (text.length <= 18) {
+      return 20.0;
+    } else if (text.length <= 25) {
+      return 18.0;
+    } else {
+      return 16.0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +33,6 @@ class ProductOverlayContent extends StatelessWidget {
     );
   }
 
-  /// Builds the left section with title, subtitle, and rating
   Widget _buildProductTitleSection() {
     return Expanded(
       child: Column(
@@ -33,7 +43,14 @@ class ProductOverlayContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(coffee.name, style: AppTextStyles.titleLarge),
+              Text(
+                coffee.name,
+                style: AppTextStyles.titleLarge.copyWith(
+                  fontSize: _getResponsiveFontSize(coffee.name),
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
               const SizedBox(height: 2),
               Text(coffee.description, style: AppTextStyles.subtitle),
             ],
@@ -44,13 +61,11 @@ class ProductOverlayContent extends StatelessWidget {
     );
   }
 
-  /// Builds the combined rating and price section
   Widget _buildRatingAndPriceSection() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Rating section
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -64,7 +79,6 @@ class ProductOverlayContent extends StatelessWidget {
             ),
           ],
         ),
-        // Price section
         Text(
           '\$${coffee.price.toStringAsFixed(2)}',
           style: AppTextStyles.rating.copyWith(
@@ -76,9 +90,7 @@ class ProductOverlayContent extends StatelessWidget {
     );
   }
 
-  /// Builds the right section with coffee and chocolate icons
   Widget _buildProductIconsSection() {
-    // Determine if coffee has chocolate based on name or description
     bool hasChocolate = _hasChocolate();
     String roastLevel = _getRoastLevel();
 
@@ -102,7 +114,6 @@ class ProductOverlayContent extends StatelessWidget {
     );
   }
 
-  /// Determines if the coffee contains chocolate based on name/description
   bool _hasChocolate() {
     final lowerName = coffee.name.toLowerCase();
     final lowerDesc = coffee.description.toLowerCase();
@@ -113,7 +124,6 @@ class ProductOverlayContent extends StatelessWidget {
         lowerDesc.contains('mocha');
   }
 
-  /// Determines roast level based on coffee type
   String _getRoastLevel() {
     final lowerName = coffee.name.toLowerCase();
 
@@ -126,11 +136,10 @@ class ProductOverlayContent extends StatelessWidget {
         lowerName.contains('french')) {
       return 'Medium Roasted';
     } else {
-      return 'Medium Roasted'; // Default
+      return 'Medium Roasted';
     }
   }
 
-  /// Builds an icon column with label
   Widget _buildIconColumn(String iconPath, String label) {
     return Column(
       mainAxisSize: MainAxisSize.min,

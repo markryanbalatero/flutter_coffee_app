@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import '../../core/constants/app_constants.dart';
-import '../../core/theme/app_colors.dart';
+import '../../utils/app_colors.dart';
 import '../../core/models/coffee_item.dart';
+import '../../utils/image_utils.dart';
 import '../../widgets/buttons/circular_icon_button.dart';
 import '../../widgets/buttons/heart_button.dart';
 import 'product_overlay_content.dart';
-
-/// Header widget containing product_details image and overlay
 class ProductHeader extends StatelessWidget {
   const ProductHeader({
     super.key,
@@ -39,25 +38,26 @@ class ProductHeader extends StatelessWidget {
     );
   }
 
-  /// Builds the product_details background image
   Widget _buildProductImage() {
-    return GestureDetector(
-      onTap: onImageTap,
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(13, 13, 13, 0),
-        height: AppConstants.imageHeight,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
-          image: DecorationImage(
-            image: AssetImage(coffee.image),
-            fit: BoxFit.cover,
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTap: onImageTap,
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(13, 13, 13, 0),
+          height: AppConstants.imageHeight,
+          decoration: BoxDecoration(
+            borderRadius:
+                BorderRadius.circular(AppConstants.defaultBorderRadius),
+            image: DecorationImage(
+              image: ImageUtils.getImageProvider(coffee.image),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),
     );
   }
 
-  /// Builds the top navigation with back and favorite buttons
   Widget _buildTopNavigation() {
     return Positioned(
       left: 24,
@@ -69,7 +69,7 @@ class ProductHeader extends StatelessWidget {
           CircularIconButton(
             iconPath: AppConstants.backArrowIcon,
             onTap: onBackPressed,
-            showVisualFeedbackOnly: false, // Enable back navigation
+            showVisualFeedbackOnly: false, 
           ),
           HeartButton(isFavorite: isFavorite, onTap: onFavoritePressed),
         ],
@@ -77,7 +77,6 @@ class ProductHeader extends StatelessWidget {
     );
   }
 
-  /// Builds the product_details info overlay with blur effect
   Widget _buildProductInfoOverlay() {
     return Positioned(
       left: 13,

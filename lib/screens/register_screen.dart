@@ -17,22 +17,23 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final AuthService _authService = AuthService();
-  
+
   bool _isLoading = false;
   String _errorMessage = '';
-  
+
   Future<void> _register() async {
     setState(() {
       _isLoading = true;
       _errorMessage = '';
     });
-    
+
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
-    
+
     // Validation
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       setState(() {
@@ -41,7 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
       return;
     }
-    
+
     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
       setState(() {
         _errorMessage = 'Please enter a valid email address';
@@ -49,7 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
       return;
     }
-    
+
     if (password != confirmPassword) {
       setState(() {
         _errorMessage = 'Passwords do not match';
@@ -57,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
       return;
     }
-    
+
     if (password.length < 6) {
       setState(() {
         _errorMessage = 'Password must be at least 6 characters';
@@ -65,10 +66,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
       return;
     }
-    
+
     try {
       final success = await _authService.register(email, password);
-      
+
       if (success) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -106,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     }
   }
-  
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -114,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _confirmPasswordController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -209,19 +210,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 setState(() {
                   _isLoading = true;
                 });
-                
+
                 try {
-                  final success = await _authService.registerWithGoogle(context);
+                  final success =
+                      await _authService.registerWithGoogle(context);
                   if (success && mounted) {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const DashboardScreen()),
                     );
                   }
                 } catch (e) {
                   if (mounted) {
                     setState(() {
-                      _errorMessage = 'Google registration failed. Please try again.';
+                      _errorMessage =
+                          'Google registration failed. Please try again.';
                     });
                   }
                 } finally {

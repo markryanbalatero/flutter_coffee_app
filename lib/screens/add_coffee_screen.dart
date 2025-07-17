@@ -194,22 +194,18 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                   children: [
                     _buildImageUploadSection(),
                     const SizedBox(height: 16),
-
                     _buildProductNameInput(),
                     const SizedBox(height: 16),
-
                     _buildDescriptionInput(),
                     const SizedBox(height: 16),
-
+                    _buildCategorySelection(),
+                    const SizedBox(height: 16),
                     _buildChocolateSelection(),
                     const SizedBox(height: 16),
-
                     _buildSizeSelection(),
                     const SizedBox(height: 16),
-
                     _buildPriceAndQuantityRow(),
                     const SizedBox(height: 32),
-
                     _buildAddProductButton(state.isLoading),
                   ],
                 ),
@@ -354,6 +350,140 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
     );
   }
 
+  Widget _buildCategorySelection() {
+    const categories = ['espresso', 'latte', 'cappuccino', 'cafetière'];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Coffee Category *',
+          style: AppTheme.titleStyle.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.coffeeTextDark,
+          ),
+        ),
+        const SizedBox(height: 16),
+        // Use Row with equal flex to fit all chips on one line
+        Row(
+          children: categories.asMap().entries.map((entry) {
+            final index = entry.key;
+            final category = entry.value;
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  right: index < categories.length - 1 ? 8 : 0,
+                ),
+                child: _buildCategoryChip(category),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoryChip(String category) {
+    return BlocBuilder<AddCoffeeCubit, AddCoffeeState>(
+      builder: (context, state) {
+        final isSelected = state.selectedCategory == category;
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                context.read<AddCoffeeCubit>().selectCategory(category);
+                // Add haptic feedback for better UX
+                HapticFeedback.lightImpact();
+              },
+              borderRadius: BorderRadius.circular(20),
+              splashColor: AppColors.buttonColor.withValues(alpha: 0.1),
+              highlightColor: AppColors.buttonColor.withValues(alpha: 0.05),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? AppColors.buttonColor
+                      : AppColors.coffeeCardBackground,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isSelected
+                        ? AppColors.buttonColor
+                        : AppColors.inputBorderColor.withValues(alpha: 0.3),
+                    width: isSelected ? 2 : 1,
+                  ),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: AppColors.buttonShadowColor
+                                .withValues(alpha: 0.3),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ]
+                      : [
+                          BoxShadow(
+                            color: AppColors.coffeeCardShadow
+                                .withValues(alpha: 0.1),
+                            blurRadius: 3,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                ),
+                child: AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 200),
+                  style: AppTheme.buttonTextStyle.copyWith(
+                    color: isSelected
+                        ? AppColors.buttonTextColor
+                        : AppColors.coffeeTextDark,
+                    fontSize: 11,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                    letterSpacing: 0.3,
+                  ),
+                  child: Center(
+                    child: Text(
+                      _formatCategoryName(category),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _formatCategoryName(String category) {
+    // Shorter names for better fit
+    switch (category.toLowerCase()) {
+      case 'espresso':
+        return 'Espresso';
+      case 'latte':
+        return 'Latte';
+      case 'cappuccino':
+        return 'Cappuccino';
+      case 'cafetière':
+        return 'Cafetière';
+      default:
+        return category.substring(0, 1).toUpperCase() +
+            category.substring(1).toLowerCase();
+    }
+  }
+
   Widget _buildChocolateSelection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -422,17 +552,15 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
             backgroundColor = isSelected
                 ? AppColors.buttonColor
                 : AppColors.coffeeCardBackground;
-            textColor = isSelected
-                ? AppColors.buttonTextColor
-                : AppColors.textColor;
+            textColor =
+                isSelected ? AppColors.buttonTextColor : AppColors.textColor;
             break;
           case 'Dark':
             backgroundColor = isSelected
                 ? AppColors.coffeeTextDark
                 : AppColors.coffeeCardBackground;
-            textColor = isSelected
-                ? AppColors.buttonTextColor
-                : AppColors.textColor;
+            textColor =
+                isSelected ? AppColors.buttonTextColor : AppColors.textColor;
             break;
           default:
             backgroundColor = AppColors.coffeeCardBackground;

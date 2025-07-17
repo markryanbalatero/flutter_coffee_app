@@ -84,6 +84,16 @@ class AppColors {
   // Transparent color
   static const Color transparent = Colors.transparent;
 
+  // Overlay colors
+  static const Color overlay = Color(0x4D000000);
+
+  // UI element colors
+  static const Color dividerColor = Color(0xFF999999);
+  static const Color dividerTextColor = Color(0xFF666666);
+  static const Color selectionColor =
+      Color(0x4D2196F3); 
+  static const Color selectionHandleColor = Color(0xFF2196F3);
+
   // Button specific colors
   static const Color buttonBackground = Colors.white;
   static const Color buttonBackgroundPressed = Color(0xFFCCCCCC);

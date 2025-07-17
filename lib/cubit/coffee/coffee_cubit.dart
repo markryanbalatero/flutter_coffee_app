@@ -37,9 +37,9 @@ class CoffeeCubit extends Cubit<CoffeeState> {
   Future<void> loadCoffees() async {
     try {
       emit(state.copyWith(isLoading: true, errorMessage: null));
-      
+
       final coffees = await FirestoreService.getAllCoffees();
-      
+
       emit(state.copyWith(
         coffees: coffees,
         isLoading: false,
@@ -59,14 +59,14 @@ class CoffeeCubit extends Cubit<CoffeeState> {
   }) async {
     try {
       emit(state.copyWith(isLoading: true, errorMessage: null));
-      
+
       await FirestoreService.addCoffee(
         coffee: coffee,
         imageFile: imageFile,
       );
-      
+
       await loadCoffees();
-      
+
       emit(state.copyWith(
         isLoading: false,
         isSuccess: true,
@@ -85,14 +85,14 @@ class CoffeeCubit extends Cubit<CoffeeState> {
   }) async {
     try {
       emit(state.copyWith(isLoading: true, errorMessage: null));
-      
+
       await FirestoreService.updateCoffee(
         coffeeId: coffeeId,
         updates: updates,
       );
-      
+
       await loadCoffees();
-      
+
       emit(state.copyWith(
         isLoading: false,
         isSuccess: true,
@@ -108,11 +108,11 @@ class CoffeeCubit extends Cubit<CoffeeState> {
   Future<void> deleteCoffee(String coffeeId) async {
     try {
       emit(state.copyWith(isLoading: true, errorMessage: null));
-      
+
       await FirestoreService.deleteCoffee(coffeeId);
-      
+
       await loadCoffees();
-      
+
       emit(state.copyWith(
         isLoading: false,
         isSuccess: true,

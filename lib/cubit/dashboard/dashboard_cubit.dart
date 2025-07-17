@@ -1,9 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:async';
 import '../../core/models/coffee_item.dart';
+import '../../services/firestore_service.dart';
 import 'dashboard_state.dart';
 
 /// Cubit for managing the Dashboard screen state and business logic
 class DashboardCubit extends Cubit<DashboardState> {
+  StreamSubscription<List<CoffeeItem>>? _coffeeStreamSubscription;
+
   DashboardCubit() : super(_initialState);
 
   /// Initial state with coffee data
@@ -20,6 +24,7 @@ class DashboardCubit extends Cubit<DashboardState> {
           image: 'assets/images/espresso_beans.png',
           sizes: ['S', 'M', 'L'],
           sizePrices: {'S': 4.20, 'M': 5.20, 'L': 6.20},
+          category: 'espresso',
         ),
         CoffeeItem(
           id: 'espresso_2',
@@ -30,6 +35,7 @@ class DashboardCubit extends Cubit<DashboardState> {
           image: 'assets/images/espresso_cup.png',
           sizes: ['S', 'M', 'L'],
           sizePrices: {'S': 4.20, 'M': 5.20, 'L': 6.20},
+          category: 'espresso',
         ),
       ],
       'Latte': [
@@ -42,6 +48,7 @@ class DashboardCubit extends Cubit<DashboardState> {
           image: 'assets/images/latte_1.png',
           sizes: ['S', 'M', 'L'],
           sizePrices: {'S': 5.50, 'M': 6.50, 'L': 7.50},
+          category: 'latte',
         ),
         CoffeeItem(
           id: 'latte_2',
@@ -52,6 +59,7 @@ class DashboardCubit extends Cubit<DashboardState> {
           image: 'assets/images/latte_2.png',
           sizes: ['S', 'M', 'L'],
           sizePrices: {'S': 5.20, 'M': 6.20, 'L': 7.20},
+          category: 'latte',
         ),
       ],
       'Cappuccino': [
@@ -64,6 +72,7 @@ class DashboardCubit extends Cubit<DashboardState> {
           image: 'assets/images/cappuccino_1.png',
           sizes: ['S', 'M', 'L'],
           sizePrices: {'S': 4.80, 'M': 5.80, 'L': 6.80},
+          category: 'cappuccino',
         ),
         CoffeeItem(
           id: 'cappuccino_2',
@@ -74,6 +83,7 @@ class DashboardCubit extends Cubit<DashboardState> {
           image: 'assets/images/cappuccino_2.png',
           sizes: ['S', 'M', 'L'],
           sizePrices: {'S': 4.90, 'M': 5.90, 'L': 6.90},
+          category: 'cappuccino',
         ),
       ],
       'Cafetière': [
@@ -86,6 +96,7 @@ class DashboardCubit extends Cubit<DashboardState> {
           image: 'assets/images/cafetiere_1.png',
           sizes: ['S', 'M', 'L'],
           sizePrices: {'S': 3.80, 'M': 4.80, 'L': 5.80},
+          category: 'cafetière',
         ),
         CoffeeItem(
           id: 'cafetiere_2',
@@ -96,6 +107,7 @@ class DashboardCubit extends Cubit<DashboardState> {
           image: 'assets/images/cafetiere_2.png',
           sizes: ['S', 'M', 'L'],
           sizePrices: {'S': 4.00, 'M': 5.00, 'L': 6.00},
+          category: 'cafetière',
         ),
       ],
     },
@@ -103,7 +115,90 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   /// Initializes the dashboard with coffee data
   void initializeDashboard() {
-    emit(state.copyWith(isLoading: false));
+    if (isClosed) return;
+    emit(state.copyWith(isLoading: true));
+    _loadCoffeeItemsFromFirestore();
+  }
+
+  /// Load coffee items from Firestore and merge with existing data
+  void _loadCoffeeItemsFromFirestore() {
+    _coffeeStreamSubscription?.cancel();
+    _coffeeStreamSubscription = FirestoreService.getCoffeesStream().listen(
+      (firestoreCoffees) {
+        if (!isClosed) {
+          _mergeCoffeeItems(firestoreCoffees);
+        }
+      },
+      onError: (error) {
+        if (!isClosed) {
+          emit(state.copyWith(
+            isLoading: false,
+            errorMessage: 'Failed to load coffee items: $error',
+          ));
+        }
+      },
+    );
+  }
+
+  /// Merge Firestore coffee items with existing hardcoded items
+  void _mergeCoffeeItems(List<CoffeeItem> firestoreCoffees) {
+    if (isClosed) return;
+
+    final Map<String, List<CoffeeItem>> mergedCategories =
+        Map.from(state.coffeeItemsByCategory);
+
+    for (final coffee in firestoreCoffees) {
+      final categoryKey = _getCategoryKey(coffee.category);
+      if (categoryKey != null) {
+        mergedCategories[categoryKey] ??= [];
+
+        final existingIndex = mergedCategories[categoryKey]!
+            .indexWhere((existingCoffee) => existingCoffee.id == coffee.id);
+
+        if (existingIndex >= 0) {
+          mergedCategories[categoryKey]![existingIndex] = coffee;
+        } else {
+          mergedCategories[categoryKey]!.add(coffee);
+        }
+      }
+    }
+
+    emit(state.copyWith(
+      coffeeItemsByCategory: mergedCategories,
+      isLoading: false,
+      errorMessage: null,
+    ));
+  }
+
+  /// Get the proper category key for the coffee category
+  String? _getCategoryKey(String category) {
+    final categoryLower = category.toLowerCase();
+    switch (categoryLower) {
+      case 'espresso':
+        return 'Espresso';
+      case 'latte':
+        return 'Latte';
+      case 'cappuccino':
+        return 'Cappuccino';
+      case 'cafetière':
+      case 'cafetiere':
+        return 'Cafetière';
+      default:
+        return null;
+    }
+  }
+
+  /// Refresh coffee items from Firestore
+  void refreshCoffeeItems() {
+    if (isClosed) return;
+    emit(state.copyWith(isLoading: true));
+    _loadCoffeeItemsFromFirestore();
+  }
+
+  @override
+  Future<void> close() {
+    _coffeeStreamSubscription?.cancel();
+    return super.close();
   }
 
   /// Selects a category by index
@@ -162,7 +257,7 @@ class DashboardCubit extends Cubit<DashboardState> {
       ),
     );
   }
-  
+
   void clearSearch() {
     emit(
       state.copyWith(searchQuery: '', isSearchActive: false, filteredItems: []),
@@ -192,11 +287,13 @@ class DashboardCubit extends Cubit<DashboardState> {
     });
     return allItems;
   }
+
   List<CoffeeItem> getPopularCoffeeItems() {
     final allItems = getAllCoffeeItems();
     allItems.sort((a, b) => b.rating.compareTo(a.rating));
     return allItems.take(5).toList();
   }
+
   List<CoffeeItem> getCoffeeItemsByPriceRange(
     double minPrice,
     double maxPrice,
@@ -222,6 +319,7 @@ class DashboardCubit extends Cubit<DashboardState> {
             image: item.image,
             sizes: item.sizes,
             sizePrices: item.sizePrices,
+            category: item.category,
             isFavorite: !item.isFavorite,
           );
         }

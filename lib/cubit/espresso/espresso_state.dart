@@ -1,6 +1,5 @@
 import '../../core/models/coffee_item.dart';
 
-/// State class for the Espresso screen
 class EspressoState {
   final CoffeeItem? coffee;
   final bool isLoading;
@@ -22,7 +21,6 @@ class EspressoState {
     this.isImageViewerVisible = false,
   });
 
-  /// Creates a copy of the current state with updated values
   EspressoState copyWith({
     CoffeeItem? coffee,
     bool? isLoading,

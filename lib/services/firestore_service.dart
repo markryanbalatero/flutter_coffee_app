@@ -60,6 +60,7 @@ class FirestoreService {
         'isFavorite': coffee.isFavorite,
         'sizes': coffee.sizes,
         'sizePrices': coffee.sizePrices,
+        'category': coffee.category,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       };
@@ -98,6 +99,7 @@ class FirestoreService {
               (key, value) => MapEntry(key, value.toDouble()),
             ),
           ),
+          category: data['category'] ?? 'espresso',
         );
       }).toList();
     } catch (e) {
@@ -151,6 +153,7 @@ class FirestoreService {
               (key, value) => MapEntry(key, value.toDouble()),
             ),
           ),
+          category: data['category'] ?? 'espresso',
         );
       }).toList();
     });

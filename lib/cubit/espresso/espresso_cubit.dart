@@ -2,39 +2,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/models/coffee_item.dart';
 import 'espresso_state.dart';
 
-/// Cubit for managing the Espresso screen state and business logic
 class EspressoCubit extends Cubit<EspressoState> {
   EspressoCubit() : super(const EspressoState());
 
-  // Size multipliers for price calculation
   static const Map<String, double> sizeMultipliers = {
-    'S': 1.0, // Small: base price
-    'M': 1.2, // Medium: 20% more
-    'L': 1.5, // Large: 50% more
+    'S': 1.0,
+    'M': 1.2, 
+    'L': 1.5, 
   };
 
-  /// Initializes the espresso screen with coffee data
   void initializeEspresso(CoffeeItem coffee) {
+    if (isClosed) return;
+
+    final defaultSize = coffee.sizes.isNotEmpty ? coffee.sizes.first : 'S';
+
     emit(
       state.copyWith(
         coffee: coffee,
         isLoading: false,
+        selectedSize: defaultSize,
         totalPrice: _calculateTotalPrice(
           coffee.price,
-          state.selectedSize,
+          defaultSize,
           state.quantity,
         ),
       ),
     );
   }
-
-  /// Updates the selected chocolate type
   void selectChocolate(String chocolate) {
+    if (isClosed) return;
     emit(state.copyWith(selectedChocolate: chocolate));
   }
 
-  /// Updates the selected size and recalculates price
   void selectSize(String size) {
+    if (isClosed) return;
     if (state.coffee != null) {
       final newTotalPrice = _calculateTotalPrice(
         state.coffee!.price,
@@ -45,8 +46,8 @@ class EspressoCubit extends Cubit<EspressoState> {
     }
   }
 
-  /// Updates the quantity and recalculates price
   void updateQuantity(int quantity) {
+    if (isClosed) return;
     if (quantity > 0 && state.coffee != null) {
       final newTotalPrice = _calculateTotalPrice(
         state.coffee!.price,
@@ -57,8 +58,8 @@ class EspressoCubit extends Cubit<EspressoState> {
     }
   }
 
-  /// Toggles the favorite status of the coffee
   void toggleFavorite() {
+    if (isClosed) return;
     if (state.coffee != null) {
       final updatedCoffee = CoffeeItem(
         id: state.coffee!.id,
@@ -69,6 +70,7 @@ class EspressoCubit extends Cubit<EspressoState> {
         image: state.coffee!.image,
         sizes: state.coffee!.sizes,
         sizePrices: state.coffee!.sizePrices,
+        category: state.coffee!.category,
         isFavorite: !state.coffee!.isFavorite,
       );
 
@@ -76,59 +78,63 @@ class EspressoCubit extends Cubit<EspressoState> {
     }
   }
 
-  /// Shows the image viewer
   void showImageViewer() {
+    if (isClosed) return;
     emit(state.copyWith(isImageViewerVisible: true));
   }
 
-  /// Hides the image viewer
   void hideImageViewer() {
+    if (isClosed) return;
     emit(state.copyWith(isImageViewerVisible: false));
   }
 
-  /// Sets loading state
   void setLoading(bool isLoading) {
+    if (isClosed) return;
     emit(state.copyWith(isLoading: isLoading));
   }
 
-  /// Sets error message
   void setError(String? errorMessage) {
+    if (isClosed) return;
     emit(state.copyWith(errorMessage: errorMessage));
   }
 
-  /// Handles buy now action
   void buyNow() {
+    if (isClosed) return;
     if (state.coffee != null && state.quantity > 0) {
       setLoading(true);
 
-      // TODO: Implement actual buy logic here
-      // For now, just simulate a purchase
       Future.delayed(const Duration(seconds: 2), () {
-        setLoading(false);
-        // You can emit success state or navigate to another screen
+        if (!isClosed) {
+          setLoading(false);
+        }
       });
     }
   }
 
-  /// Calculates the total price based on base price, size, and quantity
   double _calculateTotalPrice(double basePrice, String size, int quantity) {
+    if (state.coffee != null && state.coffee!.sizePrices.containsKey(size)) {
+      return state.coffee!.sizePrices[size]! * quantity;
+    }
+
     final sizeMultiplier = sizeMultipliers[size] ?? 1.0;
     return basePrice * sizeMultiplier * quantity;
   }
 
-  /// Gets available chocolate options
   List<String> get chocolateOptions => [
-    'White Chocolate',
-    'Milk Chocolate',
-    'Dark Chocolate',
-    'Bittersweet Chocolate',
-    'Ruby Chocolate',
-  ];
+        'White Chocolate',
+        'Milk Chocolate',
+        'Dark Chocolate',
+        'Bittersweet Chocolate',
+        'Ruby Chocolate',
+      ];
 
-  /// Gets available size options
-  List<String> get sizeOptions => ['S', 'M', 'L'];
+  List<String> get sizeOptions {
+    if (state.coffee != null && state.coffee!.sizes.isNotEmpty) {
+      return state.coffee!.sizes;
+    }
+    return ['S', 'M', 'L'];
+  }
 
-  /// Checks if the current coffee has chocolate based on name/description
   bool get hasChocolate {
     if (state.coffee == null) return false;
 
@@ -141,7 +147,6 @@ class EspressoCubit extends Cubit<EspressoState> {
         lowerDesc.contains('mocha');
   }
 
-  /// Gets the roast level based on coffee type
   String get roastLevel {
     if (state.coffee == null) return 'Medium Roasted';
 
@@ -156,7 +161,7 @@ class EspressoCubit extends Cubit<EspressoState> {
         lowerName.contains('french')) {
       return 'Medium Roasted';
     } else {
-      return 'Medium Roasted'; // Default
+      return 'Medium Roasted'; 
     }
   }
 }
