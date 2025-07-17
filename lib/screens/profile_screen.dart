@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart'; 
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -13,6 +15,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   bool isDarkMode = false;
+  File? _imageFile;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -59,14 +72,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: CircleAvatar(
                 radius: 81,
                 backgroundColor: cardColor,
-                backgroundImage: const AssetImage('assets/images/profile.png'),
+                backgroundImage: _imageFile != null
+                    ? FileImage(_imageFile!)
+                    : const AssetImage('assets/images/profile.png') as ImageProvider,
               ),
             ),
             const SizedBox(height: 8),
             TextButton(
-              onPressed: () {
-                // TODO: Implement image picker
-              },
+              onPressed: _pickImage,
               child: Text(
                 'Browse...',
                 style: TextStyle(
@@ -119,32 +132,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Row(
                 children: [
                   Text(
-                    'Theme Mode :',
+                    'Theme Mode',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 12,
+                      fontSize: 18,
                       color: labelColor,
                     ),
                   ),
                   const Spacer(),
-                  Text(
-                    'Dark',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                      color: isDarkMode ? Colors.black : Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  _buildThemeSwitch(),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Light',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                      color: !isDarkMode ? Colors.black : Colors.grey,
-                    ),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Dark',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: isDarkMode ? Colors.black : Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(width: 48),
+                          Text(
+                            'Light',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: !isDarkMode ? Colors.black : Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      _buildThemeSwitch(),
+                    ],
                   ),
                 ],
               ),
@@ -184,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildLabel(String text, Color labelColor) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, bottom: 4),
+      padding: const EdgeInsets.only(right: 310, bottom: 4),
       child: Text(
         text,
         style: TextStyle(
@@ -225,7 +247,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
   Widget _buildThemeSwitch() {
     return GestureDetector(
       onTap: () {
