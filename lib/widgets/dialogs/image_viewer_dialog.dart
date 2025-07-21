@@ -3,8 +3,8 @@ import '../../core/constants/app_constants.dart';
 import '../../core/models/coffee_item.dart';
 import '../../core/theme/app_colors.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/image_utils.dart';
 
-/// A full-screen image viewer dialog that shows the coffee image with details
 class ImageViewerDialog extends StatelessWidget {
   final CoffeeItem coffee;
   final String imagePath;
@@ -47,7 +47,10 @@ class ImageViewerDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(
                         AppConstants.defaultBorderRadius,
                       ),
-                      child: Image.asset(imagePath, fit: BoxFit.contain),
+                      child: Image(
+                        image: ImageUtils.getImageProvider(imagePath),
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),

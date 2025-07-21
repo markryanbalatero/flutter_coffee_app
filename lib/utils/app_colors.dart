@@ -19,7 +19,7 @@ class AppColors {
   static const secondaryText = Color(0x99444444);
 
   // Coffee app specific colors
-  static const Color coffeeCardBackground = Colors.white;
+  static const Color coffeeCardBackground = Color(0xFFECE9E5);
   static const Color coffeeCardShadow = Color(0x1A000000);
   static const Color coffeeTextDark = Color(0xFF444444);
   static const Color coffeeTextSecondary = Color(0xFF999999);
@@ -83,6 +83,16 @@ class AppColors {
 
   // Transparent color
   static const Color transparent = Colors.transparent;
+
+  // Overlay colors
+  static const Color overlay = Color(0x4D000000);
+
+  // UI element colors
+  static const Color dividerColor = Color(0xFF999999);
+  static const Color dividerTextColor = Color(0xFF666666);
+  static const Color selectionColor =
+      Color(0x4D2196F3); 
+  static const Color selectionHandleColor = Color(0xFF2196F3);
 
   // Button specific colors
   static const Color buttonBackground = Colors.white;

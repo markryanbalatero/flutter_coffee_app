@@ -5,11 +5,13 @@ import '../utils/app_colors.dart';
 class CustomBottomNavigation extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
+  final VoidCallback? onAddTapped;
 
   const CustomBottomNavigation({
     super.key,
     required this.selectedIndex,
     required this.onItemTapped,
+    this.onAddTapped,
   });
 
   @override
@@ -37,12 +39,27 @@ class CustomBottomNavigation extends StatelessWidget {
             children: [
               _buildNavItem('assets/icons/home.svg', 0),
               _buildNavItem('assets/icons/heart.svg', 1),
-              _buildNavItem('assets/icons/bag.svg', 2),
+              _buildAddButton(),
               _buildNavItem('assets/icons/notification.svg', 3),
               _buildNavItem('assets/icons/profile.svg', 4),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAddButton() {
+    return GestureDetector(
+      onTap: onAddTapped,
+      child: Container(
+        width: 56,
+        height: 56,
+        decoration: BoxDecoration(
+          color: AppColors.buttonColor,
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.add, color: Colors.white, size: 24),
       ),
     );
   }

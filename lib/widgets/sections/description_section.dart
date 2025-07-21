@@ -3,7 +3,6 @@ import 'package:flutter_coffee_app/core/models/coffee_item.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../text/expandable_text.dart';
 
-/// Widget for displaying product_details description
 class DescriptionSection extends StatelessWidget {
   final CoffeeItem coffeeItem;
 
@@ -16,12 +15,11 @@ class DescriptionSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(coffeeItem.name, style: AppTextStyles.sectionTitle),
-        const SizedBox(height: 5),
+        Text('Description', style: AppTextStyles.sectionTitle),
+        const SizedBox(height: 8),
         ExpandableText(
           text: coffeeItem.description,
-          initialText: coffeeItem.description,
-          maxLines: maxLines,
+          maxLines: 4,
           textStyle: AppTextStyles.description,
           linkStyle: AppTextStyles.readMore,
           animation: true,

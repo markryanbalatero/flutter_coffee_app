@@ -21,8 +21,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  int selectedBottomNavIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -88,6 +86,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildCoffeePageView() {
     return BlocBuilder<DashboardCubit, DashboardState>(
       builder: (context, state) {
+        if (state.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.buttonColor),
+            ),
+          );
+        }
+
+        if (state.errorMessage != null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: AppColors.coffeeTextSecondary,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Error Loading Coffee Items',
+                  style: AppTheme.titleStyle.copyWith(
+                    color: AppColors.coffeeTextDark,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  state.errorMessage!,
+                  style: AppTheme.titleStyle.copyWith(
+                    color: AppColors.coffeeTextSecondary,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<DashboardCubit>().refreshCoffeeItems();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.buttonColor,
+                    foregroundColor: AppColors.buttonTextColor,
+                  ),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          );
+        }
+
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 23),
@@ -98,11 +147,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     searchQuery: state.searchQuery,
                     filteredItems: state.filteredItems,
                     onCoffeeCardTap: (item) {
-                      // TODO: Add navigation to product details screen in future
                       print('Coffee card tapped: ${item.name}');
                     },
                     onAddToCart: (item) {
-                      // Add to cart functionality
                       print('Add to cart: ${item.name}');
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -126,46 +173,64 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildCategoryView(DashboardState state) {
-    final items =
-        state.coffeeItemsByCategory[state.categories[state
-            .selectedCategoryIndex]] ??
+    final items = state.coffeeItemsByCategory[
+            state.categories[state.selectedCategoryIndex]] ??
         [];
+
+    if (items.isEmpty) {
+      return Container(
+        height: 250,
+        child: Center(
+          child: Text(
+            'No coffee items available',
+            style: AppTheme.titleStyle.copyWith(
+              color: AppColors.coffeeTextSecondary,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      );
+    }
 
     return Column(
       children: [
-        Row(
-          children: items.map((item) {
-            return Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 9),
-                child: CoffeeCard(
-                  name: item.name,
-                  description: item.description,
-                  price: item.price,
-                  rating: item.rating,
-                  imageAsset: item.image,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EspressoScreen(product: item),
-                      ),
-                    );
-                  },
-                  onAddTap: () {
-                    // TODO: Add to cart functionality here
-                    print('Add to cart: ${item.name}');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('${item.name} added to cart'),
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                ),
-              ),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.7,
+            crossAxisSpacing: 18,
+            mainAxisSpacing: 20,
+          ),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return CoffeeCard(
+              name: item.name,
+              description: item.description,
+              price: item.price,
+              rating: item.rating,
+              imageAsset: item.image,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EspressoScreen(product: item),
+                  ),
+                );
+              },
+              onAddTap: () {
+                print('Add to cart: ${item.name}');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${item.name} added to cart'),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
             );
-          }).toList(),
+          },
         ),
       ],
     );
@@ -280,12 +345,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildBottomNavigation() {
-    return CustomBottomNavigation(
-      selectedIndex: selectedBottomNavIndex,
-      onItemTapped: (index) {
-        setState(() {
-          selectedBottomNavIndex = index;
-        });
+    return BlocBuilder<DashboardCubit, DashboardState>(
+      builder: (context, state) {
+        return CustomBottomNavigation(
+          selectedIndex: state.selectedBottomNavIndex,
+          onItemTapped: (index) {
+            context.read<DashboardCubit>().selectBottomNavIndex(index);
+          },
+          onAddTapped: () {
+            Navigator.pushNamed(context, '/add-coffee');
+          },
+        );
       },
     );
   }

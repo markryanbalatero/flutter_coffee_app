@@ -55,10 +55,8 @@ class _ExpandableTextState extends State<ExpandableText>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        // If we have initial text, use it to determine if we need "Read More"
         final textToMeasure = widget.initialText ?? widget.text;
 
-        // Create a TextPainter to measure text
         final span = TextSpan(text: textToMeasure, style: textStyle);
         final textPainter = TextPainter(
           text: span,
@@ -67,11 +65,7 @@ class _ExpandableTextState extends State<ExpandableText>
         );
         textPainter.layout(maxWidth: constraints.maxWidth);
 
-        // Check if we need "Read More" button
-        // If we have initialText, we always show "Read More" (assuming full text is longer)
-        // If we don't have initialText, check if the main text overflows
-        final needsReadMore =
-            widget.initialText != null || textPainter.didExceedMaxLines;
+        final needsReadMore = textPainter.didExceedMaxLines;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +89,6 @@ class _ExpandableTextState extends State<ExpandableText>
     bool needsReadMore,
   ) {
     if (!needsReadMore) {
-      // If no "Read More" is needed, show the text as is
       return Text(widget.text, style: textStyle);
     }
 
@@ -128,7 +121,6 @@ class _ExpandableTextState extends State<ExpandableText>
   }
 
   String _getTruncatedText(TextStyle textStyle) {
-    // Create a text span with "Read More" to account for its space
     final readMoreSpan = TextSpan(
       text: ' ${widget.readMoreText}',
       style: widget.linkStyle ?? AppTextStyles.readMore,
@@ -148,7 +140,6 @@ class _ExpandableTextState extends State<ExpandableText>
     textPainter.layout(maxWidth: double.infinity);
 
     if (textPainter.didExceedMaxLines) {
-      // Binary search to find the optimal cut-off point
       int low = 0;
       int high = widget.text.length;
       String bestFit = '';
@@ -177,12 +168,10 @@ class _ExpandableTextState extends State<ExpandableText>
           high = mid - 1;
         }
       }
-
-      // Find word boundary
+      
       if (bestFit.isNotEmpty) {
         final lastSpace = bestFit.lastIndexOf(' ');
         if (lastSpace > bestFit.length * 0.8) {
-          // Only break at word if it's near the end
           bestFit = bestFit.substring(0, lastSpace);
         }
       }

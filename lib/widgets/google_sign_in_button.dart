@@ -22,7 +22,7 @@ class GoogleSignInButton extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             spreadRadius: 0,
             blurRadius: 10,
             offset: const Offset(0, 2),
@@ -34,6 +34,10 @@ class GoogleSignInButton extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(25),
           onTap: isLoading ? null : onPressed,
+          splashColor: Colors.grey.withValues(alpha: 0.1),
+          highlightColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
@@ -45,7 +49,8 @@ class GoogleSignInButton extends StatelessWidget {
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4285F4)),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Color(0xFF4285F4)),
                     ),
                   )
                 else

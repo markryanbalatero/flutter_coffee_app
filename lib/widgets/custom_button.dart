@@ -50,6 +50,9 @@ class CustomButton extends StatelessWidget {
           ),
           elevation: 0,
           minimumSize: Size(width, height - 10),
+          overlayColor: Colors.white.withValues(alpha: 0.1),
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

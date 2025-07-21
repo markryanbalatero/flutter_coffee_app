@@ -6,6 +6,7 @@ import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/espresso_screen.dart';
+import 'screens/add_coffee_screen.dart';
 import 'cubit/dashboard/dashboard_cubit.dart';
 
 void main() async {
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/dashboard': (context) => const DashboardScreen(),
           '/espresso': (context) => const EspressoScreen(),
+          '/add-coffee': (context) => AddCoffeeScreen.create(),
         },
       ),
     );
