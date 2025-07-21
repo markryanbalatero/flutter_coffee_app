@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/screens/espresso_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../cubit/dashboard/dashboard_cubit.dart';
 import '../cubit/dashboard/dashboard_state.dart';
 import '../widgets/coffee_card.dart';
@@ -12,6 +14,7 @@ import '../widgets/category_tab.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_colors.dart';
 import '../widgets/search_results_view.dart';
+import 'dart:io';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -21,6 +24,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  int selectedBottomNavIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -237,6 +242,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildHeader() {
+    final user = FirebaseAuth.instance.currentUser;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -259,15 +265,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
         ),
-        Container(
-          width: 46,
-          height: 46,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(23),
-            image: const DecorationImage(
-              image: AssetImage('assets/images/profile.png'),
-              fit: BoxFit.cover,
-            ),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/profile');
+          },
+          child: FutureBuilder<DocumentSnapshot>(
+            future: user != null
+                ? FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(user.uid)
+                    .get()
+                : Future.value(null),
+            builder: (context, snapshot) {
+              String? imagePath;
+              if (snapshot.hasData && snapshot.data != null) {
+                final data = snapshot.data!.data() as Map<String, dynamic>?;
+                imagePath = data?['imagePath'];
+              }
+              ImageProvider imageProvider;
+              if (imagePath != null && imagePath.isNotEmpty) {
+                imageProvider = FileImage(File(imagePath));
+              } else {
+                imageProvider = const AssetImage('assets/images/profile.png');
+              }
+              return Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(23),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -345,17 +377,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildBottomNavigation() {
-    return BlocBuilder<DashboardCubit, DashboardState>(
-      builder: (context, state) {
-        return CustomBottomNavigation(
-          selectedIndex: state.selectedBottomNavIndex,
-          onItemTapped: (index) {
-            context.read<DashboardCubit>().selectBottomNavIndex(index);
-          },
-          onAddTapped: () {
-            Navigator.pushNamed(context, '/add-coffee');
-          },
-        );
+    return CustomBottomNavigation(
+      selectedIndex: selectedBottomNavIndex,
+      onItemTapped: (index) {
+        setState(() {
+          selectedBottomNavIndex = index;
+        });
+        if (index == 4) {
+          Navigator.pushNamed(context, '/profile');
+        }
+      },
+      onAddTapped: () {
+        Navigator.pushNamed(context, '/add-coffee');
       },
     );
   }
