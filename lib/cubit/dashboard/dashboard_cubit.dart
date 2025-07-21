@@ -10,117 +10,22 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   DashboardCubit() : super(_initialState);
 
-  /// Initial state with coffee data
+  /// Initial state with empty coffee data - will be loaded from Firestore
   static final DashboardState _initialState = DashboardState(
     categories: const ['Espresso', 'Latte', 'Cappuccino', 'Cafetière'],
     coffeeItemsByCategory: {
-      'Espresso': [
-        CoffeeItem(
-          id: 'espresso_1',
-          name: '1 Espresso',
-          description: '1 with Oat Milk',
-          price: 4.20,
-          rating: 4.5,
-          image: 'assets/images/espresso_beans.png',
-          sizes: ['S', 'M', 'L'],
-          sizePrices: {'S': 4.20, 'M': 5.20, 'L': 6.20},
-          category: 'espresso',
-        ),
-        CoffeeItem(
-          id: 'espresso_2',
-          name: '2 Espresso',
-          description: '2 with Milk',
-          price: 4.20,
-          rating: 4.5,
-          image: 'assets/images/espresso_cup.png',
-          sizes: ['S', 'M', 'L'],
-          sizePrices: {'S': 4.20, 'M': 5.20, 'L': 6.20},
-          category: 'espresso',
-        ),
-      ],
-      'Latte': [
-        CoffeeItem(
-          id: 'latte_1',
-          name: '3 Caffe Latte',
-          description: '3 with Steamed Milk',
-          price: 5.50,
-          rating: 4.7,
-          image: 'assets/images/latte_1.png',
-          sizes: ['S', 'M', 'L'],
-          sizePrices: {'S': 5.50, 'M': 6.50, 'L': 7.50},
-          category: 'latte',
-        ),
-        CoffeeItem(
-          id: 'latte_2',
-          name: 'Iced Latte',
-          description: 'with Cold Milk',
-          price: 5.20,
-          rating: 4.3,
-          image: 'assets/images/latte_2.png',
-          sizes: ['S', 'M', 'L'],
-          sizePrices: {'S': 5.20, 'M': 6.20, 'L': 7.20},
-          category: 'latte',
-        ),
-      ],
-      'Cappuccino': [
-        CoffeeItem(
-          id: 'cappuccino_1',
-          name: 'Cappuccino',
-          description: 'with Foam Art',
-          price: 4.80,
-          rating: 4.6,
-          image: 'assets/images/cappuccino_1.png',
-          sizes: ['S', 'M', 'L'],
-          sizePrices: {'S': 4.80, 'M': 5.80, 'L': 6.80},
-          category: 'cappuccino',
-        ),
-        CoffeeItem(
-          id: 'cappuccino_2',
-          name: 'Cappuccino',
-          description: 'Extra Foam',
-          price: 4.90,
-          rating: 4.4,
-          image: 'assets/images/cappuccino_2.png',
-          sizes: ['S', 'M', 'L'],
-          sizePrices: {'S': 4.90, 'M': 5.90, 'L': 6.90},
-          category: 'cappuccino',
-        ),
-      ],
-      'Cafetière': [
-        CoffeeItem(
-          id: 'cafetiere_1',
-          name: 'French Press',
-          description: 'Bold & Rich',
-          price: 3.80,
-          rating: 4.2,
-          image: 'assets/images/cafetiere_1.png',
-          sizes: ['S', 'M', 'L'],
-          sizePrices: {'S': 3.80, 'M': 4.80, 'L': 5.80},
-          category: 'cafetière',
-        ),
-        CoffeeItem(
-          id: 'cafetiere_2',
-          name: 'Cold Brew',
-          description: 'Smooth & Strong',
-          price: 4.00,
-          rating: 4.5,
-          image: 'assets/images/cafetiere_2.png',
-          sizes: ['S', 'M', 'L'],
-          sizePrices: {'S': 4.00, 'M': 5.00, 'L': 6.00},
-          category: 'cafetière',
-        ),
-      ],
+      'Espresso': [],
+      'Latte': [],
+      'Cappuccino': [],
+      'Cafetière': [],
     },
   );
-
-  /// Initializes the dashboard with coffee data
   void initializeDashboard() {
     if (isClosed) return;
     emit(state.copyWith(isLoading: true));
     _loadCoffeeItemsFromFirestore();
   }
 
-  /// Load coffee items from Firestore and merge with existing data
   void _loadCoffeeItemsFromFirestore() {
     _coffeeStreamSubscription?.cancel();
     _coffeeStreamSubscription = FirestoreService.getCoffeesStream().listen(
@@ -140,31 +45,26 @@ class DashboardCubit extends Cubit<DashboardState> {
     );
   }
 
-  /// Merge Firestore coffee items with existing hardcoded items
+  /// Add Firestore coffee items to appropriate categories
   void _mergeCoffeeItems(List<CoffeeItem> firestoreCoffees) {
     if (isClosed) return;
 
-    final Map<String, List<CoffeeItem>> mergedCategories =
-        Map.from(state.coffeeItemsByCategory);
+    final Map<String, List<CoffeeItem>> categorizedCoffees = {
+      'Espresso': [],
+      'Latte': [],
+      'Cappuccino': [],
+      'Cafetière': [],
+    };
 
     for (final coffee in firestoreCoffees) {
       final categoryKey = _getCategoryKey(coffee.category);
       if (categoryKey != null) {
-        mergedCategories[categoryKey] ??= [];
-
-        final existingIndex = mergedCategories[categoryKey]!
-            .indexWhere((existingCoffee) => existingCoffee.id == coffee.id);
-
-        if (existingIndex >= 0) {
-          mergedCategories[categoryKey]![existingIndex] = coffee;
-        } else {
-          mergedCategories[categoryKey]!.add(coffee);
-        }
+        categorizedCoffees[categoryKey]!.add(coffee);
       }
     }
 
     emit(state.copyWith(
-      coffeeItemsByCategory: mergedCategories,
+      coffeeItemsByCategory: categorizedCoffees,
       isLoading: false,
       errorMessage: null,
     ));
