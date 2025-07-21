@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart'; 
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -34,6 +36,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (user != null) {
       _nameController.text = user.displayName ?? '';
       _emailController.text = user.email ?? '';
+    }
+  }
+
+  Future<void> _saveOrUpdateProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    String? imageUrl;
+    if (_imageFile != null) {
+      // Upload image to Firebase Storage
+      final ref = FirebaseStorage.instance.ref().child('profile_images/${user.uid}.jpg');
+      await ref.putFile(_imageFile!);
+      imageUrl = await ref.getDownloadURL();
+    }
+
+    final docRef = FirebaseFirestore.instance.collection('profiles').doc(user.uid);
+    final docSnapshot = await docRef.get();
+
+    final data = {
+      'name': _nameController.text,
+      'email': _emailController.text,
+      if (imageUrl != null) 'imageUrl': imageUrl,
+    };
+
+    if (docSnapshot.exists) {
+      await docRef.update(data);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated!')),
+      );
+    } else {
+      await docRef.set(data);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile created!')),
+      );
     }
   }
 
@@ -110,7 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 onPressed: () {
-                  // TODO: Implement update logic
+                  _saveOrUpdateProfile();
                 },
                 child: const Text(
                   'Update',
