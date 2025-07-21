@@ -8,6 +8,7 @@ import 'screens/dashboard_screen.dart';
 import 'screens/espresso_screen.dart';
 import 'screens/add_coffee_screen.dart';
 import 'cubit/dashboard/dashboard_cubit.dart';
+import 'screens/profile_screen.dart'; // Import the new ProfileScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
           '/dashboard': (context) => const DashboardScreen(),
           '/espresso': (context) => const EspressoScreen(),
           '/add-coffee': (context) => AddCoffeeScreen.create(),
+          '/profile': (context) => const ProfileScreen(), // Add the ProfileScreen route
         },
       ),
     );
