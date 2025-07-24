@@ -78,4 +78,8 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+
+  static var screenBackground;
+
+  static var specialOfferCardShadow;
 }

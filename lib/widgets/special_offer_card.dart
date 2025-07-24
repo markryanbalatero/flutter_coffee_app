@@ -33,10 +33,10 @@ class SpecialOfferCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title, 
+              title,
               style: AppTheme.specialOfferTitleStyle.copyWith(
-                color: isDarkMode 
-                  ? AppColors.darkTextOnBackground 
+                color: isDarkMode
+                  ? AppColors.darkTextOnBackground
                   : null
               )
             ),
@@ -47,14 +47,14 @@ class SpecialOfferCard extends StatelessWidget {
                 width: double.infinity,
                 height: 145,
                 decoration: BoxDecoration(
-                  color: isDarkMode 
-                    ? AppColors.darkSurface 
+                  color: isDarkMode
+                    ? AppColors.darkSurface
                     : AppColors.specialOfferCardBackground,
                   borderRadius: BorderRadius.circular(25),
                   boxShadow: [
                     BoxShadow(
-                      color: isDarkMode 
-                        ? Colors.black.withOpacity(0.3) 
+                      color: isDarkMode
+                        ? Colors.black.withOpacity(0.3)
                         : AppColors.specialOfferCardShadow,
                       blurRadius: 24,
                       offset: const Offset(0, 0),
@@ -84,8 +84,8 @@ class SpecialOfferCard extends StatelessWidget {
                             Text(
                               description,
                               style: AppTheme.specialOfferDescriptionStyle.copyWith(
-                                color: isDarkMode 
-                                  ? AppColors.darkOnSurface 
+                                color: isDarkMode
+                                  ? AppColors.darkOnSurface
                                   : null
                               ),
                             ),
@@ -95,8 +95,8 @@ class SpecialOfferCard extends StatelessWidget {
                                 Text(
                                   '\$${currentPrice.toStringAsFixed(2)}',
                                   style: AppTheme.specialOfferPriceStyle.copyWith(
-                                    color: isDarkMode 
-                                      ? AppColors.darkPrimary 
+                                    color: isDarkMode
+                                      ? AppColors.darkPrimary
                                       : null
                                   ),
                                 ),
@@ -104,8 +104,8 @@ class SpecialOfferCard extends StatelessWidget {
                                 Text(
                                   '\$${originalPrice.toStringAsFixed(1)}',
                                   style: AppTheme.specialOfferOriginalPriceStyle.copyWith(
-                                    color: isDarkMode 
-                                      ? AppColors.darkOnSurface 
+                                    color: isDarkMode
+                                      ? AppColors.darkOnSurface
                                       : null
                                   ),
                                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_coffee_app/core/models/coffee_item.dart';
 import 'theme/app_theme.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
@@ -9,7 +10,8 @@ import 'screens/espresso_screen.dart';
 import 'screens/add_coffee_screen.dart';
 import 'cubit/dashboard/dashboard_cubit.dart';
 import 'cubit/theme/theme_cubit.dart';
-import 'screens/profile_screen.dart';
+import 'screens/profile_screen.dart'; // Import the new ProfileScreen
+import 'cubit/favorite_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +28,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => DashboardCubit()),
         BlocProvider(create: (context) => ThemeCubit()),
+        BlocProvider(create: (context) => FavoriteCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {
@@ -40,7 +43,11 @@ class MyApp extends StatelessWidget {
               '/splash': (context) => const SplashScreen(),
               '/login': (context) => const LoginScreen(),
               '/dashboard': (context) => const DashboardScreen(),
-              '/espresso': (context) => const EspressoScreen(),
+              '/espresso': (context) {
+                final coffee =
+                ModalRoute.of(context)!.settings.arguments as CoffeeItem?;
+                return EspressoScreen(product: coffee);
+              },
               '/add-coffee': (context) => AddCoffeeScreen.create(),
               '/profile': (context) => const ProfileScreen(),
             },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/screens/espresso_screen.dart';
+import 'package:flutter_coffee_app/screens/favorite_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -115,7 +116,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Icon(
                   Icons.error_outline,
                   size: 64,
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -270,13 +272,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onTap: () {
             Navigator.pushNamed(context, '/profile');
           },
-          child: FutureBuilder<DocumentSnapshot>(
+          child: FutureBuilder<DocumentSnapshot?>(
             future: user != null
                 ? FirebaseFirestore.instance
                     .collection('users')
                     .doc(user.uid)
                     .get()
-                : Future.value(null),
+                : null,
             builder: (context, snapshot) {
               String? imagePath;
               if (snapshot.hasData && snapshot.data != null) {
@@ -387,7 +389,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         setState(() {
           selectedBottomNavIndex = index;
         });
-        if (index == 4) {
+        if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const FavoriteScreen(),
+            ),
+          );
+        } else if (index == 4) {
           Navigator.pushNamed(context, '/profile');
         }
       },
