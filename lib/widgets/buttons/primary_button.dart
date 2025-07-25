@@ -9,8 +9,10 @@ class PrimaryButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPressed,
-    this.height = AppConstants.buyButtonHeight,
+    this.height = 40, // Default reduced height
+    this.width = double.infinity, // Default to fill available width
     this.backgroundColor = AppColors.primary,
+    this.textColor,
     this.textStyle = AppTextStyles.buttonText,
     this.borderRadius = AppConstants.smallBorderRadius,
     this.isLoading = false,
@@ -20,7 +22,9 @@ class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final double height;
+  final double width;
   final Color backgroundColor;
+  final Color? textColor;
   final TextStyle textStyle;
   final double borderRadius;
   final bool isLoading;
@@ -30,19 +34,21 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
-      width: double.infinity,
+      width: width, // Explicitly set the width
       child: ElevatedButton(
         onPressed: isEnabled && !isLoading ? onPressed : null,
         style: ElevatedButton.styleFrom(
+          minimumSize: Size(width, height), // Ensure minimum size matches
           backgroundColor: backgroundColor,
           disabledBackgroundColor: AppColors.buttonInactive,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           elevation: 0,
+          padding: EdgeInsets.zero, // Remove default padding
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
@@ -50,7 +56,13 @@ class PrimaryButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.textWhite),
                 ),
               )
-            : Text(text, style: textStyle),
+            : Text(
+                text, 
+                style: textStyle.copyWith(
+                  color: textColor ?? textStyle.color
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
       ),
     );
   }

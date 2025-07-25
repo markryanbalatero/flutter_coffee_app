@@ -6,6 +6,7 @@ import 'dart:io';
 import '../theme/app_theme.dart';
 import '../utils/app_colors.dart';
 import '../cubit/add_coffee/add_coffee_cubit.dart';
+import '../cubit/theme/theme_cubit.dart';
 
 class AddCoffeeScreen extends StatefulWidget {
   const AddCoffeeScreen({super.key});
@@ -147,86 +148,120 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AddCoffeeCubit, AddCoffeeState>(
-      listener: (context, state) {
-        if (state.errorMessage != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
-        }
-        if (state.isSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Coffee added successfully!'),
-              backgroundColor: AppColors.buttonColor,
-            ),
-          );
-          Navigator.pop(context);
-        }
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        final isDarkMode = themeMode == ThemeMode.dark;
+        final theme = isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme;
+
+        return BlocListener<AddCoffeeCubit, AddCoffeeState>(
+          listener: (context, state) {
+            if (state.errorMessage != null) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+            }
+            if (state.isSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Coffee added successfully!',
+                    style: TextStyle(
+                      color: isDarkMode 
+                        ? AppColors.darkTextOnBackground 
+                        : Colors.white,
+                    ),
+                  ),
+                  backgroundColor: isDarkMode 
+                    ? AppColors.darkPrimary 
+                    : AppColors.buttonColor,
+                ),
+              );
+              Navigator.pop(context);
+            }
+          },
+          child: BlocBuilder<AddCoffeeCubit, AddCoffeeState>(
+            builder: (context, state) {
+              return Scaffold(
+                backgroundColor: isDarkMode 
+                  ? AppColors.darkBackground 
+                  : Colors.white,
+                appBar: AppBar(
+                  backgroundColor: isDarkMode 
+                    ? AppColors.darkSurface 
+                    : Colors.white,
+                  elevation: 0,
+                  leading: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back, 
+                      color: isDarkMode 
+                        ? AppColors.darkTextOnBackground 
+                        : AppColors.coffeeTextDark,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  title: Text(
+                    'Add New Coffee',
+                    style: AppTheme.titleStyle.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: isDarkMode 
+                        ? AppColors.darkTextOnBackground 
+                        : AppColors.coffeeTextDark,
+                    ),
+                  ),
+                  centerTitle: true,
+                ),
+                body: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildImageUploadSection(isDarkMode),
+                        const SizedBox(height: 16),
+                        _buildProductNameInput(isDarkMode),
+                        const SizedBox(height: 16),
+                        _buildDescriptionInput(isDarkMode),
+                        const SizedBox(height: 16),
+                        _buildCategorySelection(isDarkMode),
+                        const SizedBox(height: 16),
+                        _buildChocolateSelection(isDarkMode),
+                        const SizedBox(height: 16),
+                        _buildSizeSelection(isDarkMode),
+                        const SizedBox(height: 16),
+                        _buildPriceAndQuantityRow(isDarkMode),
+                        const SizedBox(height: 32),
+                        _buildAddProductButton(state.isLoading, isDarkMode),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
       },
-      child: BlocBuilder<AddCoffeeCubit, AddCoffeeState>(
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: AppColors.coffeeTextDark),
-                onPressed: () => Navigator.pop(context),
-              ),
-              title: Text(
-                'Add New Coffee',
-                style: AppTheme.titleStyle.copyWith(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.coffeeTextDark,
-                ),
-              ),
-              centerTitle: true,
-            ),
-            body: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildImageUploadSection(),
-                    const SizedBox(height: 16),
-                    _buildProductNameInput(),
-                    const SizedBox(height: 16),
-                    _buildDescriptionInput(),
-                    const SizedBox(height: 16),
-                    _buildCategorySelection(),
-                    const SizedBox(height: 16),
-                    _buildChocolateSelection(),
-                    const SizedBox(height: 16),
-                    _buildSizeSelection(),
-                    const SizedBox(height: 16),
-                    _buildPriceAndQuantityRow(),
-                    const SizedBox(height: 32),
-                    _buildAddProductButton(state.isLoading),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 
-  Widget _buildImageUploadSection() {
+  Widget _buildImageUploadSection(bool isDarkMode) {
     return BlocBuilder<AddCoffeeCubit, AddCoffeeState>(
       builder: (context, state) {
         return Container(
           width: double.infinity,
           height: 200,
           decoration: BoxDecoration(
-            color: AppColors.coffeeCardBackground,
+            color: isDarkMode 
+              ? AppColors.darkSurface 
+              : AppColors.coffeeCardBackground,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.inputBorderColor, width: 1),
+            border: Border.all(
+              color: isDarkMode 
+                ? AppColors.darkDivider 
+                : AppColors.inputBorderColor, 
+              width: 1
+            ),
           ),
           child: InkWell(
             onTap: _pickImage,
@@ -273,7 +308,7 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
     );
   }
 
-  Widget _buildProductNameInput() {
+  Widget _buildProductNameInput(bool isDarkMode) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -282,6 +317,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
           style: AppTheme.titleStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
+            color: isDarkMode 
+              ? AppColors.darkTextOnBackground 
+              : null,
           ),
         ),
         const SizedBox(height: 8),
@@ -290,7 +328,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
           decoration: InputDecoration(
             hintText: 'Enter coffee name',
             filled: true,
-            fillColor: AppColors.coffeeCardBackground,
+            fillColor: isDarkMode 
+              ? AppColors.darkSurface 
+              : AppColors.coffeeCardBackground,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -299,6 +339,16 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
               horizontal: 16,
               vertical: 16,
             ),
+            hintStyle: TextStyle(
+              color: isDarkMode 
+                ? AppColors.darkOnSurface 
+                : null,
+            ),
+          ),
+          style: TextStyle(
+            color: isDarkMode 
+              ? AppColors.darkTextOnBackground 
+              : null,
           ),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
@@ -311,7 +361,7 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
     );
   }
 
-  Widget _buildDescriptionInput() {
+  Widget _buildDescriptionInput(bool isDarkMode) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -320,6 +370,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
           style: AppTheme.titleStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
+            color: isDarkMode 
+              ? AppColors.darkTextOnBackground 
+              : null,
           ),
         ),
         const SizedBox(height: 8),
@@ -329,7 +382,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
           decoration: InputDecoration(
             hintText: 'Enter coffee description',
             filled: true,
-            fillColor: AppColors.coffeeCardBackground,
+            fillColor: isDarkMode 
+              ? AppColors.darkSurface 
+              : AppColors.coffeeCardBackground,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -338,6 +393,16 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
               horizontal: 16,
               vertical: 16,
             ),
+            hintStyle: TextStyle(
+              color: isDarkMode 
+                ? AppColors.darkOnSurface 
+                : null,
+            ),
+          ),
+          style: TextStyle(
+            color: isDarkMode 
+              ? AppColors.darkTextOnBackground 
+              : null,
           ),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
@@ -350,7 +415,7 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
     );
   }
 
-  Widget _buildCategorySelection() {
+  Widget _buildCategorySelection(bool isDarkMode) {
     const categories = ['espresso', 'latte', 'cappuccino', 'cafetière'];
 
     return Column(
@@ -361,7 +426,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
           style: AppTheme.titleStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: AppColors.coffeeTextDark,
+            color: isDarkMode 
+              ? AppColors.darkTextOnBackground 
+              : AppColors.coffeeTextDark,
           ),
         ),
         const SizedBox(height: 16),
@@ -375,7 +442,7 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                 padding: EdgeInsets.only(
                   right: index < categories.length - 1 ? 8 : 0,
                 ),
-                child: _buildCategoryChip(category),
+                child: _buildCategoryChip(category, isDarkMode),
               ),
             );
           }).toList(),
@@ -384,11 +451,10 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
     );
   }
 
-  Widget _buildCategoryChip(String category) {
+  Widget _buildCategoryChip(String category, bool isDarkMode) {
     return BlocBuilder<AddCoffeeCubit, AddCoffeeState>(
       builder: (context, state) {
         final isSelected = state.selectedCategory == category;
-
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
@@ -397,7 +463,6 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
             child: InkWell(
               onTap: () {
                 context.read<AddCoffeeCubit>().selectCategory(category);
-                // Add haptic feedback for better UX
                 HapticFeedback.lightImpact();
               },
               borderRadius: BorderRadius.circular(20),
@@ -413,13 +478,21 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.buttonColor
-                      : AppColors.coffeeCardBackground,
+                      ? (isDarkMode 
+                          ? AppColors.darkPrimary 
+                          : AppColors.buttonColor)
+                      : (isDarkMode 
+                          ? AppColors.darkSurface 
+                          : AppColors.coffeeCardBackground),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
-                        ? AppColors.buttonColor
-                        : AppColors.inputBorderColor.withValues(alpha: 0.3),
+                        ? (isDarkMode 
+                            ? AppColors.darkPrimary 
+                            : AppColors.buttonColor)
+                        : (isDarkMode 
+                            ? AppColors.darkDivider 
+                            : AppColors.inputBorderColor.withValues(alpha: 0.3)),
                     width: isSelected ? 2 : 1,
                   ),
                   boxShadow: isSelected
@@ -444,8 +517,12 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                   duration: const Duration(milliseconds: 200),
                   style: AppTheme.buttonTextStyle.copyWith(
                     color: isSelected
-                        ? AppColors.buttonTextColor
-                        : AppColors.coffeeTextDark,
+                        ? (isDarkMode 
+                            ? AppColors.darkOnPrimary 
+                            : AppColors.buttonTextColor)
+                        : (isDarkMode 
+                            ? AppColors.darkTextOnBackground 
+                            : AppColors.coffeeTextDark),
                     fontSize: 11,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                     letterSpacing: 0.3,
@@ -484,7 +561,7 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
     }
   }
 
-  Widget _buildChocolateSelection() {
+  Widget _buildChocolateSelection(bool isDarkMode) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -493,23 +570,26 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
           style: AppTheme.titleStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
+            color: isDarkMode 
+              ? AppColors.darkTextOnBackground 
+              : null,
           ),
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            _buildChocolateButton('White'),
+            _buildChocolateButton('White', isDarkMode),
             const SizedBox(width: 12),
-            _buildChocolateButton('Milk'),
+            _buildChocolateButton('Milk', isDarkMode),
             const SizedBox(width: 12),
-            _buildChocolateButton('Dark'),
+            _buildChocolateButton('Dark', isDarkMode),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildSizeSelection() {
+  Widget _buildSizeSelection(bool isDarkMode) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -518,23 +598,26 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
           style: AppTheme.titleStyle.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w600,
+            color: isDarkMode 
+              ? AppColors.darkTextOnBackground 
+              : null,
           ),
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            _buildSizeButton('S'),
+            _buildSizeButton('S', isDarkMode),
             const SizedBox(width: 16),
-            _buildSizeButton('M'),
+            _buildSizeButton('M', isDarkMode),
             const SizedBox(width: 16),
-            _buildSizeButton('L'),
+            _buildSizeButton('L', isDarkMode),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildChocolateButton(String type) {
+  Widget _buildChocolateButton(String type, bool isDarkMode) {
     return BlocBuilder<AddCoffeeCubit, AddCoffeeState>(
       builder: (context, state) {
         final isSelected = state.selectedChocolate == type;
@@ -544,27 +627,59 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
         switch (type) {
           case 'White':
             backgroundColor = isSelected
-                ? AppColors.coffeeCardBackground
-                : AppColors.coffeeCardBackground;
-            textColor = AppColors.textColor;
+                ? (isDarkMode 
+                    ? AppColors.darkPrimary 
+                    : AppColors.buttonColor)
+                : (isDarkMode 
+                    ? AppColors.darkSurface 
+                    : AppColors.coffeeCardBackground);
+            textColor = isSelected
+                ? (isDarkMode 
+                    ? AppColors.darkOnPrimary 
+                    : AppColors.buttonTextColor)
+                : (isDarkMode 
+                    ? AppColors.darkTextOnBackground 
+                    : AppColors.textColor);
             break;
           case 'Milk':
             backgroundColor = isSelected
-                ? AppColors.buttonColor
-                : AppColors.coffeeCardBackground;
-            textColor =
-                isSelected ? AppColors.buttonTextColor : AppColors.textColor;
+                ? (isDarkMode 
+                    ? AppColors.darkPrimary 
+                    : AppColors.buttonColor)
+                : (isDarkMode 
+                    ? AppColors.darkSurface 
+                    : AppColors.coffeeCardBackground);
+            textColor = isSelected
+                ? (isDarkMode 
+                    ? AppColors.darkOnPrimary 
+                    : AppColors.buttonTextColor)
+                : (isDarkMode 
+                    ? AppColors.darkTextOnBackground 
+                    : AppColors.textColor);
             break;
           case 'Dark':
             backgroundColor = isSelected
-                ? AppColors.coffeeTextDark
-                : AppColors.coffeeCardBackground;
-            textColor =
-                isSelected ? AppColors.buttonTextColor : AppColors.textColor;
+                ? (isDarkMode 
+                    ? AppColors.darkPrimary 
+                    : AppColors.buttonColor)
+                : (isDarkMode 
+                    ? AppColors.darkSurface 
+                    : AppColors.coffeeCardBackground);
+            textColor = isSelected
+                ? (isDarkMode 
+                    ? AppColors.darkOnPrimary 
+                    : AppColors.buttonTextColor)
+                : (isDarkMode 
+                    ? AppColors.darkTextOnBackground 
+                    : AppColors.textColor);
             break;
           default:
-            backgroundColor = AppColors.coffeeCardBackground;
-            textColor = AppColors.textColor;
+            backgroundColor = isDarkMode 
+                ? AppColors.darkSurface 
+                : AppColors.coffeeCardBackground;
+            textColor = isDarkMode 
+                ? AppColors.darkTextOnBackground 
+                : AppColors.textColor;
         }
 
         return Expanded(
@@ -578,7 +693,12 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                 color: backgroundColor,
                 borderRadius: BorderRadius.circular(24),
                 border: isSelected
-                    ? Border.all(color: AppColors.buttonColor, width: 2)
+                    ? Border.all(
+                        color: isDarkMode 
+                          ? AppColors.darkPrimary 
+                          : AppColors.buttonColor, 
+                        width: 2
+                      )
                     : null,
               ),
               child: Text(
@@ -597,7 +717,7 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
     );
   }
 
-  Widget _buildSizeButton(String size) {
+  Widget _buildSizeButton(String size, bool isDarkMode) {
     return BlocBuilder<AddCoffeeCubit, AddCoffeeState>(
       builder: (context, state) {
         final isSelected = state.selectedSize == size;
@@ -610,8 +730,12 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
             height: 50,
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.buttonColor
-                  : AppColors.coffeeCardBackground,
+                  ? (isDarkMode 
+                      ? AppColors.darkPrimary 
+                      : AppColors.buttonColor)
+                  : (isDarkMode 
+                      ? AppColors.darkSurface 
+                      : AppColors.coffeeCardBackground),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -619,8 +743,12 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                 size,
                 style: AppTheme.buttonTextStyle.copyWith(
                   color: isSelected
-                      ? AppColors.buttonTextColor
-                      : AppColors.textColor,
+                      ? (isDarkMode 
+                          ? AppColors.darkOnPrimary 
+                          : AppColors.buttonTextColor)
+                      : (isDarkMode 
+                          ? AppColors.darkTextOnBackground 
+                          : AppColors.textColor),
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
@@ -632,7 +760,7 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
     );
   }
 
-  Widget _buildPriceAndQuantityRow() {
+  Widget _buildPriceAndQuantityRow(bool isDarkMode) {
     return Row(
       children: [
         // Price Input
@@ -646,6 +774,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                 style: AppTheme.titleStyle.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
+                  color: isDarkMode 
+                    ? AppColors.darkTextOnBackground 
+                    : null,
                 ),
               ),
               const SizedBox(height: 8),
@@ -661,7 +792,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                   hintText: '0.00',
                   prefixText: '\$ ',
                   filled: true,
-                  fillColor: AppColors.coffeeCardBackground,
+                  fillColor: isDarkMode 
+                    ? AppColors.darkSurface 
+                    : AppColors.coffeeCardBackground,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -670,6 +803,16 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                     horizontal: 16,
                     vertical: 12,
                   ),
+                  hintStyle: TextStyle(
+                    color: isDarkMode 
+                      ? AppColors.darkOnSurface 
+                      : null,
+                  ),
+                ),
+                style: TextStyle(
+                  color: isDarkMode 
+                    ? AppColors.darkTextOnBackground 
+                    : null,
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -697,6 +840,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                 style: AppTheme.titleStyle.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
+                  color: isDarkMode 
+                    ? AppColors.darkTextOnBackground 
+                    : null,
                 ),
               ),
               const SizedBox(height: 8),
@@ -708,13 +854,17 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                     child: Container(
                       width: 32,
                       height: 32,
-                      decoration: const BoxDecoration(
-                        color: AppColors.buttonColor,
+                      decoration: BoxDecoration(
+                        color: isDarkMode 
+                          ? AppColors.darkPrimary 
+                          : AppColors.buttonColor,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.remove,
-                        color: AppColors.buttonTextColor,
+                        color: isDarkMode 
+                          ? AppColors.darkOnPrimary 
+                          : AppColors.buttonTextColor,
                         size: 20,
                       ),
                     ),
@@ -727,7 +877,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                         style: AppTheme.titleStyle.copyWith(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textColor,
+                          color: isDarkMode 
+                            ? AppColors.darkTextOnBackground 
+                            : AppColors.textColor,
                         ),
                       );
                     },
@@ -738,13 +890,17 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                     child: Container(
                       width: 32,
                       height: 32,
-                      decoration: const BoxDecoration(
-                        color: AppColors.buttonColor,
+                      decoration: BoxDecoration(
+                        color: isDarkMode 
+                          ? AppColors.darkPrimary 
+                          : AppColors.buttonColor,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.add,
-                        color: AppColors.buttonTextColor,
+                        color: isDarkMode 
+                          ? AppColors.darkOnPrimary 
+                          : AppColors.buttonTextColor,
                         size: 20,
                       ),
                     ),
@@ -758,14 +914,18 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
     );
   }
 
-  Widget _buildAddProductButton(bool isLoading) {
+  Widget _buildAddProductButton(bool isLoading, bool isDarkMode) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: isLoading ? null : _addProduct,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.buttonColor,
-          foregroundColor: AppColors.buttonTextColor,
+          backgroundColor: isDarkMode 
+            ? AppColors.darkPrimary 
+            : AppColors.buttonColor,
+          foregroundColor: isDarkMode 
+            ? AppColors.darkOnPrimary 
+            : AppColors.buttonTextColor,
           padding: const EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -773,11 +933,13 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
           elevation: 0,
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 24,
                 width: 24,
                 child: CircularProgressIndicator(
-                  color: AppColors.buttonTextColor,
+                  color: isDarkMode 
+                    ? AppColors.darkOnPrimary 
+                    : AppColors.buttonTextColor,
                   strokeWidth: 2,
                 ),
               )
@@ -786,6 +948,9 @@ class _AddCoffeeScreenState extends State<AddCoffeeScreen> {
                 style: AppTheme.buttonTextStyle.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
+                  color: isDarkMode 
+                    ? AppColors.darkOnPrimary 
+                    : null,
                 ),
               ),
       ),

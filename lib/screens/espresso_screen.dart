@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/core/models/coffee_item.dart';
 import '../core/constants/app_constants.dart';
 import '../utils/app_colors.dart';
+import '../theme/app_theme.dart';
+import '../cubit/theme/theme_cubit.dart';
 import '../cubit/product_details/product_details_cubit.dart';
 import '../cubit/product_details/product_details_state_state.dart';
 import '../widgets/product/product_header.dart';
@@ -51,35 +53,45 @@ class _EspressoScreenState extends State<EspressoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.dashboardBackground,
-      body: BlocProvider(
-        create: (context) => cubit,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-                builder: (context, state) {
-                  if (state.coffee == null) {
-                    return const SizedBox.shrink();
-                  }
-                  return ProductHeader(
-                      onBackPressed: () => Navigator.pop(context),
-                      isFavorite: state.coffee?.isFavorite ?? false,
-                      onFavoritePressed: () => cubit.toggleFavorite(),
-                      coffee: state.coffee!);
-                },
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        final isDarkMode = themeMode == ThemeMode.dark;
+        final theme = isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme;
+
+        return Scaffold(
+          backgroundColor: isDarkMode 
+            ? AppColors.darkBackground 
+            : AppColors.dashboardBackground,
+          body: BlocProvider(
+            create: (context) => cubit,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
+                    builder: (context, state) {
+                      if (state.coffee == null) {
+                        return const SizedBox.shrink();
+                      }
+                      return ProductHeader(
+                        onBackPressed: () => Navigator.pop(context),
+                        isFavorite: state.coffee?.isFavorite ?? false,
+                        onFavoritePressed: () => cubit.toggleFavorite(),
+                        coffee: state.coffee!
+                      );
+                    },
+                  ),
+                  _buildContentSection(context, isDarkMode),
+                ],
               ),
-              _buildContentSection(context),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   /// Builds the main content section
-  Widget _buildContentSection(BuildContext context) {
+  Widget _buildContentSection(BuildContext context, bool isDarkMode) {
     return Container(
       constraints: BoxConstraints(
         minHeight: 200,
@@ -95,15 +107,20 @@ class _EspressoScreenState extends State<EspressoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-              builder: (context, state) {
-            return DescriptionSection(state.coffee!);
-          }),
+            builder: (context, state) {
+              return DescriptionSection(
+                state.coffee!, 
+                isDarkMode: isDarkMode
+              );
+            }
+          ),
           const SizedBox(height: AppConstants.largeSpacing),
           ChocolateSelectionSection(
             selectedChocolate: selectedChocolate,
             onChocolateSelected: (chocolate) {
               setState(() => selectedChocolate = chocolate);
             },
+            isDarkMode: isDarkMode,
           ),
           const SizedBox(height: AppConstants.largeSpacing),
           BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
@@ -115,6 +132,7 @@ class _EspressoScreenState extends State<EspressoScreen> {
                   setState(() => selectedSize = size);
                 },
                 onQuantityChanged: (newQuantity) => cubit.setQty(newQuantity),
+                isDarkMode: isDarkMode,
               );
             },
           ),
@@ -124,6 +142,7 @@ class _EspressoScreenState extends State<EspressoScreen> {
             onBuyNow: () {
               // TODO: Implement buy now functionality
             },
+            isDarkMode: isDarkMode,
           ),
         ],
       ),

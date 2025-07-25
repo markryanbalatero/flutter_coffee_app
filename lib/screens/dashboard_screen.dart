@@ -14,6 +14,7 @@ import '../widgets/category_tab.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_colors.dart';
 import '../widgets/search_results_view.dart';
+import '../cubit/theme/theme_cubit.dart';
 import 'dart:io';
 
 class DashboardScreen extends StatefulWidget {
@@ -35,36 +36,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.dashboardBackground,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 23),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 65),
-                  _buildHeader(),
-                  const SizedBox(height: 35),
-                  _buildGreeting(),
-                  const SizedBox(height: 35),
-                  _buildSearchBar(),
-                  const SizedBox(height: 25),
-                ],
-              ),
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        final isDarkMode = themeMode == ThemeMode.dark;
+        final theme = isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme;
+
+        return Scaffold(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          body: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 23),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 65),
+                      _buildHeader(theme),
+                      const SizedBox(height: 35),
+                      _buildGreeting(theme),
+                      const SizedBox(height: 35),
+                      _buildSearchBar(theme),
+                      const SizedBox(height: 25),
+                    ],
+                  ),
+                ),
+                _buildCategoryTabs(theme),
+                Expanded(child: _buildCoffeePageView(theme)),
+              ],
             ),
-            _buildCategoryTabs(),
-            Expanded(child: _buildCoffeePageView()),
-          ],
-        ),
-      ),
-      bottomNavigationBar: _buildBottomNavigation(),
+          ),
+          bottomNavigationBar: _buildBottomNavigation(),
+        );
+      },
     );
   }
 
-  Widget _buildCategoryTabs() {
+  Widget _buildCategoryTabs(ThemeData theme) {
     return BlocBuilder<DashboardCubit, DashboardState>(
       builder: (context, state) {
         return Container(
@@ -88,13 +96,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildCoffeePageView() {
+  Widget _buildCoffeePageView(ThemeData theme) {
     return BlocBuilder<DashboardCubit, DashboardState>(
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.buttonColor),
+              valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
             ),
           );
         }
@@ -107,21 +115,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Icon(
                   Icons.error_outline,
                   size: 64,
-                  color: AppColors.coffeeTextSecondary,
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'Error Loading Coffee Items',
-                  style: AppTheme.titleStyle.copyWith(
-                    color: AppColors.coffeeTextDark,
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   state.errorMessage!,
-                  style: AppTheme.titleStyle.copyWith(
-                    color: AppColors.coffeeTextSecondary,
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     fontSize: 14,
                   ),
                   textAlign: TextAlign.center,
@@ -131,10 +137,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   onPressed: () {
                     context.read<DashboardCubit>().refreshCoffeeItems();
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.buttonColor,
-                    foregroundColor: AppColors.buttonTextColor,
-                  ),
                   child: const Text('Retry'),
                 ),
               ],
@@ -165,7 +167,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     },
                   )
                 else
-                  _buildCategoryView(state),
+                  _buildCategoryView(state, theme),
                 const SizedBox(height: 25),
                 if (!state.isSearchActive) _buildSpecialOffer(),
                 const SizedBox(height: 20),
@@ -177,7 +179,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildCategoryView(DashboardState state) {
+  Widget _buildCategoryView(DashboardState state, ThemeData theme) {
     final items = state.coffeeItemsByCategory[
             state.categories[state.selectedCategoryIndex]] ??
         [];
@@ -188,8 +190,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Center(
           child: Text(
             'No coffee items available',
-            style: AppTheme.titleStyle.copyWith(
-              color: AppColors.coffeeTextSecondary,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontSize: 16,
             ),
           ),
@@ -241,7 +242,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(ThemeData theme) {
     final user = FirebaseAuth.instance.currentUser;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -258,8 +259,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               'assets/icons/menu_button.svg',
               width: 32,
               height: 32,
-              colorFilter: const ColorFilter.mode(
-                AppColors.menuIconColor,
+              colorFilter: ColorFilter.mode(
+                theme.iconTheme.color ?? AppColors.menuIconColor,
                 BlendMode.srcIn,
               ),
             ),
@@ -306,17 +307,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildGreeting() {
+  Widget _buildGreeting(ThemeData theme) {
     return SizedBox(
       width: 223,
       child: Text(
         'Find the best Coffee to your taste',
-        style: AppTheme.greetingStyle,
+        style: theme.textTheme.bodyLarge?.copyWith(
+          fontSize: 22,
+          fontWeight: FontWeight.w400,
+        ),
       ),
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(ThemeData theme) {
     return Row(
       children: [
         Expanded(
@@ -335,9 +339,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Container(
             width: 50,
             height: 50,
-            decoration: const BoxDecoration(
-              color: AppColors.filterButtonColor,
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: theme.primaryColor,
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(25),
                 topRight: Radius.circular(25),
                 bottomLeft: Radius.circular(15),
@@ -350,8 +354,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'assets/icons/filter.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.filterIconColor,
+                colorFilter: ColorFilter.mode(
+                  theme.colorScheme.onPrimary,
                   BlendMode.srcIn,
                 ),
                 fit: BoxFit.contain,
@@ -369,7 +373,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       description: 'Specially mixed and brewed which you must try!',
       currentPrice: 11.00,
       originalPrice: 20.3,
-      imageAsset: 'assets/images/coffee_splash.png',
+      imageAsset: 'assets/images/coffee_espresso.png',
       onTap: () {
         print('Special offer tapped');
       },

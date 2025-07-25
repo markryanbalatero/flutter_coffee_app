@@ -275,8 +275,123 @@ class AppTheme {
     color: AppColors.coffeeTextDark,
   );
 
+  static ThemeData get darkTheme {
+    return ThemeData(
+      fontFamily: 'Roboto',
+      scaffoldBackgroundColor: AppColors.darkBackground,
+      primaryColor: AppColors.darkPrimary,
+
+      // Text theme from second file
+      textTheme: const TextTheme(
+        bodyMedium: inputTextStyle,
+        titleMedium: titleStyle,
+        labelLarge: buttonTextStyle,
+      ),
+
+      // Input decoration theme combining elements from both files
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.darkSurface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: AppColors.darkDivider),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: AppColors.darkDivider),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: AppColors.darkDivider),
+        ),
+        contentPadding: const EdgeInsets.only(
+          left: 27,
+          right: 20,
+          top: 13,
+          bottom: 13,
+        ),
+        hintStyle: hintTextStyle,
+      ),
+
+      // Card theme
+      cardTheme: CardThemeData(
+        color: AppColors.darkSurface,
+        elevation: 4,
+        shadowColor: Colors.black.withOpacity(0.3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+      ),
+
+      // Color scheme
+      colorScheme: ColorScheme.dark(
+        primary: AppColors.darkPrimary,
+        secondary: AppColors.darkSecondary,
+        background: AppColors.darkBackground,
+        surface: AppColors.darkSurface,
+        error: AppColors.darkError,
+        onPrimary: AppColors.darkOnPrimary,
+        onSecondary: AppColors.darkOnSecondary,
+        onBackground: AppColors.darkTextOnBackground,
+        onSurface: AppColors.darkOnSurface,
+      ),
+
+      // Elevated button theme
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.darkPrimary,
+          foregroundColor: AppColors.darkOnPrimary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+      ),
+
+      // AppBar theme
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.darkBackground,
+        foregroundColor: AppColors.darkTextOnBackground,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: titleStyle.copyWith(color: AppColors.darkTextOnBackground),
+      ),
+
+      // Icon theme
+      iconTheme: IconThemeData(
+        color: AppColors.darkTextOnBackground,
+        size: 24,
+      ),
+
+      // Divider theme
+      dividerColor: AppColors.darkDivider,
+      dividerTheme: DividerThemeData(
+        color: AppColors.darkDivider,
+        thickness: 0.5,
+        indent: 20,
+        endIndent: 20,
+      ),
+
+      // Progress indicator theme
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: AppColors.darkPrimary,
+        circularTrackColor: AppColors.darkSurface,
+      ),
+
+      // Bottom navigation bar theme
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: AppColors.darkSurface,
+        selectedItemColor: AppColors.darkPrimary,
+        unselectedItemColor: AppColors.darkOnSurface,
+        elevation: 8,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        type: BottomNavigationBarType.fixed,
+      ),
+    );
+  }
+
   // Theme data
-  static ThemeData get theme {
+  static ThemeData get lightTheme {
     return ThemeData(
       fontFamily: 'Roboto',
       scaffoldBackgroundColor: AppColors.backgroundColor,
@@ -385,4 +500,28 @@ class AppTheme {
   );
 
   static const TextStyle errorTextStyle = TextStyle(color: Colors.red);
+
+  static TextStyle get productNameStyle => TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textColor,
+  );
+
+  static TextStyle get productDescriptionStyle => TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: AppColors.coffeeTextSecondary,
+  );
+
+  static TextStyle get sectionTitleStyle => TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textColor,
+  );
+
+  static TextStyle get chipTextStyle => TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColors.coffeeTextSecondary,
+  );
 }

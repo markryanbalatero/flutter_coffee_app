@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_colors.dart';
 import '../utils/image_utils.dart';
+import '../cubit/theme/theme_cubit.dart';
 
 class CoffeeCard extends StatelessWidget {
   final String name;
@@ -39,157 +41,196 @@ class CoffeeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.coffeeCardBackground,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: const [
-            BoxShadow(
-              color: AppColors.coffeeCardShadow,
-              blurRadius: 24,
-              offset: Offset(0, 5),
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        final isDarkMode = themeMode == ThemeMode.dark;
+
+        return GestureDetector(
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDarkMode 
+                ? AppColors.darkSurface 
+                : AppColors.coffeeCardBackground,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: isDarkMode 
+                    ? Colors.black.withOpacity(0.3) 
+                    : AppColors.coffeeCardShadow,
+                  blurRadius: 24,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(10, 11, 10, 0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  image: DecorationImage(
-                    image: ImageUtils.getImageProvider(imageAsset),
-                    fit: BoxFit.cover,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(10, 11, 10, 0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      image: DecorationImage(
+                        image: ImageUtils.getImageProvider(imageAsset),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 5,
+                          right: 5,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 4,
+                            ),
+                            decoration: ShapeDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment(0.00, -1.00),
+                                end: Alignment(0, 1),
+                                colors: [
+                                  isDarkMode 
+                                    ? AppColors.darkPrimary.withOpacity(0.5) 
+                                    : AppColors.coffeeRatingBackground,
+                                  isDarkMode 
+                                    ? AppColors.darkPrimary.withOpacity(0.5) 
+                                    : AppColors.coffeeRatingBackground,
+                                ],
+                              ),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(25),
+                                  topRight: Radius.circular(25),
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  color: isDarkMode 
+                                    ? AppColors.darkPrimary 
+                                    : AppColors.coffeeRating,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  rating.toString(),
+                                  style: AppTheme.coffeeCardRatingStyle.copyWith(
+                                    color: isDarkMode 
+                                      ? AppColors.darkTextOnBackground 
+                                      : null
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 5,
-                      right: 5,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 4,
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(19, 13, 10, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: AppTheme.coffeeCardNameStyle.copyWith(
+                            fontSize: _getCardNameFontSize(name),
+                            color: isDarkMode 
+                              ? AppColors.darkTextOnBackground 
+                              : null,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
                         ),
-                        decoration: ShapeDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment(0.00, -1.00),
-                            end: Alignment(0, 1),
-                            colors: [
-                              AppColors.coffeeRatingBackground,
-                              AppColors.coffeeRatingBackground,
+                        const SizedBox(height: 4),
+                        Text(
+                          description,
+                          style: AppTheme.coffeeCardDescriptionStyle.copyWith(
+                            color: isDarkMode 
+                              ? AppColors.darkOnSurface 
+                              : null,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(19, 0, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '\$ ',
+                                style: AppTheme.coffeeCardPriceCurrencyStyle.copyWith(
+                                  color: isDarkMode 
+                                    ? AppColors.darkPrimary 
+                                    : null,
+                                ),
+                              ),
+                              TextSpan(
+                                text: price.toStringAsFixed(2),
+                                style: AppTheme.coffeeCardPriceAmountStyle.copyWith(
+                                  color: isDarkMode 
+                                    ? AppColors.darkTextOnBackground 
+                                    : null,
+                                ),
+                              ),
                             ],
                           ),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(25),
-                              topRight: Radius.circular(25),
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              color: AppColors.coffeeRating,
-                              size: 18,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              rating.toString(),
-                              style: AppTheme.coffeeCardRatingStyle,
-                            ),
-                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(19, 13, 10, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: AppTheme.coffeeCardNameStyle.copyWith(
-                        fontSize: _getCardNameFontSize(name),
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      description,
-                      style: AppTheme.coffeeCardDescriptionStyle,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(19, 0, 0, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '\$ ',
-                            style: AppTheme.coffeeCardPriceCurrencyStyle,
+                      GestureDetector(
+                        onTap: onAddTap,
+                        child: Container(
+                          width: 52,
+                          height: 53,
+                          decoration: BoxDecoration(
+                            color: isDarkMode 
+                              ? AppColors.darkPrimary 
+                              : AppColors.coffeeAccent,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(25),
+                              bottomRight: Radius.circular(25),
+                            ),
                           ),
-                          TextSpan(
-                            text: price.toStringAsFixed(2),
-                            style: AppTheme.coffeeCardPriceAmountStyle,
+                          child: Icon(
+                            Icons.add,
+                            color: isDarkMode 
+                              ? AppColors.darkOnPrimary 
+                              : AppColors.buttonTextColor,
+                            size: 22,
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  GestureDetector(
-                    onTap: onAddTap,
-                    child: Container(
-                      width: 52,
-                      height: 53,
-                      decoration: const BoxDecoration(
-                        color: AppColors.coffeeAccent,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(25),
-                          bottomRight: Radius.circular(25),
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: AppColors.buttonTextColor,
-                        size: 22,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

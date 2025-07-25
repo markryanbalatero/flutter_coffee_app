@@ -110,4 +110,16 @@ class AppColors {
   // Error colors
   static const Color errorBackground = Color(0x1AF44336);
   static const Color errorBorder = Color(0x4DF44336);
+
+  // Dark Theme Colors
+  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkSurface = Color(0xFF1E1E1E);
+  static const Color darkPrimary = Color(0xFFEEDDC9);
+  static const Color darkOnPrimary = Color(0xFF000000);
+  static const Color darkSecondary = Color(0xFF03DAC6);
+  static const Color darkOnSecondary = Color(0xFF000000);
+  static const Color darkTextOnBackground = Color(0xFFE1E1E1);
+  static const Color darkOnSurface = Color(0xFFCCCCCC);
+  static const Color darkDivider = Color(0xFF2C2C2C);
+  static const Color darkError = Color(0xFFCF6679);
 }
