@@ -33,7 +33,7 @@ class SpecialOfferCard extends StatelessWidget {
             width: double.infinity,
             height: 145,
             decoration: BoxDecoration(
-              color: AppColors.specialOfferCardBackground,
+              color: const Color(0xFF967259),
               borderRadius: BorderRadius.circular(25),
               boxShadow: const [
                 BoxShadow(

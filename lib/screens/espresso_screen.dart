@@ -10,6 +10,8 @@ import '../widgets/sections/description_section.dart';
 import '../widgets/sections/chocolate_selection_section.dart';
 import '../widgets/sections/size_and_quantity_section.dart';
 import '../widgets/sections/price_and_buy_section.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubit/favorite_cubit.dart';
 
 class EspressoScreen extends StatefulWidget {
   final CoffeeItem? product;
@@ -22,12 +24,13 @@ class EspressoScreen extends StatefulWidget {
 
 class _EspressoScreenState extends State<EspressoScreen> {
   late ProductDetailsCubit cubit;
-
   @override
-  initState() {
+  void initState() {
     super.initState();
     cubit = ProductDetailsCubit();
-    cubit.initProductDetails(widget.product!);
+    if (widget.product != null) {
+      cubit.initProductDetails(widget.product!);
+    }
   }
 
   // State variables
@@ -51,6 +54,12 @@ class _EspressoScreenState extends State<EspressoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.product == null) {
+      return Scaffold(
+        backgroundColor: AppColors.dashboardBackground,
+        body: Center(child: Text('No coffee data provided')),
+      );
+    }
     return Scaffold(
       backgroundColor: AppColors.dashboardBackground,
       body: BlocProvider(
@@ -63,11 +72,25 @@ class _EspressoScreenState extends State<EspressoScreen> {
                   if (state.coffee == null) {
                     return const SizedBox.shrink();
                   }
-                  return ProductHeader(
-                      onBackPressed: () => Navigator.pop(context),
-                      isFavorite: state.coffee?.isFavorite ?? false,
-                      onFavoritePressed: () => cubit.toggleFavorite(),
-                      coffee: state.coffee!);
+                  return BlocBuilder<FavoriteCubit, List<CoffeeItem>>(
+                    builder: (context, favorites) {
+                      final favoriteCubit = context.read<FavoriteCubit>();
+                      final isFav = favoriteCubit.isFavorite(state.coffee!);
+                      return ProductHeader(
+                        onBackPressed: () => Navigator.pop(context),
+                        isFavorite: isFav,
+                        onFavoritePressed: () {
+                          if (isFav) {
+                            favoriteCubit.removeFavorite(state.coffee!);
+                          } else {
+                            favoriteCubit.addFavorite(state.coffee!);
+                          }
+                          setState(() {}); // update heart state
+                        },
+                        coffee: state.coffee!,
+                      );
+                    },
+                  );
                 },
               ),
               _buildContentSection(context),
