@@ -181,7 +181,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildCategoryView(DashboardState state, ThemeData theme) {
     final items = state.coffeeItemsByCategory[
-            state.categories[state.selectedCategoryIndex]] ??
+    state.categories[state.selectedCategoryIndex]] ??
         [];
 
     if (items.isEmpty) {
@@ -273,9 +273,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: FutureBuilder<DocumentSnapshot>(
             future: user != null
                 ? FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(user.uid)
-                    .get()
+                .collection('users')
+                .doc(user.uid)
+                .get()
                 : Future.value(null),
             builder: (context, snapshot) {
               String? imagePath;

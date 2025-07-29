@@ -11,6 +11,7 @@ import 'cubit/dashboard/dashboard_cubit.dart';
 import 'cubit/theme/theme_cubit.dart';
 import 'screens/profile_screen.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

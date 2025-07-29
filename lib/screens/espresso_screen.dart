@@ -59,9 +59,9 @@ class _EspressoScreenState extends State<EspressoScreen> {
         final theme = isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme;
 
         return Scaffold(
-          backgroundColor: isDarkMode 
-            ? AppColors.darkBackground 
-            : AppColors.dashboardBackground,
+          backgroundColor: isDarkMode
+              ? AppColors.darkBackground
+              : AppColors.dashboardBackground,
           body: BlocProvider(
             create: (context) => cubit,
             child: SingleChildScrollView(
@@ -73,10 +73,10 @@ class _EspressoScreenState extends State<EspressoScreen> {
                         return const SizedBox.shrink();
                       }
                       return ProductHeader(
-                        onBackPressed: () => Navigator.pop(context),
-                        isFavorite: state.coffee?.isFavorite ?? false,
-                        onFavoritePressed: () => cubit.toggleFavorite(),
-                        coffee: state.coffee!
+                          onBackPressed: () => Navigator.pop(context),
+                          isFavorite: state.coffee?.isFavorite ?? false,
+                          onFavoritePressed: () => cubit.toggleFavorite(),
+                          coffee: state.coffee!
                       );
                     },
                   ),
@@ -107,12 +107,12 @@ class _EspressoScreenState extends State<EspressoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-            builder: (context, state) {
-              return DescriptionSection(
-                state.coffee!, 
-                isDarkMode: isDarkMode
-              );
-            }
+              builder: (context, state) {
+                return DescriptionSection(
+                    state.coffee!,
+                    isDarkMode: isDarkMode
+                );
+              }
           ),
           const SizedBox(height: AppConstants.largeSpacing),
           ChocolateSelectionSection(
