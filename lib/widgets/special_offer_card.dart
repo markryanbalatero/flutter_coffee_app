@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../utils/app_colors.dart';
 import '../theme/app_theme.dart';
+import '../cubit/theme/theme_cubit.dart';
 
 class SpecialOfferCard extends StatelessWidget {
   final String title;
@@ -16,80 +18,110 @@ class SpecialOfferCard extends StatelessWidget {
     required this.description,
     required this.currentPrice,
     required this.originalPrice,
-    required this.imageAsset,
+    this.imageAsset = 'assets/images/coffee_espresso.png',
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: AppTheme.specialOfferTitleStyle),
-        const SizedBox(height: 15),
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            width: double.infinity,
-            height: 145,
-            decoration: BoxDecoration(
-              color: const Color(0xFF967259),
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: const [
-                BoxShadow(
-                  color: AppColors.specialOfferCardShadow,
-                  blurRadius: 24,
-                  offset: Offset(0, 0),
-                ),
-              ],
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        final isDarkMode = themeMode == ThemeMode.dark;
+        final theme = isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title, 
+              style: AppTheme.specialOfferTitleStyle.copyWith(
+                color: isDarkMode 
+                  ? AppColors.darkTextOnBackground 
+                  : null
+              )
             ),
-            child: Row(
-              children: [
-                Container(
-                  width: 130,
-                  height: 130,
-                  margin: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/coffee_espresso.png'),
-                      fit: BoxFit.cover,
+            const SizedBox(height: 15),
+            GestureDetector(
+              onTap: onTap,
+              child: Container(
+                width: double.infinity,
+                height: 145,
+                decoration: BoxDecoration(
+                  color: isDarkMode 
+                    ? AppColors.darkSurface 
+                    : AppColors.specialOfferCardBackground,
+                  borderRadius: BorderRadius.circular(25),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isDarkMode 
+                        ? Colors.black.withOpacity(0.3) 
+                        : AppColors.specialOfferCardShadow,
+                      blurRadius: 24,
+                      offset: const Offset(0, 0),
                     ),
-                  ),
+                  ],
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 20, 15, 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          description,
-                          style: AppTheme.specialOfferDescriptionStyle,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 130,
+                      height: 130,
+                      margin: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        image: DecorationImage(
+                          image: AssetImage(imageAsset),
+                          fit: BoxFit.cover,
                         ),
-                        const Spacer(),
-                        Row(
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 20, 15, 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '\$${currentPrice.toStringAsFixed(2)}',
-                              style: AppTheme.specialOfferPriceStyle,
+                              description,
+                              style: AppTheme.specialOfferDescriptionStyle.copyWith(
+                                color: isDarkMode 
+                                  ? AppColors.darkOnSurface 
+                                  : null
+                              ),
                             ),
-                            const SizedBox(width: 5),
-                            Text(
-                              '\$${originalPrice.toStringAsFixed(1)}',
-                              style: AppTheme.specialOfferOriginalPriceStyle,
+                            const Spacer(),
+                            Row(
+                              children: [
+                                Text(
+                                  '\$${currentPrice.toStringAsFixed(2)}',
+                                  style: AppTheme.specialOfferPriceStyle.copyWith(
+                                    color: isDarkMode 
+                                      ? AppColors.darkPrimary 
+                                      : null
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  '\$${originalPrice.toStringAsFixed(1)}',
+                                  style: AppTheme.specialOfferOriginalPriceStyle.copyWith(
+                                    color: isDarkMode 
+                                      ? AppColors.darkOnSurface 
+                                      : null
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
