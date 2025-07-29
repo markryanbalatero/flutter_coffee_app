@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/screens/espresso_screen.dart';
+import 'package:flutter_coffee_app/screens/favorite_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -342,6 +343,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             decoration: BoxDecoration(
               color: theme.primaryColor,
               borderRadius: const BorderRadius.only(
+            decoration: const BoxDecoration(
+              color: Color(0xFF967259),
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(25),
                 topRight: Radius.circular(25),
                 bottomLeft: Radius.circular(15),
@@ -356,6 +360,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 height: 24,
                 colorFilter: ColorFilter.mode(
                   theme.colorScheme.onPrimary,
+                colorFilter: const ColorFilter.mode(
+                  Color(0xFFFFFFFF),
                   BlendMode.srcIn,
                 ),
                 fit: BoxFit.contain,
@@ -387,7 +393,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         setState(() {
           selectedBottomNavIndex = index;
         });
-        if (index == 4) {
+        if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const FavoriteScreen(),
+            ),
+          );
+        } else if (index == 4) {
           Navigator.pushNamed(context, '/profile');
         }
       },

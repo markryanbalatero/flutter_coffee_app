@@ -24,12 +24,13 @@ class EspressoScreen extends StatefulWidget {
 
 class _EspressoScreenState extends State<EspressoScreen> {
   late ProductDetailsCubit cubit;
-
   @override
-  initState() {
+  void initState() {
     super.initState();
     cubit = ProductDetailsCubit();
-    cubit.initProductDetails(widget.product!);
+    if (widget.product != null) {
+      cubit.initProductDetails(widget.product!);
+    }
   }
 
   // State variables
@@ -59,8 +60,8 @@ class _EspressoScreenState extends State<EspressoScreen> {
         final theme = isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme;
 
         return Scaffold(
-          backgroundColor: isDarkMode 
-            ? AppColors.darkBackground 
+          backgroundColor: isDarkMode
+            ? AppColors.darkBackground
             : AppColors.dashboardBackground,
           body: BlocProvider(
             create: (context) => cubit,
@@ -87,6 +88,50 @@ class _EspressoScreenState extends State<EspressoScreen> {
           ),
         );
       },
+    if (widget.product == null) {
+      return Scaffold(
+        backgroundColor: AppColors.dashboardBackground,
+        body: Center(child: Text('No coffee data provided')),
+      );
+    }
+    return Scaffold(
+      backgroundColor: AppColors.dashboardBackground,
+      body: BlocProvider(
+        create: (context) => cubit,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
+                builder: (context, state) {
+                  if (state.coffee == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return BlocBuilder<FavoriteCubit, List<CoffeeItem>>(
+                    builder: (context, favorites) {
+                      final favoriteCubit = context.read<FavoriteCubit>();
+                      final isFav = favoriteCubit.isFavorite(state.coffee!);
+                      return ProductHeader(
+                        onBackPressed: () => Navigator.pop(context),
+                        isFavorite: isFav,
+                        onFavoritePressed: () {
+                          if (isFav) {
+                            favoriteCubit.removeFavorite(state.coffee!);
+                          } else {
+                            favoriteCubit.addFavorite(state.coffee!);
+                          }
+                          setState(() {}); // update heart state
+                        },
+                        coffee: state.coffee!,
+                      );
+                    },
+                  );
+                },
+              ),
+              _buildContentSection(context),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -109,7 +154,7 @@ class _EspressoScreenState extends State<EspressoScreen> {
           BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
             builder: (context, state) {
               return DescriptionSection(
-                state.coffee!, 
+                state.coffee!,
                 isDarkMode: isDarkMode
               );
             }
