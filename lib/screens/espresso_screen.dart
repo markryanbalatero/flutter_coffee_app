@@ -88,11 +88,11 @@ class _EspressoScreenState extends State<EspressoScreen> {
                           return ProductHeader(
                             onBackPressed: () => Navigator.pop(context),
                             isFavorite: isFav,
-                            onFavoritePressed: () {
+                            onFavoritePressed: () async {
                               if (isFav) {
-                                favoriteCubit.removeFavorite(state.coffee!);
+                                await favoriteCubit.removeFavorite(state.coffee!);
                               } else {
-                                favoriteCubit.addFavorite(state.coffee!);
+                                await favoriteCubit.addFavorite(state.coffee!);
                               }
                               setState(() {}); // update heart state
                             },
