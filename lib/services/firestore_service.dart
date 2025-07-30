@@ -158,4 +158,62 @@ class FirestoreService {
       }).toList();
     });
   }
+
+  static Stream<List<CoffeeItem>> getUserFavoriteCoffees(String userId) {
+    return _firestore
+        .collection('coffees')
+        .doc(userId)
+        .collection('favorites')
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            return CoffeeItem(
+              id: data['id'] ?? doc.id,
+              name: data['name'] ?? '',
+              description: data['description'] ?? '',
+              price: (data['price'] ?? 0).toDouble(),
+              image: data['imageBase64'] ?? '',
+              rating: (data['rating'] ?? 0).toDouble(),
+              isFavorite: true,
+              sizes: List<String>.from(data['sizes'] ?? []),
+              sizePrices: Map<String, double>.from(
+                (data['sizePrices'] ?? {}).map(
+                  (key, value) => MapEntry(key, value.toDouble()),
+                ),
+              ),
+              category: data['category'] ?? 'espresso',
+            );
+          }).toList();
+        });
+  }
+
+  static Stream<List<CoffeeItem>> getSpecificUserFavorites() {
+    return _firestore
+        .collection('coffees')
+        .doc('BfDtlKBr0zag69EMo4bQq93ijWU2')
+        .collection('favorites')
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            return CoffeeItem(
+              id: data['id'] ?? doc.id,
+              name: data['name'] ?? '',
+              description: data['description'] ?? '',
+              price: (data['price'] ?? 0).toDouble(),
+              image: data['image'] ?? '',
+              rating: (data['rating'] ?? 0).toDouble(),
+              isFavorite: true,
+              sizes: List<String>.from(data['sizes'] ?? []),
+              sizePrices: Map<String, double>.from(
+                (data['sizePrices'] ?? {}).map(
+                  (key, value) => MapEntry(key, value.toDouble()),
+                ),
+              ),
+              category: data['category'] ?? 'espresso',
+            );
+          }).toList();
+        });
+  }
 }

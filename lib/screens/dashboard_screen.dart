@@ -17,6 +17,7 @@ import '../utils/app_colors.dart';
 import '../widgets/search_results_view.dart';
 import '../cubit/theme/theme_cubit.dart';
 import 'dart:io';
+import '../utils/image_utils.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -31,8 +32,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize the dashboard cubit
     context.read<DashboardCubit>().initializeDashboard();
+    
+    context.read<DashboardCubit>().initializeSpecificUserFavorites();
   }
 
   @override
@@ -218,7 +220,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               name: item.name,
               description: item.description,
               price: item.price,
-              rating: item.rating,
+              rating: item.rating ?? 0.0,
               imageAsset: item.image,
               onTap: () {
                 Navigator.push(
@@ -370,14 +372,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildSpecialOffer() {
+    final userFavorites = context.read<DashboardCubit>().state.coffeeItemsByCategory['Favorites'] ?? [];
+
+    if (userFavorites.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    
+    final favoriteCoffee = userFavorites.first;
+
+    String imageAsset = favoriteCoffee.image;
+    
+    if (ImageUtils.isBase64Image(imageAsset)) {
+      if (!imageAsset.startsWith('data:image/')) {
+        imageAsset = 'data:image/jpeg;base64,$imageAsset';
+      }
+    }
+
     return SpecialOfferCard(
       title: 'Special for you',
-      description: 'Specially mixed and brewed which you must try!',
-      currentPrice: 11.00,
-      originalPrice: 20.3,
-      imageAsset: 'assets/images/coffee_espresso.png',
+      name: favoriteCoffee.name,
+      description: favoriteCoffee.description.isNotEmpty 
+        ? favoriteCoffee.description 
+        : favoriteCoffee.name,
+      currentPrice: favoriteCoffee.price,
+      originalPrice: favoriteCoffee.price * 1.5, 
+      imageAsset: imageAsset,
       onTap: () {
-        print('Special offer tapped');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EspressoScreen(product: favoriteCoffee),
+          ),
+        );
       },
     );
   }

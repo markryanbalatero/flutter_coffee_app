@@ -111,7 +111,7 @@ class SearchResultsView extends StatelessWidget {
         name: item.name,
         description: item.description,
         price: item.price,
-        rating: item.rating,
+        rating: item.rating ?? 0.0,
         imageAsset: item.image,
         onTap: () => onCoffeeCardTap(item),
         onAddTap: () => onAddToCart(item),

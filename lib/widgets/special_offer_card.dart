@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../utils/app_colors.dart';
 import '../theme/app_theme.dart';
 import '../cubit/theme/theme_cubit.dart';
+import '../utils/image_utils.dart';
 
 class SpecialOfferCard extends StatelessWidget {
   final String title;
+  final String name;
   final String description;
   final double currentPrice;
   final double originalPrice;
@@ -15,6 +17,7 @@ class SpecialOfferCard extends StatelessWidget {
   const SpecialOfferCard({
     super.key,
     required this.title,
+    this.name = '',
     required this.description,
     required this.currentPrice,
     required this.originalPrice,
@@ -70,7 +73,7 @@ class SpecialOfferCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
                         image: DecorationImage(
-                          image: AssetImage(imageAsset),
+                          image: ImageUtils.getImageProvider(imageAsset),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -81,13 +84,30 @@ class SpecialOfferCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            if (name.isNotEmpty)
+                              Text(
+                                name,
+                                style: AppTheme.specialOfferDescriptionStyle.copyWith(
+                                  color: isDarkMode
+                                    ? AppColors.darkOnSurface
+                                    : null,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            if (name.isNotEmpty) const SizedBox(height: 5),
                             Text(
                               description,
                               style: AppTheme.specialOfferDescriptionStyle.copyWith(
                                 color: isDarkMode
                                   ? AppColors.darkOnSurface
-                                  : null
+                                  : null,
+                                fontSize: 14,
                               ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             const Spacer(),
                             Row(
