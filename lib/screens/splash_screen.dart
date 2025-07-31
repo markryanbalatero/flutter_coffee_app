@@ -1,13 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import '../utils/app_colors.dart';
 import '../theme/app_theme.dart';
+import '../utils/share_preferences.dart';
+import 'dashboard_screen.dart';
 import 'login_screen.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  bool isLoggedIn = false;
+
+  @override
+  void initState() {
+    _checkUserSession();
+    super.initState();
+  }
+
+  void _checkUserSession() {
+    final prefs = SharedPreferencesHelper();
+    isLoggedIn = prefs.getIsLoggedIn();
+
+    // Is already have a session existed
+    if (isLoggedIn) {
+      // Schedule the callback to run after the first frame is rendered
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
+        );
+      });
+    }
+  }
+
+  void _navigateToLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoggedIn) return SizedBox();
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
@@ -25,7 +67,6 @@ class SplashScreen extends StatelessWidget {
               ),
             ),
           ),
-
           Positioned(
             top: 480,
             left: 0,
@@ -85,12 +126,7 @@ class SplashScreen extends StatelessWidget {
                       elevation: 0,
                     ),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      );
+                      _navigateToLogin();
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

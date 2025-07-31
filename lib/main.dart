@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_coffee_app/core/models/coffee_item.dart';
+import 'package:flutter_coffee_app/utils/share_preferences.dart';
 import 'theme/app_theme.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
@@ -16,6 +17,7 @@ import 'cubit/favorite_cubit.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await SharedPreferencesHelper().init();
   runApp(const MyApp());
 }
 
@@ -45,7 +47,7 @@ class MyApp extends StatelessWidget {
               '/dashboard': (context) => const DashboardScreen(),
               '/espresso': (context) {
                 final coffee =
-                ModalRoute.of(context)!.settings.arguments as CoffeeItem?;
+                    ModalRoute.of(context)!.settings.arguments as CoffeeItem?;
                 return EspressoScreen(product: coffee);
               },
               '/add-coffee': (context) => AddCoffeeScreen.create(),

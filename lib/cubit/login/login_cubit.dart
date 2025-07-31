@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_coffee_app/utils/share_preferences.dart';
 import '../../services/auth_service.dart';
 import '../../screens/dashboard_screen.dart';
 
@@ -36,6 +37,7 @@ class LoginCubit extends Cubit<LoginState> {
       );
 
       if (success) {
+        SharedPreferencesHelper().setIsLoggedIn(true);
         emit(LoginSuccess());
         if (context.mounted) {
           Navigator.pushReplacement(

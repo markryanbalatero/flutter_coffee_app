@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_coffee_app/screens/espresso_screen.dart';
 import 'package:flutter_coffee_app/screens/favorite_screen.dart';
+import 'package:flutter_coffee_app/utils/share_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,6 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     // Initialize the dashboard cubit
+
     context.read<DashboardCubit>().initializeDashboard();
   }
 

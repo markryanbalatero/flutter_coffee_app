@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_coffee_app/utils/share_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 /// AuthService handles user authentication using Firebase Auth
 class AuthService {
   static final AuthService _instance = AuthService._internal();
+
   factory AuthService() => _instance;
+
   AuthService._internal();
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -21,7 +24,8 @@ class AuthService {
     BuildContext context,
   ) async {
     try {
-      UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -30,6 +34,7 @@ class AuthService {
         if (context.mounted) {
           Navigator.pushReplacementNamed(context, '/dashboard');
         }
+        SharedPreferencesHelper().setUser(userCredential.user!);
         return true;
       }
       return false;
@@ -48,17 +53,18 @@ class AuthService {
     try {
       // Sign out from Google first to force account selection
       await _googleSignIn.signOut();
-      
+
       // Trigger the authentication flow with account selection
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         // User cancelled the sign-in
         return false;
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -67,7 +73,8 @@ class AuthService {
       );
 
       // Sign in to Firebase with the Google credential
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
         if (context.mounted) {
@@ -90,17 +97,18 @@ class AuthService {
     try {
       // Sign out from Google first to force account selection
       await _googleSignIn.signOut();
-      
+
       // Trigger the authentication flow with account selection
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         // User cancelled the sign-in
         return false;
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -109,7 +117,8 @@ class AuthService {
       );
 
       // Sign in to Firebase with the Google credential
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
         if (context.mounted) {
@@ -130,7 +139,8 @@ class AuthService {
 
   Future<bool> register(String email, String password) async {
     try {
-      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -158,8 +168,8 @@ class AuthService {
   }
 
   bool get isAuthenticated => _firebaseAuth.currentUser != null;
-  
+
   String? get currentUser => _firebaseAuth.currentUser?.email;
-  
+
   User? get currentUserObject => _firebaseAuth.currentUser;
 }
