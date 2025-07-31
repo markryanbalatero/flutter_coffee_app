@@ -17,8 +17,6 @@ class FavoriteScreen extends StatefulWidget {
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
-  String _searchQuery = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,14 +42,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             Expanded(
               child: BlocBuilder<FavoriteCubit, List<CoffeeItem>>(
                 builder: (context, favorites) {
-                  // Filter favorites based on search query only
-                  List<CoffeeItem> filteredFavorites = _searchQuery.isEmpty
-                      ? favorites
-                      : favorites
-                          .where((coffee) => coffee.name
-                              .toLowerCase()
-                              .contains(_searchQuery.toLowerCase()))
-                          .toList();
+                  final filteredFavorites =
+                      context.select<FavoriteCubit, List<CoffeeItem>>(
+                    (cubit) => cubit.filteredFavorites,
+                  );
 
                   if (filteredFavorites.isEmpty) {
                     return Center(child: Text('No favorites found'));
@@ -102,15 +96,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   Widget _buildSearchBar(BuildContext context) {
     final sortOrder = context.watch<FavoriteCubit>().sortOrder;
+    final searchQuery = context.watch<FavoriteCubit>().searchQuery;
     return Row(
       children: [
         Expanded(
           child: CustomSearchBar(
             hintText: 'Find your coffee...',
+            initialValue: searchQuery,
             onChanged: (query) {
-              setState(() {
-                _searchQuery = query;
-              });
+              context.read<FavoriteCubit>().setSearchQuery(query);
             },
           ),
         ),

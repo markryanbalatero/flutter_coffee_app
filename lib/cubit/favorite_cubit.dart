@@ -7,8 +7,22 @@ enum FavoriteSortOrder { ascending, descending }
 
 class FavoriteCubit extends Cubit<List<CoffeeItem>> {
   FavoriteSortOrder _sortOrder = FavoriteSortOrder.ascending;
+  String _searchQuery = '';
 
   FavoriteSortOrder get sortOrder => _sortOrder;
+  String get searchQuery => _searchQuery;
+
+  // Returns the filtered and sorted favorites
+  List<CoffeeItem> get filteredFavorites {
+    final filtered = _searchQuery.isEmpty
+        ? state
+        : state
+            .where((coffee) => coffee.name
+                .toLowerCase()
+                .contains(_searchQuery.toLowerCase()))
+            .toList();
+    return _applySort(filtered);
+  }
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String? _userId = FirebaseAuth.instance.currentUser?.uid;
@@ -70,6 +84,11 @@ class FavoriteCubit extends Cubit<List<CoffeeItem>> {
         ? FavoriteSortOrder.descending
         : FavoriteSortOrder.ascending;
     emit(_applySort(state));
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    emit(List<CoffeeItem>.from(state)); // Triggers UI update
   }
 
   List<CoffeeItem> _applySort(List<CoffeeItem> list) {
