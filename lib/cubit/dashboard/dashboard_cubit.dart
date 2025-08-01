@@ -4,13 +4,15 @@ import '../../core/models/coffee_item.dart';
 import '../../services/firestore_service.dart';
 import 'dashboard_state.dart';
 
-/// Cubit for managing the Dashboard screen state and business logic
+
 class DashboardCubit extends Cubit<DashboardState> {
   StreamSubscription<List<CoffeeItem>>? _coffeeStreamSubscription;
+  StreamSubscription? _userFavoritesSubscription;
+  StreamSubscription? _specificUserFavoritesSubscription;
 
   DashboardCubit() : super(_initialState);
 
-  /// Initial state with empty coffee data - will be loaded from Firestore
+  
   static final DashboardState _initialState = DashboardState(
     categories: const ['Espresso', 'Latte', 'Cappuccino', 'Cafetière'],
     coffeeItemsByCategory: {
@@ -45,7 +47,7 @@ class DashboardCubit extends Cubit<DashboardState> {
     );
   }
 
-  /// Add Firestore coffee items to appropriate categories
+  
   void _mergeCoffeeItems(List<CoffeeItem> firestoreCoffees) {
     if (isClosed) return;
 
@@ -70,7 +72,7 @@ class DashboardCubit extends Cubit<DashboardState> {
     ));
   }
 
-  /// Get the proper category key for the coffee category
+  
   String? _getCategoryKey(String category) {
     final categoryLower = category.toLowerCase();
     switch (categoryLower) {
@@ -88,20 +90,72 @@ class DashboardCubit extends Cubit<DashboardState> {
     }
   }
 
-  /// Refresh coffee items from Firestore
+  
   void refreshCoffeeItems() {
     if (isClosed) return;
     emit(state.copyWith(isLoading: true));
     _loadCoffeeItemsFromFirestore();
   }
 
+  void initializeUserFavorites(String userId) {
+    _userFavoritesSubscription = FirestoreService.getUserFavoriteCoffees(userId).listen(
+      (userFavorites) {
+       
+        final Map<String, List<CoffeeItem>> categorizedFavorites = {
+          'Favorites': userFavorites
+        };
+
+       
+        final updatedCategories = Map<String, List<CoffeeItem>>.from(state.coffeeItemsByCategory);
+        updatedCategories['Favorites'] = userFavorites;
+
+        emit(state.copyWith(
+          coffeeItemsByCategory: updatedCategories,
+          selectedCategoryIndex: state.categories.indexOf('Favorites') != -1 
+            ? state.categories.indexOf('Favorites') 
+            : state.selectedCategoryIndex
+        ));
+      },
+      onError: (error) {
+        print('Error fetching user favorites: $error');
+      },
+    );
+  }
+
+  void initializeSpecificUserFavorites() {
+    _specificUserFavoritesSubscription = FirestoreService.getSpecificUserFavorites().listen(
+      (specificUserFavorites) {
+       
+        final Map<String, List<CoffeeItem>> categorizedFavorites = {
+          'Favorites': specificUserFavorites
+        };
+
+       
+        final updatedCategories = Map<String, List<CoffeeItem>>.from(state.coffeeItemsByCategory);
+        updatedCategories['Favorites'] = specificUserFavorites;
+
+        emit(state.copyWith(
+          coffeeItemsByCategory: updatedCategories,
+          selectedCategoryIndex: state.categories.indexOf('Favorites') != -1 
+            ? state.categories.indexOf('Favorites') 
+            : state.selectedCategoryIndex
+        ));
+      },
+      onError: (error) {
+        print('Error fetching specific user favorites: $error');
+      },
+    );
+  }
+
   @override
   Future<void> close() {
     _coffeeStreamSubscription?.cancel();
+    _userFavoritesSubscription?.cancel();
+    _specificUserFavoritesSubscription?.cancel();
     return super.close();
   }
 
-  /// Selects a category by index
+  
   void selectCategory(int categoryIndex) {
     if (categoryIndex >= 0 && categoryIndex < state.categories.length) {
       emit(
@@ -115,7 +169,7 @@ class DashboardCubit extends Cubit<DashboardState> {
     }
   }
 
-  /// Handles search functionality
+  
   void handleSearch(String query) {
     final lowerQuery = query.toLowerCase();
     emit(
@@ -129,12 +183,12 @@ class DashboardCubit extends Cubit<DashboardState> {
     }
   }
 
-  /// Performs the actual search across all categories
+  
   void _performSearch(String query) {
     final List<CoffeeItem> filteredItems = [];
     int? categoryIndex;
 
-    // Search across all categories
+    
     state.coffeeItemsByCategory.forEach((category, items) {
       for (var item in items) {
         if (item.name.toLowerCase().contains(query) ||
@@ -144,7 +198,6 @@ class DashboardCubit extends Cubit<DashboardState> {
         }
       }
 
-      // If category name matches, set it as selected
       if (category.toLowerCase().contains(query)) {
         categoryIndex = state.categories.indexOf(category);
       }

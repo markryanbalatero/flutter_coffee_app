@@ -145,11 +145,12 @@ class CoffeeCard extends StatelessWidget {
                           name,
                           style: AppTheme.coffeeCardNameStyle.copyWith(
                             fontSize: _getCardNameFontSize(name),
+                            fontWeight: FontWeight.bold,
                             color: isDarkMode 
                               ? AppColors.darkTextOnBackground 
                               : null,
                           ),
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
                         ),
@@ -159,7 +160,9 @@ class CoffeeCard extends StatelessWidget {
                           style: AppTheme.coffeeCardDescriptionStyle.copyWith(
                             color: isDarkMode 
                               ? AppColors.darkOnSurface 
-                              : null,
+                              : Colors.grey[600],
+                            fontSize: 12, // Slightly smaller font size
+                            fontStyle: FontStyle.italic,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
