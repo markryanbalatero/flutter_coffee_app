@@ -35,25 +35,6 @@ class _EspressoScreenState extends State<EspressoScreen> {
     }
   }
 
-  // State variables
-  String selectedChocolate = 'White Chocolate';
-  String selectedSize = 'S';
-  bool isFavorite = false;
-
-  // Base price and size multipliers
-  static const double basePrice = 4.20;
-  static const Map<String, double> sizeMultipliers = {
-    'S': 1.0, // Small: base price
-    'M': 1.2, // Medium: 20% more
-    'L': 1.5, // Large: 50% more
-  };
-
-  /// Calculates the total price based on size and quantity
-  double get totalPrice {
-    final sizeMultiplier = sizeMultipliers[selectedSize] ?? 1.0;
-    return basePrice * sizeMultiplier * 1;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.product == null) {
@@ -88,13 +69,13 @@ class _EspressoScreenState extends State<EspressoScreen> {
                           return ProductHeader(
                             onBackPressed: () => Navigator.pop(context),
                             isFavorite: isFav,
-                            onFavoritePressed: () {
+                            onFavoritePressed: () async {
                               if (isFav) {
-                                favoriteCubit.removeFavorite(state.coffee!);
+                                await favoriteCubit
+                                    .removeFavorite(state.coffee!);
                               } else {
-                                favoriteCubit.addFavorite(state.coffee!);
+                                await favoriteCubit.addFavorite(state.coffee!);
                               }
-                              setState(() {}); // update heart state
                             },
                             coffee: state.coffee!,
                           );
@@ -114,56 +95,54 @@ class _EspressoScreenState extends State<EspressoScreen> {
 
   /// Builds the main content section
   Widget _buildContentSection(BuildContext context, bool isDarkMode) {
-    return Container(
-      constraints: BoxConstraints(
-        minHeight: 200,
-        maxWidth: MediaQuery.of(context).size.width,
-      ),
-      padding: const EdgeInsets.fromLTRB(
-        AppConstants.defaultPadding,
-        20,
-        AppConstants.defaultPadding,
-        20,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-              builder: (context, state) {
-            return DescriptionSection(state.coffee!, isDarkMode: isDarkMode);
-          }),
-          const SizedBox(height: AppConstants.largeSpacing),
-          ChocolateSelectionSection(
-            selectedChocolate: selectedChocolate,
-            onChocolateSelected: (chocolate) {
-              setState(() => selectedChocolate = chocolate);
-            },
-            isDarkMode: isDarkMode,
+    return BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
+      builder: (context, state) {
+        return Container(
+          constraints: BoxConstraints(
+            minHeight: 200,
+            maxWidth: MediaQuery.of(context).size.width,
           ),
-          const SizedBox(height: AppConstants.largeSpacing),
-          BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-            builder: (context, state) {
-              return SizeAndQuantitySection(
-                selectedSize: selectedSize,
+          padding: const EdgeInsets.fromLTRB(
+            AppConstants.defaultPadding,
+            20,
+            AppConstants.defaultPadding,
+            20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DescriptionSection(state.coffee!, isDarkMode: isDarkMode),
+              const SizedBox(height: AppConstants.largeSpacing),
+              ChocolateSelectionSection(
+                selectedChocolate: state.selectedChocolate,
+                onChocolateSelected: (chocolate) {
+                  context.read<ProductDetailsCubit>().setChocolate(chocolate);
+                },
+                isDarkMode: isDarkMode,
+              ),
+              const SizedBox(height: AppConstants.largeSpacing),
+              SizeAndQuantitySection(
+                selectedSize: state.selectedSize,
                 quantity: state.quantity,
                 onSizeSelected: (size) {
-                  setState(() => selectedSize = size);
+                  context.read<ProductDetailsCubit>().setSize(size);
                 },
-                onQuantityChanged: (newQuantity) => cubit.setQty(newQuantity),
+                onQuantityChanged: (newQuantity) =>
+                    context.read<ProductDetailsCubit>().setQty(newQuantity),
                 isDarkMode: isDarkMode,
-              );
-            },
+              ),
+              const SizedBox(height: AppConstants.largeSpacing),
+              PriceAndBuySection(
+                price: state.totalPrice,
+                onBuyNow: () {
+                  // TODO: Implement buy now functionality
+                },
+                isDarkMode: isDarkMode,
+              ),
+            ],
           ),
-          const SizedBox(height: AppConstants.largeSpacing),
-          PriceAndBuySection(
-            price: totalPrice,
-            onBuyNow: () {
-              // TODO: Implement buy now functionality
-            },
-            isDarkMode: isDarkMode,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

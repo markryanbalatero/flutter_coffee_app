@@ -9,12 +9,17 @@ class CustomSearchBar extends StatelessWidget {
   final String hintText;
   final Function(String)? onChanged;
   final TextEditingController? controller;
+  final String? initialValue; // Add this line
+
+  
 
   const CustomSearchBar({
     super.key,
     this.hintText = 'Find your coffee...',
     this.onChanged,
     this.controller,
+    this.initialValue, // Add this line
+
   });
 
   @override

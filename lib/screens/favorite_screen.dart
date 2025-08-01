@@ -9,9 +9,14 @@ import '../cubit/favorite_cubit.dart';
 import '../core/models/coffee_item.dart';
 import '../widgets/cards/favorite_coffee_card.dart';
 
-class FavoriteScreen extends StatelessWidget {
+class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
 
+  @override
+  State<FavoriteScreen> createState() => _FavoriteScreenState();
+}
+
+class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,14 +42,19 @@ class FavoriteScreen extends StatelessWidget {
             Expanded(
               child: BlocBuilder<FavoriteCubit, List<CoffeeItem>>(
                 builder: (context, favorites) {
-                  if (favorites.isEmpty) {
-                    return Center(child: Text('No favorites yet'));
+                  final filteredFavorites =
+                      context.select<FavoriteCubit, List<CoffeeItem>>(
+                    (cubit) => cubit.filteredFavorites,
+                  );
+
+                  if (filteredFavorites.isEmpty) {
+                    return Center(child: Text('No favorites found'));
                   }
                   return ListView.separated(
-                    itemCount: favorites.length,
+                    itemCount: filteredFavorites.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 16),
                     itemBuilder: (context, index) {
-                      final coffee = favorites[index];
+                      final coffee = filteredFavorites[index];
                       return FavoriteCoffeeCard(
                         coffee: coffee,
                         onRemoveFromFavorites: () => context
@@ -85,20 +95,23 @@ class FavoriteScreen extends StatelessWidget {
   }
 
   Widget _buildSearchBar(BuildContext context) {
+    final sortOrder = context.watch<FavoriteCubit>().sortOrder;
+    final searchQuery = context.watch<FavoriteCubit>().searchQuery;
     return Row(
       children: [
         Expanded(
           child: CustomSearchBar(
             hintText: 'Find your coffee...',
+            initialValue: searchQuery,
             onChanged: (query) {
-              context.read<DashboardCubit>().handleSearch(query);
+              context.read<FavoriteCubit>().setSearchQuery(query);
             },
           ),
         ),
         const SizedBox(width: 11),
         GestureDetector(
           onTap: () {
-            print('Filter tapped');
+            context.read<FavoriteCubit>().toggleSortOrder();
           },
           child: Container(
             width: 50,
@@ -112,18 +125,34 @@ class FavoriteScreen extends StatelessWidget {
                 bottomRight: Radius.circular(30),
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(13),
-              child: SvgPicture.asset(
-                'assets/icons/filter.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFFFFFFFF),
-                  BlendMode.srcIn,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(13),
+                  child: SvgPicture.asset(
+                    'assets/icons/filter.svg',
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xFFFFFFFF),
+                      BlendMode.srcIn,
+                    ),
+                    fit: BoxFit.contain,
+                  ),
                 ),
-                fit: BoxFit.contain,
-              ),
+                Positioned(
+                  bottom: 6,
+                  right: 6,
+                  child: Icon(
+                    sortOrder == FavoriteSortOrder.ascending
+                        ? Icons.arrow_upward
+                        : Icons.arrow_downward,
+                    size: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
