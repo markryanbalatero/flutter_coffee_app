@@ -132,9 +132,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(40.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(

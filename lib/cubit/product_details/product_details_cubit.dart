@@ -18,7 +18,8 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   void setQty(int quantity) {
     emit(state.copyWith(
       quantity: quantity,
-      totalPrice: _calculateTotalPrice(state.coffee?.price ?? 0.0, state.selectedSize, quantity),
+      totalPrice: _calculateTotalPrice(
+          state.coffee?.price ?? 0.0, state.selectedSize, quantity),
     ));
   }
 
@@ -29,7 +30,8 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   void setSize(String size) {
     emit(state.copyWith(
       selectedSize: size,
-      totalPrice: _calculateTotalPrice(state.coffee?.price ?? 0.0, size, state.quantity),
+      totalPrice: _calculateTotalPrice(
+          state.coffee?.price ?? 0.0, size, state.quantity),
     ));
   }
 
