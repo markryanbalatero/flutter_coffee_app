@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../utils/shared_preference_helper.dart';
 
 /// AuthService handles user authentication using Firebase Auth
 class AuthService {
@@ -21,12 +22,17 @@ class AuthService {
     BuildContext context,
   ) async {
     try {
-      UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       if (userCredential.user != null) {
+        // Save user session to SharedPreferences
+        await SharedPreferenceHelper.saveSessionFromFirebaseUser(
+            userCredential.user!);
+
         if (context.mounted) {
           Navigator.pushReplacementNamed(context, '/dashboard');
         }
@@ -48,17 +54,18 @@ class AuthService {
     try {
       // Sign out from Google first to force account selection
       await _googleSignIn.signOut();
-      
+
       // Trigger the authentication flow with account selection
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         // User cancelled the sign-in
         return false;
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -67,9 +74,13 @@ class AuthService {
       );
 
       // Sign in to Firebase with the Google credential
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
+        await SharedPreferenceHelper.saveSessionFromFirebaseUser(
+            userCredential.user!);
+
         if (context.mounted) {
           Navigator.pushReplacementNamed(context, '/dashboard');
         }
@@ -90,17 +101,18 @@ class AuthService {
     try {
       // Sign out from Google first to force account selection
       await _googleSignIn.signOut();
-      
+
       // Trigger the authentication flow with account selection
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         // User cancelled the sign-in
         return false;
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -109,9 +121,13 @@ class AuthService {
       );
 
       // Sign in to Firebase with the Google credential
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
+        await SharedPreferenceHelper.saveSessionFromFirebaseUser(
+            userCredential.user!);
+
         if (context.mounted) {
           Navigator.pushReplacementNamed(context, '/dashboard');
         }
@@ -130,11 +146,18 @@ class AuthService {
 
   Future<bool> register(String email, String password) async {
     try {
-      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return userCredential.user != null;
+
+      if (userCredential.user != null) {
+        await SharedPreferenceHelper.saveSessionFromFirebaseUser(
+            userCredential.user!);
+        return true;
+      }
+      return false;
     } on FirebaseAuthException catch (e) {
       throw FirebaseAuthException(
         code: e.code,
@@ -149,8 +172,14 @@ class AuthService {
     try {
       await _firebaseAuth.signOut();
       await _googleSignIn.signOut();
+      await SharedPreferenceHelper.clearUserSession();
+
       if (context.mounted) {
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/login',
+          (route) => false,
+        );
       }
     } catch (e) {
       throw Exception('Error signing out: $e');
@@ -158,8 +187,8 @@ class AuthService {
   }
 
   bool get isAuthenticated => _firebaseAuth.currentUser != null;
-  
+
   String? get currentUser => _firebaseAuth.currentUser?.email;
-  
+
   User? get currentUserObject => _firebaseAuth.currentUser;
 }

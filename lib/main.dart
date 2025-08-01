@@ -12,6 +12,7 @@ import 'cubit/dashboard/dashboard_cubit.dart';
 import 'cubit/theme/theme_cubit.dart';
 import 'screens/profile_screen.dart'; // Import the new ProfileScreen
 import 'cubit/favorite_cubit.dart';
+import 'widgets/session_checker.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,14 +39,14 @@ class MyApp extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             themeMode: themeMode,
             debugShowCheckedModeBanner: false,
-            initialRoute: '/splash',
+            home: const SessionChecker(),
             routes: {
               '/splash': (context) => const SplashScreen(),
               '/login': (context) => const LoginScreen(),
               '/dashboard': (context) => const DashboardScreen(),
               '/espresso': (context) {
                 final coffee =
-                ModalRoute.of(context)!.settings.arguments as CoffeeItem?;
+                    ModalRoute.of(context)!.settings.arguments as CoffeeItem?;
                 return EspressoScreen(product: coffee);
               },
               '/add-coffee': (context) => AddCoffeeScreen.create(),

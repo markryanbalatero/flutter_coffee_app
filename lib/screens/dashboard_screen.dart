@@ -18,6 +18,7 @@ import '../widgets/search_results_view.dart';
 import '../cubit/theme/theme_cubit.dart';
 import 'dart:io';
 import '../utils/image_utils.dart';
+import '../utils/shared_preference_helper.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -32,9 +33,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    _checkAuthStatus();
+    _showWelcomeMessage();
     context.read<DashboardCubit>().initializeDashboard();
-    
+
     context.read<DashboardCubit>().initializeSpecificUserFavorites();
+  }
+
+  Future<void> _checkAuthStatus() async {
+    final isLoggedIn = await SharedPreferenceHelper.isUserLoggedIn();
+    if (!isLoggedIn && mounted) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/login',
+        (route) => false,
+      );
+    }
+  }
+
+  Future<void> _showWelcomeMessage() async {
+    
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (mounted) {
+      final userName = await SharedPreferenceHelper.getUserName();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Welcome back, $userName!'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: Theme.of(context).primaryColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -372,17 +406,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildSpecialOffer() {
-    final userFavorites = context.read<DashboardCubit>().state.coffeeItemsByCategory['Favorites'] ?? [];
+    final userFavorites = context
+            .read<DashboardCubit>()
+            .state
+            .coffeeItemsByCategory['Favorites'] ??
+        [];
 
     if (userFavorites.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    
     final favoriteCoffee = userFavorites.first;
 
     String imageAsset = favoriteCoffee.image;
-    
+
     if (ImageUtils.isBase64Image(imageAsset)) {
       if (!imageAsset.startsWith('data:image/')) {
         imageAsset = 'data:image/jpeg;base64,$imageAsset';
@@ -392,11 +429,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SpecialOfferCard(
       title: 'Special for you',
       name: favoriteCoffee.name,
-      description: favoriteCoffee.description.isNotEmpty 
-        ? favoriteCoffee.description 
-        : favoriteCoffee.name,
+      description: favoriteCoffee.description.isNotEmpty
+          ? favoriteCoffee.description
+          : favoriteCoffee.name,
       currentPrice: favoriteCoffee.price,
-      originalPrice: favoriteCoffee.price * 1.5, 
+      originalPrice: favoriteCoffee.price * 1.5,
       imageAsset: imageAsset,
       onTap: () {
         Navigator.push(
