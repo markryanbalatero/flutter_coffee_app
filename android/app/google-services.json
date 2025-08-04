@@ -7,6 +7,43 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:440992636865:android:d4b450961d0a3326de1940",
+        "android_client_info": {
+          "package_name": "com.bisu_legends.coffee_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440992636865-fbu7474f0vq0h1iu2m3t255q2a61a8d5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bisu_legends.coffee_app",
+            "certificate_hash": "0d201a7e244839a853350370f775c6b13708a50d"
+          }
+        },
+        {
+          "client_id": "440992636865-c6s54mbtp293rt652serhlqqfqdrirms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQY_PswVviwvoOEhnOKaSu73UIiX3IJQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440992636865-c6s54mbtp293rt652serhlqqfqdrirms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:440992636865:android:d806a295b2135d18de1940",
         "android_client_info": {
           "package_name": "com.example.flutter_coffee_app"
