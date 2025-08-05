@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Coffee App Banner](assets/images/coffee_splash.png)
+![Coffee App Banner](assets/icons/coffee_app_icon.png)
 
 **Stay Focused. Stay Caffeinated. Stay Productive.**
 
