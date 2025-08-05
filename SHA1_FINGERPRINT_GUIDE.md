@@ -4,7 +4,7 @@
 
 **Debug SHA-1 Fingerprint:**
 ```
-6D:69:8E:E0:AD:41:4E:99:4D:8F:C2:3D:E1:01:3D:D3:AC:21:61:CC
+0D:20:1A:7E:24:48:39:A8:53:35:03:70:F7:75:C6:B1:37:08:A5:0D
 ```
 
 ## Method 1: Using Gradle (Recommended)
@@ -77,7 +77,7 @@ keytool -list -v -keystore path/to/your/release-key.keystore -alias your-alias-n
 2. Scroll down to **Your apps** section
 3. Find your Android app
 4. Click **Add fingerprint**
-5. Paste your SHA-1: `6D:69:8E:E0:AD:41:4E:99:4D:8F:C2:3D:E1:01:3D:D3:AC:21:61:CC`
+5. Paste your SHA-1: `0D:20:1A:7E:24:48:39:A8:53:35:03:70:F7:75:C6:B1:37:08:A5:0D`
 6. Click **Save**
 
 ### Step 3: Download Updated google-services.json
